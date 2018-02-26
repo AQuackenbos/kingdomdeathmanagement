@@ -1,6 +1,6 @@
 <?php 
 
-require('dbconfig.php');
+require('../dbconfig.php');
 
 class Survivors {
 	
