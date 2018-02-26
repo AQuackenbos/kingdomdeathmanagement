@@ -188,14 +188,22 @@ const SurvivorList = Vue.component('survivor-list',{
 	data () {
 		return { 
 			survivors: [],
-			emptySurvivor: emptySurvivor
+			emptySurvivor: emptySurvivor,
+			sse: null
 		};
 	},
 	created() {
 		this.$bus.$on('add_survivor', this.addSurvivor);
 		this.$bus.$on('remove_survivor', this.removeSurvivor);
 		this.$bus.$on('slist_send_update', this.sendSurvivorUpdate);
-		this.requestUpdate();
+		
+		let self = this;
+		this.sse = new EventSource('/api.php');
+		this.sse.addEventListener('get_survivor_updates',function(e){
+			console.log('UPDATING NOW');
+			let data = JSON.parse(e.data);
+			self.survivors = data.survivors;
+		},false);
 	},
 	beforeDestroy () {
 		this.$bus.$off('add_survivor');

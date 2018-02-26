@@ -14,6 +14,7 @@ const router = new VueRouter({
 		component: SurvivorPage
 	}]
 });
+
 var app = new Vue({
 	el: "#app",
 	router

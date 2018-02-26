@@ -1,5 +1,7 @@
 <?php 
 
+require_once('../vendor/autoload.php');
+
 require('../dbconfig.php');
 
 class Survivors {
@@ -124,19 +126,48 @@ class Survivors {
 	
 }
 
+
+
 $survivors = new Survivors();
 
 if($_GET['load'] == 1)
 {
 	echo $survivors->getSurvivors();
+	exit;
 }
 
 if($_POST['save'] == 1)
 {
 	echo $survivors->saveSurvivor($_POST['sdata']);
+	exit;
 }
 
 if($_POST['delete'] == 1)
 {
 	echo $survivors->deleteSurvivor($_POST['ddata']);
+	exit;
 }
+
+
+use Sse\Event;
+use Sse\SSE;
+	
+//create the event handler
+class RetrieveUpdates implements Event {
+	public function update(){
+		global $survivors;
+		return $survivors->getSurvivors();
+	}
+	
+	public function check(){
+		return true;
+	}
+}
+
+$sse = new SSE(); //create a libSSE instance
+$sse->exec_limit = 15; //the execution time of the loop in seconds. Default: 600. Set to 0 to allow the script to run as long as possible.
+$sse->sleep_time = 300; //The time to sleep after the data has been sent in seconds. Default: 0.5.
+$sse->client_reconnect = 1; //the time for the client to reconnect after the connection has lost in seconds. Default: 1.
+
+$sse->addEventListener('get_survivor_updates', new RetrieveUpdates());//register your event handler
+$sse->start();//start the event loop
