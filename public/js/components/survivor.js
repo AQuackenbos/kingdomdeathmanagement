@@ -196,7 +196,8 @@ const SurvivorList = Vue.component('survivor-list',{
 		this.$bus.$on('add_survivor', this.addSurvivor);
 		this.$bus.$on('remove_survivor', this.removeSurvivor);
 		this.$bus.$on('slist_send_update', this.sendSurvivorUpdate);
-		
+		this.requestUpdate();
+		/**
 		let self = this;
 		this.sse = new EventSource('/api.php');
 		this.sse.addEventListener('get_survivor_updates',function(e){
@@ -204,6 +205,7 @@ const SurvivorList = Vue.component('survivor-list',{
 			let data = JSON.parse(e.data);
 			self.survivors = data.survivors;
 		},false);
+		**/
 	},
 	beforeDestroy () {
 		this.$bus.$off('add_survivor');
@@ -306,10 +308,7 @@ const Survivor = Vue.component('survivor', {
 				clearTimeout(this.savetimer);
 				this.savetimer = setTimeout(function() {
 					self.saveSurvivor(to);
-				},5000);
-				
-                console.log("Survivor with ID:" + to.id + " modified")
-				console.log(to.id+' vs '+from.id);
+				},2500);
             },
             deep: true
         }
@@ -348,7 +347,6 @@ const Survivor = Vue.component('survivor', {
 			if(target == undefined) {
 				target = this.survivor;
 			}
-			console.log('SAVING: '+target.id);
 			fetch('/api.php', {	
 				method: 'POST',				
 				headers: {
@@ -390,11 +388,6 @@ const SurvivorPage = Vue.component('survivor-page', {
 	watch: {
 		'$route' (to, from) {
 			let id = to.params.id;
-			let routeName = to.name;
-			if(routeName === 'default' || routeName === 'survivor-default')
-			{
-				console.log('stuff!');
-			}
 			if(id != undefined) {
 				if(id === 'new') {
 					this.$bus.$emit('slist_send_update', 'new');

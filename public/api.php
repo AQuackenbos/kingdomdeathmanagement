@@ -148,26 +148,33 @@ if($_POST['delete'] == 1)
 	exit;
 }
 
+/**
 
 use Sse\Event;
 use Sse\SSE;
 	
 //create the event handler
 class RetrieveUpdates implements Event {
+	protected $_sCache = null;
+	
 	public function update(){
 		global $survivors;
-		return $survivors->getSurvivors();
+		$this->_sCache = $survivors->getSurvivors();
+		return $this->_sCache;
 	}
 	
 	public function check(){
+		$new = $survivors->getSurvivors();
+		//return ($new != $this->_sCache);
 		return true;
 	}
 }
 
 $sse = new SSE(); //create a libSSE instance
 $sse->exec_limit = 15; //the execution time of the loop in seconds. Default: 600. Set to 0 to allow the script to run as long as possible.
-$sse->sleep_time = 300; //The time to sleep after the data has been sent in seconds. Default: 0.5.
+$sse->sleep_time = 15; //The time to sleep after the data has been sent in seconds. Default: 0.5.
 $sse->client_reconnect = 1; //the time for the client to reconnect after the connection has lost in seconds. Default: 1.
 
 $sse->addEventListener('get_survivor_updates', new RetrieveUpdates());//register your event handler
 $sse->start();//start the event loop
+**/
