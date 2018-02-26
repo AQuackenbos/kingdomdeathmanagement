@@ -11,21 +11,44 @@ class Survivors {
 		return $db;
 	}
 	
-	protected function _orderby()
+	protected function _sort($a, $b)
 	{
-		$args = func_get_args();
-		$data = array_shift($args);
-		foreach ($args as $n => $field) {
-			if (is_string($field)) {
-				$tmp = array();
-				foreach ($data as $key => $row)
-					$tmp[$key] = $row[$field];
-				$args[$n] = $tmp;
-				}
+		$aAlive = ($a['survival']['died'] == null || $a['survival']['died'] == '');
+		$bAlive = ($b['survival']['died'] == null || $b['survival']['died'] == '');
+		
+		if($aAlive && !$bAlive)
+		{
+			return -1;
 		}
-		$args[] = &$data;
-		call_user_func_array('array_multisort', $args);
-		return array_pop($args);
+		
+		if(!$aAlive && $bAlive)
+		{
+			return +1;
+		}
+		
+		if($aAlive && $bAlive)
+		{
+			$aRetired = ($a['xp']['box16'] == true);
+			$bRetired = ($b['xp']['box16'] == true);
+			
+			if($aRetired && !$bRetired)
+			{
+				return +1;
+			}
+			if(!$aRetired && $bRetired)
+			{
+				return -1;
+			}
+			
+			
+		}
+		
+		$al = strtolower($a['name']);
+		$bl = strtolower($b['name']);
+		if ($al == $bl) {
+			return 0;
+		}
+		return ($al > $bl) ? +1 : -1;
 	}
 	
 	public function saveSurvivor($survivorJsonData)
@@ -83,9 +106,9 @@ class Survivors {
 			$survivors[] = $_s;
 		}
 		
-		$sorted = $this->_orderby($survivors, 'alive', SORT_DESC, 'name', SORT_ASC);
+		usort($survivors, [$this, '_sort']);
 		
-		return json_encode(['survivors' => $sorted]);
+		return json_encode(['survivors' => $survivors]);
 	}
 	
 	public function deleteSurvivor($delId)

@@ -1,0 +1,28 @@
+<template id="gearset-list">
+	<div class="column is-one-quarter is-hidden-touch menu-panel">
+		<aside class="menu">
+			<ul class="menu-list">
+				<li>
+					<a class="button is-info" @click="requestUpdate" ref="updateButton">Force Refresh from Server</a>
+				</li>
+				<li>
+					<router-link class="button is-success" :to="{name: 'gearset', params: {id: 'new' }}">Add New Gearset</router-link>
+				</li>
+			</ul>
+			<p class="menu-label">Gearsets</p>
+			<ul class="menu-list gearsets">	
+				<li v-for="gearset in gearsets">
+					<router-link :to="{ name: 'gearset', params: { id: gearset.id }}">
+						<span class="name">{{ gearset.name }}</span>
+					</router-link>
+				</li>
+			</ul>
+		</aside>
+	</div>
+</template>
+<template id="gearset-info">
+	<div class="column">
+		<h1 class="title">Gearsets</h1>
+		<p>WIP</p>
+	</div>
+</template>
