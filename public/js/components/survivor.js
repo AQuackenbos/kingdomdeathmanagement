@@ -143,17 +143,17 @@ const SurvivorInfo = Vue.component('survivor-info', {
 	},
 	computed: {
 		percentMale: function() {
-			return ((this.countMale / this.survivors.length) * 100).toFixed(2);
+			return ((this.countMale / this.countAlive) * 100).toFixed(2);
 		},
 		percentFemale: function() {
-			return ((this.countFemale / this.survivors.length) * 100).toFixed(2);
+			return ((this.countFemale / this.countAlive) * 100).toFixed(2);
 		},
 		countMale: function() {
-			let flt = this.survivors.filter(s => (s.gender === 'M'));
+			let flt = this.survivors.filter(s => (s.gender === 'M' && (s.survival.died === '' || s.survival.died === undefined)));
 			return flt.length;
 		},
 		countFemale: function() {
-			let flt = this.survivors.filter(s => (s.gender === 'F'));
+			let flt = this.survivors.filter(s => (s.gender === 'F' && (s.survival.died === '' || s.survival.died === undefined)));
 			return flt.length;
 		},
 		countRetired: function() {
