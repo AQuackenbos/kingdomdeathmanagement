@@ -1,40 +1,112 @@
-<!doctype html>
-<html>
-	<head>
-		<title>Kingom Death Management</title>
-		<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css"/>
-		<link rel="stylesheet" href="/css/styles.css"/>
-	</head>
-	<body>
-		<div id="app" class="container">
-			<nav class="navbar is-transparent">
-				<div class="navbar-brand">
-				<router-link class="navbar-item" :to="{name: 'default'}">
-					<img src="/images/lantern.png" alt="Kingdom Death Management">
-				</router-link>
-				<div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
-					<span></span>
-					<span></span>
-					<span></span>
-				</div>
-				</div>
-				<div id="navbarExampleTransparentExample" class="navbar-menu">
-					<div class="navbar-start">
-						<router-link class="navbar-item" :to="{name: 'survivor-default'}">Survivors</router-link>
-						<a class="navbar-item" href="#">Gearsets</a>
-						<a class="navbar-item" href="#">Reference Tables</a>
-					</div>
-				</div>
-			</nav>
-			<router-view></router-view>
-		</div>
-		<?php include 'templates/survivor.html'; ?>
-		<?php include 'templates/survivor-list.html'; ?>
-		<?php include 'templates/survivor-page.html'; ?>
-		<script type="text/javascript" src="/js/setup.js"></script>
-		<script type="text/javascript" src="/js/components/survivor.js"></script>
-		<script type="text/javascript" src="/js/app.js"></script>
-	</body>
-</html>
+<?php 
+session_start();
+ini_set('display_errors',1);
+$_CONFIG = require '../config.php';
+require '../vendor/autoload.php';
+
+$app = new \Slim\App($_CONFIG);
+
+$container = $app->getContainer();
+
+// Register component on container
+$container['view'] = function ($container) {
+    return new \Slim\Views\PhpRenderer('templates/');
+};
+
+// Service factory for the ORM
+$capsule = new \Illuminate\Database\Capsule\Manager;
+$capsule->addConnection($container['settings']['db']);
+
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
+
+
+// Apply the middleware to every request.
+$app->add(new KDM\Auth($container));
+
+/** Get app running "as before" on slim **/
+$app->get('/', function ($request, $response, $args) {  
+	return $this->view->render($response, 'root.php', [
+        'name' => 'base'
+    ]);
+})->setName('default');
+
+$app->group('/survivor', function () {
+	$this->get('', function($request, $response, $args) {
+		return $this->view->render($response, 'root.php', [
+			'name' => 'base'
+		]);
+	})->setName('survivor-info');
+	$this->get('/{id}', function ($request, $response, $args) {
+		return $this->view->render($response, 'root.php', [
+			'name' => 'base'
+		]);
+	})->setName('single-survivor');
+});
+
+$app->group('/api', function() {
+	$this->map(['GET','POST','DELETE'],'/survivor[/]', function($request, $response, $args) {
+		$survivor = new \KDM\Entity\Survivor($this);
+		if($request->isGet())
+		{
+			return $survivor->getSurvivors();
+		}
+		
+		if($request->isPost())
+		{
+			return $survivor->saveSurvivor($request->getParam('data'));
+		}
+		
+		if($request->isDelete())
+		{
+			return $survivor->deleteSurvivor($request->getParam('id'));
+		}
+	})->setName('survivor-api');
+});
+
+/** Auth routes **/
+$app->map(['GET','POST'], '/login', function ($request, $response, $args) {
+	if($request->isGet())
+	{	
+		if(array_key_exists('logged_in',$_SESSION) && $_SESSION['logged_in'] != '')
+		{
+			return $response->withRedirect('/');
+		}
+		return $this->view->render($response, 'root.php', [
+			'name' => 'login'
+		]);
+	}
+	$user = new \KDM\Auth\User($this);
+	return $user->login($request, $response);
+})->setName('login');
+
+$app->post('/reset', function ($request, $response, $args) {
+	$user = new \KDM\Auth\User($this);
+	return $user->reset($request, $response);
+})->setName('reset');
+
+$app->post('/change', function ($request, $response, $args) {
+	$user = new \KDM\Auth\User($this);
+	return $user->change($request, $response);
+})->setName('change');
+
+$app->get('/reset/{token}[/]', function ($request, $response, $args) {
+	$user = new \KDM\Auth\User($this);
+	$valid = $user->validateToken($args['token']);
+	if(!$valid)
+	{
+		$_SESSION['message'] = 'Invalid reset token.';
+		return $response->withRedirect('/login');
+	}
+	return $this->view->render($response, 'root.php', [
+		'name' => 'change-password',
+		'token' => $args['token']
+	]);
+})->setName('change-password');
+
+$app->get('/logout', function ($request, $response, $args) {
+	$user = new \KDM\Auth\User($this);
+	return $user->logout($request, $response);
+})->setName('logout');
+
+$app->run();

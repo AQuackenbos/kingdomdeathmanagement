@@ -215,11 +215,10 @@ const SurvivorList = Vue.component('survivor-list',{
 			if(this.$refs.updateButton) {
 				this.$refs.updateButton.classList.add('is-loading');
 			}
-			fetch('/api.php?load=1', {
+			fetch('/api/survivor/', {
 				method: 'GET',
 				headers: {
-				  'Accept': 'application/json',
-				  'Authorization': 'Basic ' + btoa('kingdomdeathmonster:kdm2018tristan')
+				  'Accept': 'application/json'
 				},
 				credentials: 'same-origin'
 			})
@@ -323,15 +322,14 @@ const Survivor = Vue.component('survivor', {
 			{
 				clearTimeout(this.savetimer);
 				this.$refs.deleteButton.classList.add('is-loading');
-				fetch('/api.php', {	
-					method: 'POST',				
+				fetch('/api/survivor/', {	
+					method: 'DELETE',				
 					headers: {
 					  'Accept': 'application/json',
-					  'Content-type': 'application/x-www-form-urlencoded',
-					  'Authorization': 'Basic ' + btoa('kingdomdeathmonster:kdm2018tristan')
+					  'Content-type': 'application/x-www-form-urlencoded'
 					},
 					credentials: 'same-origin',
-					body: 'delete=1&ddata='+this.survivor.id
+					body: 'id='+this.survivor.id
 				})
 				.then( r => r.json() )
 				.then( r => {
@@ -348,15 +346,14 @@ const Survivor = Vue.component('survivor', {
 			if(target == undefined) {
 				target = this.survivor;
 			}
-			fetch('/api.php', {	
+			fetch('/api/survivor/', {	
 				method: 'POST',				
 				headers: {
 				  'Accept': 'application/json',
-				  'Content-type': 'application/x-www-form-urlencoded',
-				  'Authorization': 'Basic ' + btoa('kingdomdeathmonster:kdm2018tristan')
+				  'Content-type': 'application/x-www-form-urlencoded'
 				},
 				credentials: 'same-origin',
-				body: 'save=1&sdata='+JSON.stringify(target)
+				body: 'data='+JSON.stringify(target)
 			})
 			.then( r => r.json() )
 			.then( r => {

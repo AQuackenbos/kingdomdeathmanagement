@@ -15,8 +15,8 @@ class Survivors {
 	
 	protected function _sort($a, $b)
 	{
-		$aAlive = ($a['survival']['died'] == null || $a['survival']['died'] == '');
-		$bAlive = ($b['survival']['died'] == null || $b['survival']['died'] == '');
+		@$aAlive = ($a['survival']['died'] == null || $a['survival']['died'] == '');
+		@$bAlive = ($b['survival']['died'] == null || $b['survival']['died'] == '');
 		
 		if($aAlive && !$bAlive)
 		{
@@ -101,7 +101,7 @@ class Survivors {
 			$_s = json_decode($s['document'],true);
 			$_s['id'] = $s['id'];
 			$_s['alive'] = false;
-			if($_s['survival']['died'] == '' || $_s['survival']['died'] == null)
+			if(@$_s['survival']['died'] == '' || $_s['survival']['died'] == null)
 			{
 				$_s['alive'] = true;
 			}
