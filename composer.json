@@ -1,5 +1,6 @@
 {
     "require": {
-        "tonyhhyip/sse": "^2.1"
+        "tonyhhyip/sse": "^2.1",
+        "slim/slim": "^3.9"
     }
 }

@@ -294,7 +294,7 @@ const Survivor = Vue.component('survivor', {
 	watch: {
 		survivor: {
             handler: function(to, from) {
-				if(to.id != from.id) {
+				if(from && to.id != from.id) {
 					if(from.id === -1) {
 						if(from.name === ''){
 							return;
@@ -308,7 +308,7 @@ const Survivor = Vue.component('survivor', {
 				clearTimeout(this.savetimer);
 				this.savetimer = setTimeout(function() {
 					self.saveSurvivor(to);
-				},2500);
+				},1000);
             },
             deep: true
         }
@@ -321,6 +321,7 @@ const Survivor = Vue.component('survivor', {
 		deleteSurvivor() {
 			if(confirm('Are you sure you want to delete '+this.survivor.name+'?  This CANNOT be undone!'))
 			{
+				clearTimeout(this.savetimer);
 				this.$refs.deleteButton.classList.add('is-loading');
 				fetch('/api.php', {	
 					method: 'POST',				
