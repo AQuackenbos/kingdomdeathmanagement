@@ -16,9 +16,9 @@
 			<ul class="menu-list survivors">	
 				<li v-for="survivor in survivors">
 					<router-link :to="{ name: 'survivor', params: { id: survivor.id }}">
-						<span class="chkbx circle" style="background:#ffc800;border:none;" v-if="survivor.xp.box16 == true"></span>
-						<span class="chkbx circle" style="background:#0F0;border:none;" v-else-if="survivor.survival.died == '' || survivor.survival.died == null"></span>
-						<span class="chkbx circle" style="background:#F00;border:none;" v-else></span>
+						<span class="chkbx circle" style="background:#F00;border:none;" v-if="survivor.survival.died != '' && survivor.survival.died != null"></span>
+						<span class="chkbx circle" style="background:#ffc800;border:none;" v-else-if="survivor.xp.box16 == true"></span>
+						<span class="chkbx circle" style="background:#0F0;border:none;" v-else></span>
 						<span class="gender" v-if="survivor.gender === 'M'">&#9794;</span>
 						<span class="gender" v-else>&#9792;</span>
 						<span class="name">{{ survivor.name }}</span>

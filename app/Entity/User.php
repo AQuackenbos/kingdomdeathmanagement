@@ -1,26 +1,26 @@
 <?php 
 
-namespace KDM\Auth;
+namespace KDM\Entity;
 
 class User extends \Illuminate\Database\Eloquent\Model  
 {
+    protected $primaryKey = 'user_id';
 	protected $table = 'users';
 	public $timestamps = false;
-    private $_container;
+    private $container;
 	private $_pepper;
 	
 	const HMAC_ALGORITHM = 'sha256';
 	
-    public function __construct($container) 
+    public function __construct($container = false) 
 	{
-        $this->_container = $container;
-		@$this->_pepper = $this->_container['settings']['auth']['pepper'];
+        $this->container = $container;
+		@$this->_pepper = $this->container['settings']['auth']['pepper'];
     }
 	
-	public function getCampaignId($username)
+	public function settlements()
 	{
-		$matches = $this->select('campaign_id')->where('username',$username)->get();
-		return $matches[0]['campaign_id'];
+		return $this->belongsToMany('\KDM\Entity\Settlement','user_settlements','user_id','settlement_id');
 	}
 	
 	public function change($request, $response)
@@ -107,7 +107,7 @@ class User extends \Illuminate\Database\Eloquent\Model
 			return $response->withRedirect('/login');
 		}
 		
-		$matches = $this->select('username','password')->where('username','=',$email)->get();
+		$matches = $this->select('user_id','username','password')->where('username','=',$email)->get();
 		
 		if(count($matches) == 0 || count($matches) > 1)
 		{
@@ -123,7 +123,7 @@ class User extends \Illuminate\Database\Eloquent\Model
 		
 		if($this->_verifyPassword($password, $matches[0]['password']))
 		{
-			$_SESSION['logged_in'] = $email;
+			$_SESSION['logged_in'] = $matches[0]['user_id'];
 			return $response->withRedirect('/');
 		}
 		

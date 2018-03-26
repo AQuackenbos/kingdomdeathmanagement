@@ -73,11 +73,11 @@ const emptySurvivor = {
 		cannot: false,
 		dash: false,
 		dodge: true,
-		encourage: false,
+		encourage: true,
 		endure: false,
 		surge: false,
 		value: 1,
-		born: '',
+		born: 5,
 		died: ''
 	},
 	understanding: {
@@ -280,7 +280,6 @@ const Survivor = Vue.component('survivor', {
 	data () {
 		return {
 			survivor: emptySurvivor,
-			requireSave: false,
 			savetimer: -1
 		}
 	},
@@ -298,14 +297,13 @@ const Survivor = Vue.component('survivor', {
 						if(from.name === ''){
 							return;
 						}
-						clearTimeout(this.savetimer);
-						this.saveSurvivor(from);
 					}
 					return;
 				}
 				let self = this;
 				clearTimeout(this.savetimer);
 				this.savetimer = setTimeout(function() {
+					console.log('saving via timer');
 					self.saveSurvivor(to);
 				},1000);
             },
@@ -335,6 +333,7 @@ const Survivor = Vue.component('survivor', {
 				.then( r => {
 					this.$bus.$emit('remove_survivor', this.survivor.id);
 					this.$refs.deleteButton.classList.remove('is-loading');
+					router.push({ name: 'survivor-default' });
 				})
 				.catch(e => {
 					console.dir(e.message);
@@ -343,9 +342,20 @@ const Survivor = Vue.component('survivor', {
 		},
 		
 		saveSurvivor(target) {
-			if(target == undefined) {
+			clearTimeout(this.savetimer);
+			if(target === undefined) {
 				target = this.survivor;
 			}
+			if(target.id === -1 && target.name === '') {
+				return; //not ready yet
+			}
+			
+			if(!target.id)
+			{
+				console.dir(target);
+				return;
+			}
+			
 			fetch('/api/survivor/', {	
 				method: 'POST',				
 				headers: {
@@ -357,10 +367,10 @@ const Survivor = Vue.component('survivor', {
 			})
 			.then( r => r.json() )
 			.then( r => {
-				this.requireSave = false;
-				if(r.newSurvivor) {
-					this.survivor.id = r.newSurvivor.id;
+				if(this.survivor.id === -1) {
+					r.newSurvivor.id = r.survivorId; //don't ask, seriously
 					this.$bus.$emit('add_survivor', r.newSurvivor);
+					router.push({ name: 'survivor', params: { id: r.newSurvivor.id }});
 				}							
 				if(this.$refs.saveButton){
 					this.$refs.saveButton.classList.remove('is-loading');

@@ -37,7 +37,7 @@ class Auth
 			'change'
 		);
 		
-		if (!isset($_SESSION['logged_in']) && !in_array($routeName, $publicRoutesArray))
+		if ((!array_key_exists('logged_in',$_SESSION) || !isset($_SESSION['logged_in'])) && !in_array($routeName, $publicRoutesArray))
 		{
 			// redirect the user to the login page and do not proceed.
 			$response = $response->withRedirect('/login');
@@ -45,6 +45,16 @@ class Auth
 		else
 		{
 			// Proceed as normal...
+			if(array_key_exists('logged_in',$_SESSION))
+			{
+				try {
+					$user = new Entity\User($this->container);
+					$user = $user->findOrFail($_SESSION['logged_in']);
+					$this->container->user = $user;
+				} catch (Exception $e) {
+					//Don't really care actually
+				}
+			}
 			$response = $next($request, $response);
 		}
 

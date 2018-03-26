@@ -15,6 +15,7 @@
 				<router-link class="navbar-item" :to="{name: 'survivor-default'}">Survivors</router-link>
 				<a class="navbar-item" href="#">Gearsets</a>
 				<a class="navbar-item" href="#">Reference Tables</a>
+				<a class="navbar-item" href="/logout">Logout</a>
 			</div>
 		</div>
 	</nav>
