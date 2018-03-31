@@ -2,4 +2,6 @@ dbconfig.php
 config.php
 .ht*
 vendor
+node_modules
+package-lock.json
 db-backup.sql
