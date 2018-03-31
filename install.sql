@@ -46,12 +46,6 @@ CREATE TABLE IF NOT EXISTS `reference_locations` (
 	PRIMARY KEY (`location_id`)
 );
 
-CREATE TABLE IF NOT EXISTS `reference_quarries` (
-	`quarry_id` INT(11) NOT NULL,
-	`document` JSON NULL,
-	PRIMARY KEY (`quarry_id`)
-);
-
 CREATE TABLE IF NOT EXISTS `reference_innovations` (
 	`innovation_id` INT(11) NOT NULL,
 	`document` JSON NULL,
