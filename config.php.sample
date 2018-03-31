@@ -1,0 +1,22 @@
+<?php
+return [
+    'settings' => [
+        // Slim Settings
+        'determineRouteBeforeAppMiddleware' => true,
+        'displayErrorDetails' => true,
+		'debug' => true,
+        'db' => [
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => 'db',
+            'username' => 'username',
+            'password' => 'password',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+        ],
+		'auth' => [
+			'pepper' => 'randomized_hash'
+		]
+    ],
+];
