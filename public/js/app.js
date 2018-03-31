@@ -12,6 +12,14 @@ const router = new VueRouter({
 		path: '/survivor/:id',
 		name: 'survivor',
 		component: SurvivorPage
+	},{
+		path: '/settlement',
+		name: 'settlement-default',
+		component: SettlementPage
+	},{
+		path: '/settlement/:page',
+		name: 'settlement',
+		component: SettlementPage
 	}]
 });
 

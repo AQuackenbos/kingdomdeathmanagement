@@ -12,18 +12,22 @@
 		</div>
 		<div id="navbarExampleTransparentExample" class="navbar-menu">
 			<div class="navbar-start">
+				<router-link class="navbar-item" :to="{name: 'settlement-default'}">Settlement</router-link>
 				<router-link class="navbar-item" :to="{name: 'survivor-default'}">Survivors</router-link>
 				<a class="navbar-item" href="#">Gearsets</a>
-				<a class="navbar-item" href="#">Reference Tables</a>
+			</div>
+			<div class="navbar-end">
 				<a class="navbar-item" href="/logout">Logout</a>
 			</div>
 		</div>
 	</nav>
 	<router-view></router-view>
 </div>
+<?php include 'templates/settlement.html'; ?>
 <?php include 'templates/survivor.html'; ?>
 <?php include 'templates/survivor-list.html'; ?>
 <?php include 'templates/survivor-page.html'; ?>
 <script type="text/javascript" src="/js/setup.js"></script>
 <script type="text/javascript" src="/js/components/survivor.js"></script>
+<script type="text/javascript" src="/js/components/settlement.js"></script>
 <script type="text/javascript" src="/js/app.js"></script>
