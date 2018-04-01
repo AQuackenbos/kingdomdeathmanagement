@@ -27,7 +27,7 @@ $app->add(new KDM\Auth($container));
 
 /** Get app running "as before" on slim **/
 $app->get('/', function ($request, $response, $args) {  
-	return $this->view->render($response, '', [
+	return $this->view->render($response, 'vue.php', [
         'name' => 'base'
     ]);
 })->setName('default');

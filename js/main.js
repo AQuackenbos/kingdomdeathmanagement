@@ -8,8 +8,8 @@ Vue.use(VueRouter);
 //Components
 //* Main
 import Navigation from './components/navigation.vue'
+import Root from './components/root.vue'
 //* Settlement
-import Settlement from './components/settlement.vue'
 import Settlement_Main from './components/settlement/main.vue'
 import Settlement_Sidebar from './components/settlement/sidebar.vue'
 //** Settlement Views
@@ -18,7 +18,6 @@ import Settlement_Timeline from './components/settlement/timeline.vue'
 import Settlement_Options from './components/settlement/options.vue'
 import Settlement_Resources from './components/settlement/resources.vue'
 //* Survivor
-import Survivor from './components/survivor.vue'
 import Survivor_Main from './components/survivor/main.vue'
 import Survivor_Sidebar from './components/survivor/sidebar.vue'
 //** Survivor Views
@@ -34,25 +33,26 @@ Object.defineProperties(Vue.prototype, {
 	}
 });
 
+Vue.component('navigation', Navigation);
+
 const router = new VueRouter({
-	mode: 'history',
+	mode: 'hash',
 	routes: [{
 		path: '/',
 		name: 'home',
-		redirect: { name: 'settlement.main' }
+		redirect: { name: 'settlement' }
 	},{
 		path: '/settlement',
-		name: 'settlement',
-		component: Settlement,
+		component: Root,
 		children: [{
 			path: '',
-			name: 'settlement.main',			
+			name: 'settlement',			
 			components: {
 				default: Settlement_Main,
 				sidebar: Settlement_Sidebar
 			}
 		},{
-			path: '/timeline',
+			path: 'timeline',
 			name: 'settlement.timeline',			
 			components: {
 				default: Settlement_Timeline,
@@ -61,12 +61,11 @@ const router = new VueRouter({
 		}]
 	},{
 		path: '/survivor',
-		name: 'survivor',
-		component: Survivor,
+		component: Root,
 		children: [{
 			path: '',
 			alias: 'new',
-			name: 'survivor.new',
+			name: 'survivor',
 			components: {
 				default: Survivor_New,
 				sidebar: Survivor_Sidebar
