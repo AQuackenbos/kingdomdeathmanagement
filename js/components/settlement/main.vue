@@ -1,5 +1,5 @@
 <template>
-	<div>
-		MAIN.vue
+	<div class="column settlement-panel">
+		MAIN VIEW
 	</div>
 </template>
