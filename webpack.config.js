@@ -17,6 +17,14 @@ module.exports = {
 					presets: ["env"]
 				}
 			}
+		},{
+			test: /\.vue$/,
+			loader: 'vue-loader',
+			options: {
+				loaders: {
+					js: 'babel-loader'
+				}
+			}
 		}]
 	}
 }

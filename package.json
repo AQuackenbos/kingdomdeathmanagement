@@ -1,13 +1,20 @@
 {
 	"name": "kingdomdeathmanagement",
 	"version": "0.1.0",
+	"license": "UNLICENSED",
+	"repository": "github:AQuackenbos/kingdomdeathmanagement",
 	"description": "Kingdom Death Management frontend app",
 	"dependencies": {
 		"babel-cli": "^6.26.0",
 		"babel-core": "^6.26.0",
 		"babel-loader": "^7.1.4",
 		"babel-preset-env": "^1.6.1",
-		"vue": "^2.5.16"
+		"css-loader": "^0.28.11",
+		"vue": "^2.5.16",
+		"vue-cli": "^2.9.3",
+		"vue-loader": "^14.2.2",
+		"vue-router": "^3.0.1",
+		"vue-template-compiler": "^2.5.16"
 	},
 	"devDependencies": {
 		"webpack": "^4.4.1",
