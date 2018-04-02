@@ -7,7 +7,9 @@
 		<link rel="stylesheet" href="/css/styles.css"/>
 	</head>
 	<body>
-		<div id="app"></div>
+		<div id="app" class="container">
+			<router-view></router-view>
+		</div>
 		<script type="text/javascript" src="/js/dist/build.js"></script>
 	</body>
 </html>
