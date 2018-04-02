@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `survivors` (
 	`document` JSON NULL,
 	/* v1.2 */
 	`settlement_id` INT(11) NOT NULL,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`survivor_id`)
 );
 
 /* v1.1 */
