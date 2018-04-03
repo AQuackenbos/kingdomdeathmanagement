@@ -27,35 +27,25 @@ $app->add(new KDM\Auth($container));
 
 /** Get app running "as before" on slim **/
 $app->get('/', function ($request, $response, $args) {  
-	return $this->view->render($response, 'vue.php', [
-        'name' => 'base'
-    ]);
+	return $this->view->render($response, 'vue.php');
 })->setName('default');
 
-$app->group('/survivor', function () {
-	$this->get('', function($request, $response, $args) {
-		return $this->view->render($response, 'vue.php', [
-			'name' => 'base'
-		]);
-	})->setName('survivor-info');
-	$this->get('/{id}', function ($request, $response, $args) {
-		return $this->view->render($response, 'vue.php', [
-			'name' => 'base'
-		]);
-	})->setName('single-survivor');
+$app->group('/settlement', function() {
+	$this->get('/', function($request, $response, $args) {
+		return $this->view->render($response, 'vue.php');
+	})->setName('settlement-info');
+	$this->get('/{page}', function ($request, $response, $args) {
+		return $this->view->render($response, 'vue.php');
+	})->setName('settlement-page');
 });
 
-$app->group('/settlement',function() {
-	$this->get('', function($request, $response, $args) {
-		return $this->view->render($response, 'vue.php', [
-			'name' => 'base'
-		]);
-	})->setName('settlement-info');
-	$this->get('/{page}', function($request, $response, $args) {
-		return $this->view->render($response, 'vue.php', [
-			'name' => 'base'
-		]);
-	})->setName('settlement-page');
+$app->group('/survivor', function () {
+	$this->get('/', function($request, $response, $args) {
+		return $this->view->render($response, 'vue.php');
+	})->setName('survivor-info');
+	$this->get('/{id}', function ($request, $response, $args) {
+		return $this->view->render($response, 'vue.php');
+	})->setName('single-survivor');
 });
 
 $app->group('/api', function() {
