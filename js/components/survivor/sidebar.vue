@@ -33,7 +33,8 @@ export default {
 	},
 	computed: {
 		survivors () {
-			return this.$store.state.settlement.survivors;
+			console.dir(this.$store.state);
+			return this.$store.state.kdm.settlement.survivors;
 		}
 	},
 	created() {
