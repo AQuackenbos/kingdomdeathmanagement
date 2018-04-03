@@ -1,9 +1,13 @@
 //Core Libraries
 import Vue from 'vue'
+import Vuex from 'vuex';
 import VueRouter from 'vue-router'
 
 //Setup
+Vue.use(Vuex);
 Vue.use(VueRouter);
+
+import store from './store'
 
 //Components
 //* Main
@@ -112,5 +116,6 @@ const router = new VueRouter({
 
 var app = new Vue({
 	el: "#app",
-	router
+	router,
+	store
 });
