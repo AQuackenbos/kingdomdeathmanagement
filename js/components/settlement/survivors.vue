@@ -24,14 +24,12 @@
 export default {
 	name: 'survivor.info',
 	data() {
-		return {
-			survivors: []
-		}
-	},
-	created() {
-		this.$bus.$on('survivor_list_retrieved', this.updateSurvivors);
+		return {}
 	},
 	computed: {
+		survivors () {
+			return this.$store.state.kdm.settlement.survivors;
+		},
 		percentMale: function() {
 			return ((this.countMale / this.countAlive) * 100).toFixed(2);
 		},

@@ -10,7 +10,7 @@
 	text-align: center;
 } 
 
-.survivors .router-link-active, .survivors .router-link-active:hover {
+.menu-list .router-link-active, .menu-list .router-link-active:hover {
 	background: #DDD;
 }
 

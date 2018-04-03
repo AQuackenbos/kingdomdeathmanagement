@@ -41,7 +41,7 @@ Object.defineProperties(Vue.prototype, {
 Vue.component('navigation', Navigation);
 
 const router = new VueRouter({
-	mode: 'hash',
+	mode: 'history',
 	routes: [{
 		path: '/',
 		name: 'home',
@@ -53,7 +53,7 @@ const router = new VueRouter({
 			path: '',
 			name: 'settlement',			
 			components: {
-				default: Settlement_Main,
+				default: Settlement_Survivors,
 				sidebar: Settlement_Sidebar
 			}
 		},{
@@ -96,16 +96,8 @@ const router = new VueRouter({
 		path: '/survivor',
 		component: Root,
 		children: [{
-			path: '',
-			alias: 'new',
-			name: 'survivor',
-			components: {
-				default: Survivor_New,
-				sidebar: Survivor_Sidebar
-			}
-		},{
 			path: ':id',
-			name: 'survivor.specific',
+			name: 'survivor',
 			components: {
 				default: Survivor_Main,
 				sidebar: Survivor_Sidebar
@@ -117,5 +109,8 @@ const router = new VueRouter({
 var app = new Vue({
 	el: "#app",
 	router,
-	store
+	store,
+	created() {
+		this.$store.dispatch('initialize');
+	}
 });

@@ -416,25 +416,35 @@ export default {
 	name: 'survivor',
 	data () {
 		return {
-			survivor: emptySurvivor,
 			savetimer: -1
 		}
 	},
-	created () {
-		this.$bus.$on('update_survivor', this.updateSurvivor)
-	},
-	beforeDestroy () {
-		this.$bus.$off('update_survivor');
+	computed: {
+		survivor() {
+			return this.$store.state.kdm.activeSurvivor;
+		}
 	},
 	watch: {
 		survivor: {
             handler: function(to, from) {
+				if(to === undefined || from === undefined)
+				{
+					return;
+				}
 				if(from && to.id != from.id) {
 					if(from.id === -1) {
 						if(from.name === ''){
 							return;
 						}
 					}
+					
+					let newPage = to.id;
+					if(to.id == -1)
+					{
+						newPage = 'new';
+					}
+					
+					this.$router.push({ name: 'survivor', params: { id: newPage }});
 					return;
 				}
 				let self = this;
@@ -449,40 +459,15 @@ export default {
 	},
 	beforeRouteUpdate (to, from, next) {
 		let survivorId = to.params.id;
-		if(survivorId)
-		{
-			this.$bus.$emit('slist_send_update', survivorId);
-		}
+		this.$store.commit('setActiveSurvivor',survivorId);
 		next();
 	},
 	methods: {
-		updateSurvivor(s) {
-			this.survivor = s;
-		},
-		
 		deleteSurvivor() {
 			if(confirm('Are you sure you want to delete '+this.survivor.name+'?  This CANNOT be undone!'))
 			{
 				clearTimeout(this.savetimer);
-				this.$refs.deleteButton.classList.add('is-loading');
-				fetch('/api/survivor/', {	
-					method: 'DELETE',				
-					headers: {
-						'Accept': 'application/json',
-						'Content-type': 'application/x-www-form-urlencoded'
-					},
-					credentials: 'same-origin',
-					body: 'id='+this.survivor.id
-				})
-				.then( r => r.json() )
-				.then( r => {
-					this.$bus.$emit('remove_survivor', this.survivor.id);
-					this.$refs.deleteButton.classList.remove('is-loading');
-					router.push({ name: 'survivor' });
-				})
-				.catch(e => {
-					console.dir(e.message);
-				});
+				this.$store.dispatch('deleteSurvivor', this.survivor.id);
 			}
 		},
 		
@@ -500,32 +485,7 @@ export default {
 				return;
 			}
 			
-			fetch('/api/survivor/', {	
-				method: 'POST',				
-				headers: {
-					'Accept': 'application/json',
-					'Content-type': 'application/x-www-form-urlencoded'
-				},
-				credentials: 'same-origin',
-				body: 'data='+JSON.stringify(target)
-			})
-			.then( r => r.json() )
-			.then( r => {
-				if(this.survivor.id === -1) {
-					r.newSurvivor.id = r.survivorId; //don't ask, seriously
-					this.$bus.$emit('add_survivor', r.newSurvivor);
-					router.push({ name: 'survivor.specific', params: { id: r.newSurvivor.id }});
-				}							
-				if(this.$refs.saveButton){
-					this.$refs.saveButton.classList.remove('is-loading');
-				}
-				if(this.$refs.createButton){
-					this.$refs.createButton.classList.remove('is-loading');
-				}
-			})
-			.catch(e => {
-				console.dir(e.message);
-			});
+			this.$store.dispatch('saveSurvivor', target);
 		}
 	}
 }

@@ -13,7 +13,7 @@
 		<div id="navbarExampleTransparentExample" class="navbar-menu">
 			<div class="navbar-start">
 				<router-link class="navbar-item" :to="{name: 'settlement'}">Settlement</router-link>
-				<router-link class="navbar-item" :to="{name: 'survivor'}">Survivors</router-link>
+				<router-link class="navbar-item" :to="{name: 'survivor', params: { id: 'new' }}">Survivors</router-link>
 				<a class="navbar-item" href="#">Gearsets</a>
 			</div>
 			<div class="navbar-end">
