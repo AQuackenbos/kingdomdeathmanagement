@@ -12,13 +12,14 @@
 				<canvas id="deadChart"></canvas>
 			</div>
 			<div class="column is-4 chart-info">
-			
+				<h3 class="title">{{ this.filterList(this.survivors, { alive: true, retired: false }).length }}</h3>
 			</div>
 			<div class="column is-4 chart-info">
-			
+				<h3 class="title">{{ this.filterList(this.survivors, { alive: true, retired: true }).length }}</h3>
 			</div>
 			<div class="column is-4 chart-info">
-				Average Age: {{ this.averageAge(this.filterList(this.survivors, { alive: false })) }}
+				<h3 class="title">{{ this.filterList(this.survivors, { alive: false }).length }}</h3>
+				<p>Average Age: {{ this.averageAge(this.filterList(this.survivors, { alive: false })) }}</p>
 			</div>
 		</div>
 	</div>
@@ -41,7 +42,6 @@ export default {
 		}
 	},
 	updated() {
-		console.log('updated called');
 		this.updateCharts();
 	},
 	mounted() {
@@ -185,7 +185,7 @@ export default {
 			return this.$store.state.kdm.settlement;
 		},
 		survivors () {
-			return this.$store.state.kdm.settlement.survivors;
+			return this.$store.state.kdm.survivors;
 		}
 	}
 }

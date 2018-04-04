@@ -132,23 +132,41 @@ const emptySurvivor = {
 };
 
 const state = {
-	settlement: { 
-		survivors: {}
-	},
+	settlement: {},
+	survivors: {},
 	activeSurvivor: emptySurvivor,
 	emptySurvivor: emptySurvivor
 }
 
 // getters
 const getters = {
-	getSurvivors: (state) => state.settlement.survivors
+	getSettlement: (state) => state.settlement,
+	getSurvivors: (state) => state.survivors,
+	getActiveSurvivor: (state) => state.activeSurvivor,
+	getEmptySurvivor: (state) => state.emptySurvivor
 }
 
 // actions
 const actions = {
 	initialize ({ commit, dispatch }) {
-		commit('loadSettlement', { survivors: {} });
-		dispatch('loadSurvivors');
+		fetch('/api/settlement/', {	
+			method: 'GET',				
+			headers: {
+				'Accept': 'application/json'
+			},
+			credentials: 'same-origin'
+		})
+		.then( r => r.json() )
+		.then( r => {
+			let settlement = r.settlement;
+			settlement.name = r.name;
+			settlement.description = r.description;
+			commit('loadSettlement', settlement);
+			dispatch('loadSurvivors');
+		})
+		.catch(e => {
+			console.dir(e.message);
+		});
 	},
 	
 	loadSurvivors ({ commit }, activeSurvivorId) {
@@ -220,7 +238,7 @@ const mutations = {
 	},
 
 	loadSurvivors (state, survivors) {
-		state.settlement.survivors = survivors;
+		state.survivors = survivors;
 	},
 	
 	setActiveSurvivor (state, id) {
@@ -236,7 +254,7 @@ const mutations = {
 			return;
 		}
 		
-		const surv = state.settlement.survivors.find(s => s.id === parseInt(id))
+		const surv = state.survivors.find(s => s.id === parseInt(id))
 		if(surv !== undefined)
 		{
 			state.activeSurvivor = surv;

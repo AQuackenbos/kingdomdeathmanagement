@@ -49,9 +49,28 @@ $app->group('/survivor', function () {
 });
 
 $app->group('/api', function() {
+	$this->get('/settlement[/]', function($request, $response, $args) {
+		$survivor = new \KDM\Entity\Survivor($this);
+		$settlementId = $_SESSION['active_settlement'];
+		$settlementObj = new \KDM\Entity\Settlement($this);
+		$settlement = $settlementObj->findOrFail($settlementId);
+		if(!$settlement->users->contains($this->user->user_id))
+		{
+			throw new Exception('Invalid settlement access.');
+		}
+		return json_encode(['name' => $settlement->name, 'description' => $settlement->description, 'settlement' => json_decode($settlement->document,true)]);
+	})->setName('get-settlement');
+	
 	$this->map(['GET','POST','DELETE'],'/survivor[/]', function($request, $response, $args) {
 		$survivor = new \KDM\Entity\Survivor($this);
-		$settlement = $this->user->settlements()->first();
+		$settlementId = $_SESSION['active_settlement'];
+		$settlementObj = new \KDM\Entity\Settlement($this);
+		$settlement = $settlementObj->findOrFail($settlementId);
+		if(!$settlement->users->contains($this->user->user_id))
+		{
+			throw new Exception('Invalid settlement access.');
+		}
+		
 		if($request->isGet())
 		{
 			return $survivor->getSurvivors($settlement->settlement_id);

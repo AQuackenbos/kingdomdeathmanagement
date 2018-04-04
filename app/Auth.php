@@ -37,6 +37,7 @@ class Auth
 			'change'
 		);
 		
+		
 		if ((!array_key_exists('logged_in',$_SESSION) || !isset($_SESSION['logged_in'])) && !in_array($routeName, $publicRoutesArray))
 		{
 			// redirect the user to the login page and do not proceed.

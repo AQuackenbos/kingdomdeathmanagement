@@ -24,4 +24,35 @@ class Settlement extends \Illuminate\Database\Eloquent\Model
 	{
 		return $this->hasMany('\KDM\Entity\Survivor','settlement_id');
 	}
+	
+	public function isUserAdmin($userId)
+	{
+		//@todo
+		return true;
+	}
+	
+	public function saveName()
+	{
+		
+	}
+	
+	public function saveDescription()
+	{
+		
+	}
+	
+	public function saveResource()
+	{
+		
+	}
+	
+	public function saveTimeline()
+	{
+		
+	}
+	
+	public function saveLocations()
+	{
+		
+	}
 }

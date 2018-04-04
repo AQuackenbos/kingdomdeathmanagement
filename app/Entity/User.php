@@ -123,7 +123,9 @@ class User extends \Illuminate\Database\Eloquent\Model
 		
 		if($this->_verifyPassword($password, $matches[0]['password']))
 		{
-			$_SESSION['logged_in'] = $matches[0]['user_id'];
+			$user = $this->findOrFail($matches[0]['user_id']);
+			$_SESSION['logged_in'] = $user->user_id;
+			$_SESSION['active_settlement'] = $user->settlements()->first()->settlement_id;
 			return $response->withRedirect('/');
 		}
 		

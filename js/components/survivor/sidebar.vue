@@ -34,7 +34,7 @@ export default {
 	},
 	computed: {
 		survivors () {
-			return this.$store.state.kdm.settlement.survivors;
+			return this.$store.state.kdm.survivors;
 		}
 	},
 	mounted() {
