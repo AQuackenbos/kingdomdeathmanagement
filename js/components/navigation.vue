@@ -14,7 +14,7 @@
 			<div class="navbar-start">
 				<router-link class="navbar-item" :to="{name: 'settlement'}">Settlement</router-link>
 				<router-link class="navbar-item" :to="{name: 'survivor', params: { id: 'new' }}">Survivors</router-link>
-				<a class="navbar-item" href="#">Gearsets</a>
+				<a class="navbar-item" href="#">Gearsets&nbsp;<span class="tag is-warning">Coming Soon</span></a>
 			</div>
 			<div class="navbar-end">
 				<a class="navbar-item" href="/logout">Logout</a>

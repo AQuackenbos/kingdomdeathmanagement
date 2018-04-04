@@ -10,6 +10,6 @@
 		<div id="app" class="container">
 			<router-view></router-view>
 		</div>
-		<script type="text/javascript" src="/js/dist/build.js"></script>
+		<script type="text/javascript" src="/js/kdm.js"></script>
 	</body>
 </html>

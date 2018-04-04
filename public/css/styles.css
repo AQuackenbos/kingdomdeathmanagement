@@ -10,8 +10,16 @@
 	text-align: center;
 } 
 
-.menu-list .router-link-active, .menu-list .router-link-active:hover {
+.column.chart-info {
+	text-align: center;
+}
+
+.menu-list .router-link-exact-active, .menu-list .router-link-exact-active:hover {
 	background: #DDD;
+}
+
+.menu-list .new-survivor, .menu-list .new-survivor.router-link-exact-active {
+	background: #23d160;
 }
 
 input[type="text"] {

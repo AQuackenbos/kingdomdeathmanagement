@@ -25,8 +25,6 @@ import Settlement_Resources from './components/settlement/resources.vue'
 //* Survivor
 import Survivor_Main from './components/survivor/main.vue'
 import Survivor_Sidebar from './components/survivor/sidebar.vue'
-//** Survivor Views
-import Survivor_New from './components/survivor/new.vue'
 
 
 const EventBus = new Vue();
@@ -53,7 +51,7 @@ const router = new VueRouter({
 			path: '',
 			name: 'settlement',			
 			components: {
-				default: Settlement_Survivors,
+				default: Settlement_Main,
 				sidebar: Settlement_Sidebar
 			}
 		},{
@@ -78,8 +76,8 @@ const router = new VueRouter({
 				sidebar: Settlement_Sidebar
 			}
 		},{
-			path: 'options',
-			name: 'settlement.options',			
+			path: 'choices',
+			name: 'settlement.choices',			
 			components: {
 				default: Settlement_Options,
 				sidebar: Settlement_Sidebar

@@ -4,8 +4,8 @@ module.exports = {
 	mode: 'development',
 	entry: './js/main.js',
 	output: {
-		path: path.resolve(__dirname, 'public/js/dist'),
-		filename: 'build.js'
+		path: path.resolve(__dirname, 'public/js'),
+		filename: 'kdm.js'
 	},
     resolve: {
         alias: {

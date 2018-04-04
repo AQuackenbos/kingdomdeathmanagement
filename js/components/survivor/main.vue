@@ -1,6 +1,9 @@
 <template>
 	<div class="column survivor-panel">
-		<div class="columns">
+		<div class="columns is-multiline">
+			<div class="column is-12" v-if="survivor.id === -1">
+				<h2 class="title is-2">New Survivor</h2>
+			</div>
 			<div class="column is-half">
 				<div class="columns is-multiline">
 					<div class="column is-8">
@@ -156,7 +159,7 @@
 					<div class="column is-7">
 						<label class="big"><i class="head"></i>Head</label>
 						<br /><br />
-						<span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
+						<span><span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
 					</div>
 					<div class="column is-3">
 						<label><input type="checkbox" v-model="survivor.head.heavy_injury"/><span class="chkbx heavy big"></span></label>
@@ -170,7 +173,7 @@
 					<div class="column is-7">
 						<label class="big"><i class="arms"></i>Arms</label>
 						<br /><br />
-						<span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
+						<span><span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
 					</div>
 					<div class="column is-3">
 						<label><input type="checkbox" v-model="survivor.arms.light_injury"/><span class="chkbx big"></span></label>
@@ -185,7 +188,7 @@
 					<div class="column is-7">
 						<label class="big"><i class="body"></i>Body</label>
 						<br /><br />
-						<span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
+						<span><span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
 					</div>
 					<div class="column is-3">
 						<label><input type="checkbox" v-model="survivor.body.light_injury"/><span class="chkbx big"></span></label>
@@ -199,15 +202,15 @@
 					</div>
 					<div class="column is-7">
 						<label class="big"><i class="waist"></i>Waist</label>
-						<br /><br />
-						<span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
+						<br/><br/>
+						<span><span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
 					</div>
 					<div class="column is-3">
 						<label><input type="checkbox" v-model="survivor.waist.light_injury"/><span class="chkbx big"></span></label>
 						<label><input type="checkbox" v-model="survivor.waist.heavy_injury"/><span class="chkbx heavy big"></span></label>
 					</div>
 				</div>
-				<hr />
+				<hr/>
 				<div class="columns">
 					<div class="column is-2">
 						<input type="text" id="legs" placeholder="0" class="shield" v-model="survivor.legs.armor"/>
@@ -215,7 +218,7 @@
 					<div class="column is-7">
 						<label class="big"><i class="legs"></i>Legs</label>
 						<br /><br />
-						<span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
+						<span><span class="chkbx filled"></span> Heavy Injury: Knocked Down</span>
 					</div>
 					<div class="column is-3">
 						<label><input type="checkbox" v-model="survivor.legs.light_injury"/><span class="chkbx big"></span></label>

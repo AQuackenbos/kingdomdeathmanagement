@@ -6,7 +6,7 @@
 					<a class="button is-info" @click="requestUpdate" ref="updateButton">Force Refresh from Server</a>
 				</li>
 				<li>
-					<router-link class="button is-success" :to="{name: 'survivor', params: { id: 'new' }}">Add New Survivor</router-link>
+					<router-link class="button new-survivor is-success" :to="{name: 'survivor', params: { id: 'new' }}">Add New Survivor</router-link>
 				</li>
 			</ul>
 			<p class="menu-label">Survivors</p>

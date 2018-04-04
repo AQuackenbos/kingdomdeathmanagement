@@ -9,6 +9,6 @@
 		<link rel="stylesheet" href="/css/styles.css"/>
 	</head>
 	<body>	
-		<?php include 'templates/'.$name.'.php'; ?>
+		<?php include '../templates/'.$name.'.php'; ?>
 	</body>
 </html>

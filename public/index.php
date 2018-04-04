@@ -11,7 +11,7 @@ $container = $app->getContainer();
 
 // Register component on container
 $container['view'] = function ($container) {
-    return new \Slim\Views\PhpRenderer('templates/');
+    return new \Slim\Views\PhpRenderer('../templates/');
 };
 
 // Service factory for the ORM
