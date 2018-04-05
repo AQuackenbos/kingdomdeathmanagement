@@ -9,3 +9,4 @@ composer update
 npm install
 webpack
 ````
+Then run a server out of /public.
