@@ -31,28 +31,23 @@ class Settlement extends \Illuminate\Database\Eloquent\Model
 		return true;
 	}
 	
-	public function saveName()
+	public function getCombinedDocument()
 	{
-		
+		return [
+			'name'			=> $this->name,
+			'description'	=> $this->description,
+			'lantern_year'	=> $this->year,
+			'resources'		=> json_decode($this->resources,true),
+			'timeline'		=> json_decode($this->timeline,true),
+			'quarries'		=> json_decode($this->quarries,true),
+			'locations'		=> json_decode($this->locations,true)
+		];
 	}
 	
-	public function saveDescription()
+	public function saveData($field, $data, $isJson = false)
 	{
-		
-	}
-	
-	public function saveResource()
-	{
-		
-	}
-	
-	public function saveTimeline()
-	{
-		
-	}
-	
-	public function saveLocations()
-	{
-		
+		$this->$field = $data;
+		$this->push();
+		return json_encode(['saved' => true, 'settlement' => $this->getCombinedDocument()]);
 	}
 }

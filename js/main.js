@@ -22,6 +22,7 @@ import Settlement_Timeline from './components/settlement/timeline.vue'
 import Settlement_Locations from './components/settlement/locations.vue'
 import Settlement_Options from './components/settlement/options.vue'
 import Settlement_Resources from './components/settlement/resources.vue'
+import Settlement_Quarries from './components/settlement/quarries.vue'
 //* Survivor
 import Survivor_Main from './components/survivor/main.vue'
 import Survivor_Sidebar from './components/survivor/sidebar.vue'
@@ -87,6 +88,13 @@ const router = new VueRouter({
 			name: 'settlement.resources',			
 			components: {
 				default: Settlement_Resources,
+				sidebar: Settlement_Sidebar
+			}
+		},{
+			path: 'quarries',
+			name: 'settlement.quarries',
+			components: {
+				default: Settlement_Quarries,
 				sidebar: Settlement_Sidebar
 			}
 		}]

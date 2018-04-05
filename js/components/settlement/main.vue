@@ -2,7 +2,7 @@
 	<div class="column settlement-panel is-centered">
 		<h2 class="title is-2">{{ this.settlement.name }}</h2>
 		<p style="text-align:center"><em>{{ this.settlement.description }}</em></p>
-		<h3 class="title is-2">Year {{ this.settlement.lantern_year }}</h3>
+		<h3 class="subtitle is-2">Year {{ this.settlement.lantern_year }}</h3>
 		<div class="columns is-multiline">
 		</div>
 	</div>

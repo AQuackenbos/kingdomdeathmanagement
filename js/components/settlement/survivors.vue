@@ -13,9 +13,11 @@
 			</div>
 			<div class="column is-4 chart-info">
 				<h3 class="title">{{ this.filterList(this.survivors, { alive: true, retired: false }).length }}</h3>
+				<p>Average Age: {{ this.averageAge(this.filterList(this.survivors, { alive: true, retired: false })) }}</p>
 			</div>
 			<div class="column is-4 chart-info">
 				<h3 class="title">{{ this.filterList(this.survivors, { alive: true, retired: true }).length }}</h3>
+				<p>Average Age: {{ this.averageAge(this.filterList(this.survivors, { alive: true, retired: true })) }}</p>
 			</div>
 			<div class="column is-4 chart-info">
 				<h3 class="title">{{ this.filterList(this.survivors, { alive: false }).length }}</h3>
@@ -173,11 +175,26 @@ export default {
 			if(!(list instanceof Array) || list === undefined) {
 				return 0;
 			}
-			//ONLY SUPPORTS DEAD FOR NOW 
-			return (
-				list.reduce( ( combined, current ) => combined + (parseInt(current.survival.died,10) - parseInt(current.survival.born,10)), 0 )
+			
+			let settl = this.settlement;
+			let avg = (
+				list.reduce( ( combined, current ) => {
+					let currYear = parseInt(settl.lantern_year,10);
+					let diedYear = parseInt(current.survival.died,10);
+					let compYear = Math.min(diedYear, currYear);
+					if(isNaN(diedYear))
+					{
+						compYear = currYear;
+					}
+					return combined + (compYear - parseInt(current.survival.born,10))
+				}, 0)
 				/ list.length
 			).toFixed(1);
+			
+			if(isNaN(avg))
+				return '-';
+				
+			return avg;
 		}
 	},
 	computed: {

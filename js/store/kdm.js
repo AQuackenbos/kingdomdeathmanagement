@@ -132,16 +132,31 @@ const emptySurvivor = {
 };
 
 const state = {
-	settlement: {},
-	survivors: {},
-	activeSurvivor: emptySurvivor,
-	emptySurvivor: emptySurvivor
+	settlement: { 
+		name: '',
+		description: '',
+		lantern_year: 0,
+		resources: [],
+		timeline: {},
+		locations: [],
+		quarries: []
+	},
+	survivors: [],
+	//ref data,
+	emptySurvivor: emptySurvivor,
+	items: [],
+	events: [],
+	locations: [],
+	//active data
+	activeSurvivor: emptySurvivor
 }
 
 // getters
 const getters = {
 	getSettlement: (state) => state.settlement,
 	getSurvivors: (state) => state.survivors,
+	getItems: (state) => state.items,
+	getEvents: (state) => state.events,
 	getActiveSurvivor: (state) => state.activeSurvivor,
 	getEmptySurvivor: (state) => state.emptySurvivor
 }
@@ -158,10 +173,7 @@ const actions = {
 		})
 		.then( r => r.json() )
 		.then( r => {
-			let settlement = r.settlement;
-			settlement.name = r.name;
-			settlement.description = r.description;
-			commit('loadSettlement', settlement);
+			commit('loadSettlement', r.settlement);
 			dispatch('loadSurvivors');
 		})
 		.catch(e => {
@@ -203,8 +215,8 @@ const actions = {
 		.then( r => {
 			if(savedSurvivor.id === -1) {
 				r.newSurvivor.id = r.survivorId; //don't ask, seriously
-				dispatch('loadSurvivors', r.survivorId);
 			}
+			dispatch('loadSurvivors', r.survivorId);
 		})
 		.catch(e => {
 			console.dir(e.message);
@@ -224,6 +236,29 @@ const actions = {
 		.then( r => r.json() )
 		.then( r => {
 			dispatch('loadSurvivors', 'new');
+		})
+		.catch(e => {
+			console.dir(e.message);
+		});
+	},
+	
+	lookupResourceType({ commit }, resource) {
+		//does nothing yet - needs item refs
+	},
+	
+	saveResources({ commit }, resourceList) {
+		fetch('/api/settlement/resources/', {	
+			method: 'POST',				
+			headers: {
+				'Accept': 'application/json',
+				'Content-type': 'application/x-www-form-urlencoded'
+			},
+			credentials: 'same-origin',
+			body: 'data='+JSON.stringify(resourceList)
+		})
+		.then( r => r.json() )
+		.then( r => {
+			//post-save actions?
 		})
 		.catch(e => {
 			console.dir(e.message);
@@ -261,16 +296,9 @@ const mutations = {
 		}
 	},
 	
-	initializeResources (state) {
-		if(!(state.settlement.resources instanceof Array))
-			state.settlement.resources = [];
-	},
-	
 	addBlankResource (state) {
-		console.log('adding resource');
 		var nextId = state.settlement.resources.reduce( (prev, curr) => (prev.id > curr.id) ? prev : curr , { id: 0 } ).id + 1;
-		console.log('with id '+nextId);
-		state.settlement.resources.push( { id: nextId, name: '', qty: 0 } );
+		state.settlement.resources.push( { id: nextId, name: '', type: '', qty: 0 } );
 	},
 	
 	removeResource(state, resourceId) {

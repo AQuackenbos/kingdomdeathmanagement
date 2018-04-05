@@ -59,13 +59,13 @@ class Survivor extends \Illuminate\Database\Eloquent\Model
 		return $this->belongsTo('\KDM\Entity\Settlement','settlement_id');
 	}
 	
-	protected function _canUserSaveForSettlement($settlementId)
+	protected function _canUserSaveForSettlement($settlement)
 	{
 		$user = $this->container->user;
-		return $user->settlements->contains($settlementId);
+		return $user->settlements->contains($settlement->settlement_id);
 	}
 	
-	public function saveSurvivor($survivorJsonData, $settlementId = false)
+	public function saveSurvivor($survivorJsonData, $settlement = false)
 	{
 		$data = json_decode($survivorJsonData,true);
 		$survivorId = $data['id'];
@@ -81,17 +81,16 @@ class Survivor extends \Illuminate\Database\Eloquent\Model
 		
 		if($survivor->settlement)
 		{
-			$settlementId = $survivor->settlement->settlement_id;
+			$settlement = $survivor->settlement;
 		}
 		
-		if(!$this->_canUserSaveForSettlement($settlementId))
+		if(!$this->_canUserSaveForSettlement($settlement))
 		{
 			return json_encode(['error' => true]);
 		}
 		
 		if(!$survivor->settlement)
 		{
-			$settlement = Settlement::find($settlementId);
 			$survivor->settlement()->associate($settlement);
 		}
 		
@@ -101,9 +100,8 @@ class Survivor extends \Illuminate\Database\Eloquent\Model
 		return json_encode(['saved' => true, 'survivorId' => $survivor->survivor_id, 'newSurvivor' => json_decode($survivor->document,true)]);
 	}
 	
-	public function getSurvivors($settlementId)
+	public function getSurvivors($settlement)
 	{		
-		$settlement = \KDM\Entity\Settlement::find($settlementId);
 		$survivors = [];
 		foreach($settlement->survivors()->get() as $s)
 		{
@@ -126,7 +124,7 @@ class Survivor extends \Illuminate\Database\Eloquent\Model
 	{
 		try {
 			$survivor = $this->findOrFail($delId);
-			if(!$this->_canUserSaveForSettlement($survivor->settlement->settlement_id))
+			if(!$this->_canUserSaveForSettlement($survivor->settlement))
 			{
 				return json_encode(['error' => true]);
 			}

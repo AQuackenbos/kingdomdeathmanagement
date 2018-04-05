@@ -3,6 +3,7 @@
 		<div class="columns is-multiline">
 			<div class="column is-12" v-if="survivor.id === -1">
 				<h2 class="title is-2">New Survivor</h2>
+				<h3 class="subtitle is-6">They will be saved once they have a name.</h3>
 			</div>
 			<div class="column is-half">
 				<div class="columns is-multiline">
@@ -405,7 +406,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="field">
+		<div class="field" v-if="survivor.id !== -1">
 			<div class="notification is-danger">
 				<span class="">Deleting a survivor is PERMANENT and cannot be undone.</span>
 				<a class="button is-danger is-inverted" style="float:right; margin-left: 20px;" @click="deleteSurvivor" ref="deleteButton"><span class="delete"></span>&nbsp;Delete Survivor</a>
@@ -453,7 +454,6 @@ export default {
 				let self = this;
 				clearTimeout(this.savetimer);
 				this.savetimer = setTimeout(function() {
-					console.log('saving via timer');
 					self.saveSurvivor(to);
 				},1000);
             },
