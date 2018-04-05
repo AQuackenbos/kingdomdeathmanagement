@@ -3,7 +3,7 @@
 		<aside class="menu">
 			<ul class="menu-list">
 				<li>
-					<a class="button is-info" @click="requestUpdate" ref="updateButton">Force Refresh from Server</a>
+					<a class="button is-info" @click="requestUpdate">Force Refresh from Server</a>
 				</li>
 				<li>
 					<router-link class="button new-survivor is-success" :to="{name: 'survivor', params: { id: 'new' }}">Add New Survivor</router-link>

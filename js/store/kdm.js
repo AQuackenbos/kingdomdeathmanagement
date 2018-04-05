@@ -261,6 +261,21 @@ const mutations = {
 		}
 	},
 	
+	initializeResources (state) {
+		if(!(state.settlement.resources instanceof Array))
+			state.settlement.resources = [];
+	},
+	
+	addBlankResource (state) {
+		console.log('adding resource');
+		var nextId = state.settlement.resources.reduce( (prev, curr) => (prev.id > curr.id) ? prev : curr , { id: 0 } ).id + 1;
+		console.log('with id '+nextId);
+		state.settlement.resources.push( { id: nextId, name: '', qty: 0 } );
+	},
+	
+	removeResource(state, resourceId) {
+		state.settlement.resources = state.settlement.resources.filter( (r) => r.id !== resourceId );
+	}
 }
 
 export default {
