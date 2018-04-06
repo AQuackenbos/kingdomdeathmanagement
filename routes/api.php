@@ -3,8 +3,7 @@
 function validateSettlement($container)
 {
 	$settlementId = $_SESSION['active_settlement'];
-	$settlementObj = new \KDM\Entity\Settlement($container);
-	$settlement = $settlementObj->findOrFail($settlementId);
+	$settlement = \KDM\Entity\Settlement::findOrFail($settlementId);
 	if(!$settlement->users->contains($container->user->user_id))
 	{
 		throw new Exception('Invalid settlement access.');

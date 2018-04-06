@@ -17,7 +17,8 @@
 				<a class="navbar-item" href="#">Gearsets&nbsp;<span class="tag is-warning">Coming Soon</span></a>
 			</div>
 			<div class="navbar-end">
-				<a class="navbar-item" href="/logout">Logout</a>
+				<a class="navbar-item" id="invite" href="/invite">Invite Users</a>
+				<a class="navbar-item" id="logout" href="/logout">Logout</a>
 			</div>
 		</div>
 	</nav>

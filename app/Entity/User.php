@@ -69,31 +69,48 @@ class User extends \Illuminate\Database\Eloquent\Model
 	public function reset($request, $response)
 	{
 		$email = $request->getParam('email');
+		$this->_sendReset($email, true);
+		return $response->withRedirect('/login');
+	}
+	
+	protected function _sendReset($email, $messages = true)
+	{
 		if($email == '')
 		{
-			$_SESSION['message'] = 'Bad login info.';
-			return $response->withRedirect('/login');
+			if($messages)
+				$_SESSION['message'] = 'Bad login info.';
+			
+			return;
 		}
 		
-		$matches = $this->select('username','password')->where('username',$email)->get();
-		
-		if(count($matches) == 0 || count($matches) > 1)
+		$user = false;
+		try {
+			$user = \KDM\Entity\User::where('username','=',$email)->firstOrFail();
+		} catch (Exception $e)
 		{
-			$_SESSION['message'] = 'The user at this email will receive a reset link.';
-			return $response->withRedirect('/login');
+			if(count($matches) == 0 || count($matches) > 1)
+			{
+				if($messages)
+					$_SESSION['message'] = 'The user at this email will receive a reset link.';
+				
+				return;
+			}
 		}
 		
 		$token = md5(uniqid());
 		
-		$this->where('username',$email)->update(['reset_token' => $token]);
+		$user->reset_token = $token;
+		$user->save();
 		
 		$headers = 'From: webmaster@kingdomdeathmanagement.com' . "\r\n" .
 			'Reply-To: webmaster@kingdomdeathmanagement.com' . "\r\n" .
 			'X-Mailer: PHP/' . phpversion();
 		mail($email, 'Reset Password for KDM', 'Reset password link: https://kingdomdeathmanagement.com/reset/'.$token, $headers);
 		
-		$_SESSION['message'] = 'The user at this email will receive a reset link.';
-		return $response->withRedirect('/login');
+		if($messages)
+			$_SESSION['message'] = 'The user at this email will receive a reset link.';
+		
+		return;
 	}
 	
 	public function login($request, $response) 
@@ -131,6 +148,53 @@ class User extends \Illuminate\Database\Eloquent\Model
 		
 		$_SESSION['message'] = 'Bad login info.';
 		return $response->withRedirect('/login');
+	}
+	
+	public function createUser($email, $settlementId)
+	{
+		
+		if(!array_key_exists('message',$_SESSION))
+		{
+			$_SESSION['message'] = '';
+		}
+		
+		if($email == '')
+		{
+			return;
+		}
+		
+		$settlement = \KDM\Entity\Settlement::findOrFail($settlementId);
+		if(count($settlement->users) >= 4)
+		{
+			$_SESSION['message'] = $_SESSION['message'].'<br>Did not add user "'.$email.'": settlement already has max users (4).';
+			return;
+		}
+		
+		try {
+			$existing = \KDM\Entity\User::where('username','=',$email)->firstOrFail();
+			if($existing->settlements->contains($settlementId))
+			{
+				$_SESSION['message'] = $_SESSION['message'].'<br>User "'.$email.'" is already a part of this settlement.';
+				return;
+			}
+			
+			$existing->settlements()->attach($settlementId);
+			$_SESSION['message'] = $_SESSION['message'].'<br>Existing User "'.$email.'" added to settlement.';
+			return;
+		} catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+			//nothing - normal
+		}
+		
+		//new user 
+		
+		$newUser = new \KDM\Entity\User;
+		$newUser->username = $email;
+		$newUser->password = '';
+		$newUser->save();
+		$newUser->settlements()->attach($settlementId);
+		$this->_sendReset($email,false);
+		$_SESSION['message'] = $_SESSION['message'].'<br>New User "'.$email.'" added to settlement.';
+		return;
 	}
 	
 	protected function _hash($password)

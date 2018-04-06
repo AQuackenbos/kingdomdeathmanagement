@@ -51,6 +51,9 @@
 						<img src="images/lantern.png">
 					</figure>
 					<form action="/login" method="POST" id="userform">
+						<div id="notice" style="display: none;margin-bottom:10px;">
+							Check your spam folder for the reset email, as this is an "unknown" AWS box and Gmail/etc don't like getting mail from them.
+						</div>
 						<div class="field">
 							<div class="control">
 								<input class="input is-large" name="email" type="email" placeholder="Your Email" autofocus="">
@@ -78,6 +81,7 @@ function swapForms()
 	if(form.action.indexOf('login') != -1)
 	{
 		form.action = 'reset';
+		form.querySelector('#notice').style.display = 'block';
 		form.querySelector('input[type="password"]').style.display = 'none';
 		form.querySelector('button').innerHTML = 'Reset Password';
 		document.querySelector('a').innerHTML = 'Login';
@@ -85,6 +89,7 @@ function swapForms()
 	else
 	{
 		form.action = 'login';
+		form.querySelector('#notice').style.display = 'none';
 		form.querySelector('input[type="password"]').style.display = '';
 		form.querySelector('button').innerHTML = 'Login';
 		document.querySelector('a').innerHTML = 'Reset Password';

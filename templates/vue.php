@@ -12,5 +12,27 @@
 			<router-view></router-view>
 		</div>
 		<script type="text/javascript" src="/js/kdm.js"></script>
+		<script type="text/javascript">
+			<?php if(count($container->user->settlements) > 1): ?>
+			//Quick and easy campaign switcher for short notice -- replace with a vue method later...
+			document.body.onload = function() {
+				var switcher = document.createElement('form');
+				switcher.action = '/switch/';
+				switcher.id = 'switcher';
+				switcher.className = 'navbar-item';
+				var formHtml = '<label for="changesettlement">Active Settlement: <select id="changesettlement" name="id" onchange="switcher.submit()">';
+				
+				<?php foreach($container->user->settlements as $_s): ?>
+				formHtml += '<option value="<?= $_s->settlement_id ?>" <?= ($_SESSION['active_settlement'] == $_s->settlement_id) ? 'selected="selected"' : '' ?>><?= $_s->name ?></option>';
+				<?php endforeach ?>
+				
+				formHtml += '</select>';
+				
+				switcher.innerHTML = formHtml;
+				
+				document.querySelector('.navbar-end').insertBefore(switcher, document.getElementById('invite'));
+			}
+			<?php endif ?>
+		</script>
 	</body>
 </html>

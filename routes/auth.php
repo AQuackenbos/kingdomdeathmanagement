@@ -23,6 +23,22 @@ $app->post('/submititem',function($request, $response, $args) {
 	return $response->withRedirect('/additem');
 });
 
+$app->map(['GET','POST'], '/invite', function ($request, $response, $args) {
+	if($request->isGet())
+	{
+		return $this->view->render($response, 'root.php', [
+			'name' => 'invite'
+		]);
+	}
+	
+	foreach($request->getParam('email') as $_email)
+	{
+		$user = new \KDM\Entity\User($this);
+		$user->createUser(trim($_email), $_SESSION['active_settlement']);
+	}
+	return $response->withRedirect('/invite');
+})->setName('invite');
+
 /** Auth routes **/
 $app->map(['GET','POST'], '/login', function ($request, $response, $args) {
 	if($request->isGet())
@@ -38,6 +54,20 @@ $app->map(['GET','POST'], '/login', function ($request, $response, $args) {
 	$user = new \KDM\Entity\User($this);
 	return $user->login($request, $response);
 })->setName('login');
+
+$app->get('/switch[/]', function($request, $response, $args) {
+	$settlementId = $request->getParam('id');
+	$settlementObj = new \KDM\Entity\Settlement($container);
+	$settlement = $settlementObj->findOrFail($settlementId);
+	if(!$settlement->users->contains($this->user->user_id))
+	{
+		throw new Exception('Invalid settlement access.');
+		return null;
+	}
+	
+	$_SESSION['active_settlement'] = $settlement->settlement_id;
+	return $response->withRedirect('/');
+})->setName('switch-campaign');
 
 $app->post('/reset', function ($request, $response, $args) {
 	$user = new \KDM\Entity\User($this);

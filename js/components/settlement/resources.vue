@@ -5,15 +5,15 @@
 			<div class="content">
 				<em>Key Resource Summary: </em>
 				<span class="tags has-addons">
-					<span class="tag is-dark">{{ this.filterResources({type:"Bone"}).length }}</span>
+					<span class="tag is-dark">{{ this.getTypeSum('Bone') }}</span>
 					<span class="tag bone">Bone</span>
 				</span>
 				<span class="tags has-addons">
-					<span class="tag is-dark">{{ this.filterResources({type:"Hide"}).length }}</span> 
+					<span class="tag is-dark">{{ this.getTypeSum('Hide') }}</span> 
 					<span class="tag hide">Hide</span>
 				</span>
 				<span class="tags has-addons">
-					<span class="tag is-dark">{{ this.filterResources({type:"Organ"}).length }}</span>
+					<span class="tag is-dark">{{ this.getTypeSum('Organ') }}</span>
 					<span class="tag organ">Organ</span>
 				</span>
 			</div>
@@ -156,13 +156,10 @@ export default {
 			clearTimeout(this.savetimer);
 			this.$store.dispatch('saveResources', this.resources);
 		},
-		filterResources: function(filters) {
-			let retList = this.resources;
-			if('type' in filters) {
-				retList = retList.filter(r => r.type === filters.type);
-			}
-			
-			return retList;
+		getTypeSum: function(type) {
+			return this.resources
+				.filter(r => r.type === type)
+				.reduce((t,c) => t + parseInt(c.qty), 0);
 		}
 	},
 	computed: {
