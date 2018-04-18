@@ -26,6 +26,9 @@ import Settlement_Quarries from './components/settlement/quarries.vue'
 //* Survivor
 import Survivor_Main from './components/survivor/main.vue'
 import Survivor_Sidebar from './components/survivor/sidebar.vue'
+//* Item Reference
+import Item_Main from './components/item/main.vue'
+import Item_Sidebar from './components/item/sidebar.vue'
 
 
 const EventBus = new Vue();
@@ -107,6 +110,17 @@ const router = new VueRouter({
 			components: {
 				default: Survivor_Main,
 				sidebar: Survivor_Sidebar
+			}
+		}]
+	},{
+		path: '/item',
+		component: Root,
+		children: [{
+			path: ':id',
+			name: 'item',
+			components: {
+				default: Item_Main,
+				sidebar: Item_Sidebar
 			}
 		}]
 	}]

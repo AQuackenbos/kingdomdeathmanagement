@@ -131,6 +131,8 @@ const emptySurvivor = {
 	}
 };
 
+const emptyItem = { item_id: -1, name: "No Item Loaded"}
+
 const state = {
 	settlement: { 
 		name: '',
@@ -143,11 +145,11 @@ const state = {
 	},
 	survivors: [],
 	//ref data,
+	emptyItem: emptyItem,
 	emptySurvivor: emptySurvivor,
-	items: [],
-	events: [],
-	locations: [],
+	references: {},
 	//active data
+	activeItem: emptyItem,
 	activeSurvivor: emptySurvivor
 }
 
@@ -155,8 +157,6 @@ const state = {
 const getters = {
 	getSettlement: (state) => state.settlement,
 	getSurvivors: (state) => state.survivors,
-	getItems: (state) => state.items,
-	getEvents: (state) => state.events,
 	getActiveSurvivor: (state) => state.activeSurvivor,
 	getEmptySurvivor: (state) => state.emptySurvivor
 }
@@ -164,6 +164,7 @@ const getters = {
 // actions
 const actions = {
 	initialize ({ commit, dispatch }) {
+		
 		fetch('/api/settlement/', {	
 			method: 'GET',				
 			headers: {
@@ -175,6 +176,45 @@ const actions = {
 		.then( r => {
 			commit('loadSettlement', r.settlement);
 			dispatch('loadSurvivors');
+			dispatch('loadLocations');
+			dispatch('loadItems');
+		})
+		.catch(e => {
+			console.dir(e.message);
+		});
+	},
+	
+	loadItems({ commit }, activeItemId) {
+		fetch('/api/items/', {
+			method: 'GET',				
+			headers: {
+				'Accept': 'application/json'
+			},
+			credentials: 'same-origin'
+		})
+		.then( r => r.json() )
+		.then( r => {
+			commit('loadItems', r.items);
+			
+			if(activeItemId)
+				commit('setActiveItem',activeItemId);
+		})
+		.catch(e => {
+			console.dir(e.message);
+		});
+	},
+	
+	loadLocations({ commit }) {
+		fetch('/api/locations/', {
+			method: 'GET',				
+			headers: {
+				'Accept': 'application/json'
+			},
+			credentials: 'same-origin'
+		})
+		.then( r => r.json() )
+		.then( r => {
+			commit('loadLocations', r.locations);
 		})
 		.catch(e => {
 			console.dir(e.message);
@@ -276,6 +316,14 @@ const mutations = {
 		state.survivors = survivors;
 	},
 	
+	loadItems (state, items) {
+		state.references.items = items;
+	},
+	
+	loadLocations (state, locations) {
+		state.references.locations = locations;
+	},
+	
 	setActiveSurvivor (state, id) {
 		if(typeof id === 'object')
 		{
@@ -293,6 +341,26 @@ const mutations = {
 		if(surv !== undefined)
 		{
 			state.activeSurvivor = surv;
+		}
+	},
+	
+	setActiveItem (state, id) {
+		if(typeof id === 'object')
+		{
+			state.activeItem = id;
+			return;
+		}
+		
+		if(id === -1 || id === 'main')
+		{
+			state.activeItem = state.emptySurvivor;
+			return;
+		}
+		
+		const item = state.references.items.find(i => i.item_id === parseInt(id))
+		if(item !== undefined)
+		{
+			state.activeItem = item;
 		}
 	},
 	

@@ -49,6 +49,16 @@ $app->group('/api', function() {
 		
 	})->setName('save-settlement');
 	
+	$this->get('/items[/]', function($request, $response, $args) {
+		$item = new \KDM\Entity\Item($this);
+		return json_encode($item->getAllItems());
+	})->setName('items');
+	
+	$this->get('/locations[/]', function($request, $response, $args) {
+		$item = new \KDM\Entity\Location($this);
+		return json_encode($item->getAllLocations());
+	})->setName('locations');
+	
 	$this->map(['GET','POST','DELETE'],'/survivor[/]', function($request, $response, $args) {
 		$survivor = new \KDM\Entity\Survivor($this);
 		$settlement = validateSettlement($this);

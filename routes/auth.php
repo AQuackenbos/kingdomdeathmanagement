@@ -8,13 +8,13 @@ $app->get('/additem',function($request, $response, $args) {
 	{
 		return $notFoundHandler($request, $response);
 	}
-	return $this->view->render($response, 'vue.php', [
+	return $this->view->render($response, 'root.php', [
 		'name' => 'additem'
 	]);
 });
 
 $app->post('/submititem',function($request, $response, $args) {
-	if($_SESSION['logged_in'] != 'a.quackenbos@gmail.com')
+	if($_SESSION['logged_in'] != 1)
 	{
 		return $notFoundHandler($request, $response);
 	}

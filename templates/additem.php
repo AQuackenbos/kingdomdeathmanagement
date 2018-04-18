@@ -11,10 +11,16 @@
 		font-family: "Lucida Console", Monaco, monospace;
 	}
 </style>
+<?php $locations = \KDM\Entity\Location::all() ?>
 <div style="text-align: center; margin: 0 auto">
 <form action="/submititem" method="POST">
 	<input name="name" placeholder="Item Name" autocomplete="off"/><br />
-	<select name="metatype">
+	<select name="location" autocomplete="off">
+		<?php foreach ($locations as $l): ?>
+		<option value="<?= $l->location_id ?>"><?= $l->getName() ?></option>
+		<?php endforeach ?>
+	</select>
+	<select name="metatype" autocomplete="off">
 		<option>gear</option>
 		<option>resource</option>
 		<option>other</option>
@@ -22,14 +28,52 @@
 	<input name="resource_type" placeholder="Resource Type (if appl)" autocomplete="off"><br />
 	<input name="description" placeholder="Description" autocomplete="off"><br />
 	<input name="types" placeholder="Types (,)" autocomplete="off"><br />
-	<select name="stats_type">
+	<input name="keywords" placeholder="Keywords (,)" autocomplete="off"><br />
+	Type <select name="stats_type">
 		<option>none</option>
 		<option>weapon_stats</option>
 		<option>armor_stats</option>
 	</select><br />
-	<textarea name="stats_json" placeholder="stats json"></textarea><br />
-	<textarea name="connections_json" placeholder="connections json"></textarea><br />
-	<textarea name="bonuses_json" placeholder="bonuses json"></textarea><br />
+	Wpn
+	<input name="weapon_stats[speed]" placeholder="Speed" autocomplete="off"/>
+	<input name="weapon_stats[strength]" placeholder="Strength" autocomplete="off"/>
+	<input name="weapon_stats[hit]" placeholder="Hit" autocomplete="off"/><br />
+	Arm
+	<select name="armor_stats[location]" autocomplete="off">
+		<option></option>
+		<option>head</option>
+		<option>body</option>
+		<option>waist</option>
+		<option>arms</option>
+		<option>legs</option>
+	</select>
+	<input name="armor_stats[defense]" placeholder="Defense" autocomplete="off"/><br />
+	Conn <select name="connections[top]" autocomplete="off">
+		<option value="">TOP</option>
+		<option>red</option>
+		<option>blue</option>
+		<option>green</option>
+	</select>
+	<select name="connections[left]" autocomplete="off">
+		<option value="">LEFT</option>
+		<option>red</option>
+		<option>blue</option>
+		<option>green</option>
+	</select>
+	<select name="connections[bottom]" autocomplete="off">
+		<option value="">BOTTOM</option>
+		<option>red</option>
+		<option>blue</option>
+		<option>green</option>
+	</select>
+	<select name="connections[right]" autocomplete="off">
+		<option value="">RIGHT</option>
+		<option>red</option>
+		<option>blue</option>
+		<option>green</option>
+	</select>
+	<br />
+	<textarea name="bonuses_json" placeholder="bonuses json" autocomplete="off"></textarea><br />
 	<button type="submit">Add item</button>
 </form>
 </div>
