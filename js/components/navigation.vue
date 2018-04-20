@@ -14,7 +14,7 @@
 			<div class="navbar-start">
 				<router-link class="navbar-item" :to="{name: 'settlement'}">Settlement</router-link>
 				<router-link class="navbar-item" :to="{name: 'survivor', params: { id: 'new' }}">Survivors</router-link>
-				<router-link class="navbar-item" :to="{name: 'item', params: {id: 'main' }}">Items&nbsp;<span class="tag is-info">Reference</span></router-link>
+				<router-link class="navbar-item" :to="{name: 'item', params: {id: 'main' }}">Items&nbsp;<span class="tags has-addons"><span class="tag is-info">Reference</span><span class="tag is-danger">WIP</span></span></router-link>
 				<a class="navbar-item" href="#">Gearsets&nbsp;<span class="tag is-warning">Coming Soon</span></a>
 			</div>
 			<div class="navbar-end">
