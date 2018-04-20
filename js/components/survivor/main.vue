@@ -50,7 +50,7 @@
 						<label class="label big">Hunt XP</label>
 					</div>
 					<div class="column is-9" style="text-align:right;margin-top:8px">
-						<span class="xp">
+						<span class="xp" @click="checkCorrectBoxes">
 							<label><input type="checkbox" v-model="survivor.xp.box1"/><span class="chkbx"></span></label>
 							<label><input type="checkbox" v-model="survivor.xp.box2"/><span class="chkbx heavy"></span></label>
 							<label><input type="checkbox" v-model="survivor.xp.box3"/><span class="chkbx"></span></label>
@@ -84,7 +84,7 @@
 			<div class="column is-half">
 				<div class="columns bordered">
 					<div class="column is-one-quarter is-vcentered">
-						<input type="text" id="survival" placeholder="0" class="bordered big" v-model="survivor.survival.value"/>
+						<input type="number" id="survival" placeholder="0" class="bordered big" v-model="survivor.survival.value"/>
 					</div>
 					<div class="column is-half">
 						<label for="survival" class="big">Survival</label>
@@ -92,8 +92,12 @@
 						<!-- Alive -->
 						<label class="label" for="born" style="float:left;width:50%;text-align:center">Born</label>
 						<label class="label" for="born" style="float:left;width:50%;text-align:center">Died</label>
-						<input type="text" id="born" class="bordered" style="width:40%;float:left;margin:0 5%" v-model="survivor.survival.born"/>
-						<input type="text" id="born" class="bordered" style="width:40%;float:left;margin:0 5%" v-model="survivor.survival.died"/>
+						<input type="number" id="born" class="bordered" style="width:40%;float:left;margin:0 5%" v-model="survivor.survival.born"/>
+						<input type="number" id="died" class="bordered" style="width:40%;float:left;margin:0 5%" v-model="survivor.survival.died"/>
+						<div class="cause-of-death" v-if="survivor.survival.died !== '' && survivor.survival.died !== undefined">
+							<label for="cod" class="label">Cause of Death</label>
+							<input type="text" id="cod" class="name" v-model="survivor.survival.cod"/>
+						</div>
 						<label style="clear:both;margin-top:0.25rem;"><input type="checkbox" id="survival-cannot" v-model="survivor.survival.cannot"/><span class="chkbx"></span>
 							Cannot spend survival
 						</label>
@@ -108,39 +112,39 @@
 				</div>
 				<div class="columns bordered">
 					<div class="column bordered is-2">
-						<input type="text" id="movement" placeholder="5" class="big" v-model="survivor.movement"/>
+						<input type="number" id="movement" placeholder="5" class="big" v-model="survivor.movement"/>
 						<br />
 						<label for="movement">Movement</label>
 					</div>
 					<div class="column bordered is-2">
-						<input type="text" id="accuracy" placeholder="0" class="bordered" v-model="survivor.accuracy"/>
+						<input type="number" id="accuracy" placeholder="0" class="bordered" v-model="survivor.accuracy"/>
 						<br />
 						<label for="accuracy">Accuracy</label>
 					</div>
 					<div class="column bordered is-2">
-						<input type="text" id="strength" placeholder="0" class="bordered" v-model="survivor.strength"/>
+						<input type="number" id="strength" placeholder="0" class="bordered" v-model="survivor.strength"/>
 						<br />
 						<label for="strength">Strength</label>
 					</div>
 					<div class="column bordered is-2">
-						<input type="text" id="evasion" placeholder="0" class="bordered" v-model="survivor.evasion"/>
+						<input type="number" id="evasion" placeholder="0" class="bordered" v-model="survivor.evasion"/>
 						<br />
 						<label for="evasion">Evasion</label>
 					</div>
 					<div class="column bordered is-2">
-						<input type="text" id="luck" placeholder="0" class="bordered" v-model="survivor.luck"/>
+						<input type="number" id="luck" placeholder="0" class="bordered" v-model="survivor.luck"/>
 						<br />
 						<label for="luck">Luck</label>
 					</div>
-					<div class="column bordered is-2">
-						<input type="text" id="speed" placeholder="0" class="bordered" v-model="survivor.speed"/>
+					<div class="column bordered is-2" style="border:none">
+						<input type="number" id="speed" placeholder="0" class="bordered" v-model="survivor.speed"/>
 						<br />
 						<label for="speed">Speed</label>
 					</div>
 				</div>
 				<div class="columns bordered">
 					<div class="column bordered is-2">
-						<input type="text" id="insanity" placeholder="0" class="shield" v-model="survivor.brain.insanity"/>
+						<input type="number" id="insanity" placeholder="0" class="shield" v-model="survivor.brain.insanity"/>
 						<br />
 						<label for="insanity">Insanity</label>
 					</div>
@@ -155,7 +159,7 @@
 				</div>
 				<div class="columns">
 					<div class="column is-2">
-						<input type="text" id="head" placeholder="0" class="shield" v-model="survivor.head.armor"/>
+						<input type="number" id="head" placeholder="0" class="shield" v-model="survivor.head.armor"/>
 					</div>
 					<div class="column is-7">
 						<label class="big"><i class="head"></i>Head</label>
@@ -169,7 +173,7 @@
 				<hr />
 				<div class="columns">
 					<div class="column is-2">
-						<input type="text" id="arms" placeholder="0" class="shield" v-model="survivor.arms.armor"/>
+						<input type="number" id="arms" placeholder="0" class="shield" v-model="survivor.arms.armor"/>
 					</div>
 					<div class="column is-7">
 						<label class="big"><i class="arms"></i>Arms</label>
@@ -184,7 +188,7 @@
 				<hr />
 				<div class="columns">
 					<div class="column is-2">
-						<input type="text" id="body" placeholder="0" class="shield" v-model="survivor.body.armor"/>
+						<input type="number" id="body" placeholder="0" class="shield" v-model="survivor.body.armor"/>
 					</div>
 					<div class="column is-7">
 						<label class="big"><i class="body"></i>Body</label>
@@ -199,7 +203,7 @@
 				<hr />
 				<div class="columns">
 					<div class="column is-2">
-						<input type="text" id="waist" placeholder="0" class="shield" v-model="survivor.waist.armor"/>
+						<input type="number" id="waist" placeholder="0" class="shield" v-model="survivor.waist.armor"/>
 					</div>
 					<div class="column is-7">
 						<label class="big"><i class="waist"></i>Waist</label>
@@ -214,7 +218,7 @@
 				<hr/>
 				<div class="columns">
 					<div class="column is-2">
-						<input type="text" id="legs" placeholder="0" class="shield" v-model="survivor.legs.armor"/>
+						<input type="number" id="legs" placeholder="0" class="shield" v-model="survivor.legs.armor"/>
 					</div>
 					<div class="column is-7">
 						<label class="big"><i class="legs"></i>Legs</label>
@@ -236,7 +240,7 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;Select Before Hunt
 					</div>
 					<div class="column is-5" style="padding-left:0">
-						<span>
+						<span @click="checkCorrectBoxes">
 							<label><input type="checkbox" v-model="survivor.weapon_proficiency.box1"/><span class="chkbx"></span></label>
 							<label><input type="checkbox" v-model="survivor.weapon_proficiency.box2"/><span class="chkbx"></span></label>
 							<label><input type="checkbox" v-model="survivor.weapon_proficiency.box3"/><span class="chkbx heavy"></span></label>
@@ -255,7 +259,7 @@
 					<div class="column is-half bordered">
 						<label class="label">Courage</label>
 						<br />
-						<span>
+						<span @click="checkCorrectBoxes">
 							<label><input type="checkbox" v-model="survivor.courage.box1"/><span class="chkbx"></span></label>
 							<label><input type="checkbox" v-model="survivor.courage.box2"/><span class="chkbx"></span></label>
 							<label><input type="checkbox" v-model="survivor.courage.box3"/><span class="chkbx heavy"></span></label>
@@ -270,10 +274,10 @@
 						<span class="chkbx filled"></span>Bold
 						<span class="chkbx filled"></span><span class="chkbx filled"></span>See the Truth
 					</div>
-					<div class="column is-half bordered">
+					<div class="column is-half bordered" style="border-right:none">
 						<label class="label">Understanding</label>
 						<br />
-						<span>
+						<span @click="checkCorrectBoxes">
 							<label><input type="checkbox" v-model="survivor.understanding.box1"/><span class="chkbx"></span></label>
 							<label><input type="checkbox" v-model="survivor.understanding.box2"/><span class="chkbx"></span></label>
 							<label><input type="checkbox" v-model="survivor.understanding.box3"/><span class="chkbx heavy"></span></label>
@@ -289,7 +293,7 @@
 						<span class="chkbx filled"></span><span class="chkbx filled"></span>White Secret
 					</div>
 				</div>
-				<div class="columns bordered" style="margin-top:-0.75rem">
+				<div class="columns bordered" style="margin-top:-0.75rem;border-top:none">
 					<div class="column is-half bordered">
 						<div class="columns text-addon">
 							<div class="column is-one-quarter">
@@ -318,7 +322,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="column is-half bordered">
+					<div class="column is-half bordered" style="border:none">
 						<div class="columns text-addon">
 							<div class="column is-one-quarter">
 								<label><input id="analyze" type="checkbox" v-model="survivor.understanding.analyze"/><span class="chkbx big circle"></span></label>
@@ -420,7 +424,8 @@ export default {
 	name: 'survivor',
 	data () {
 		return {
-			savetimer: -1
+			savetimer: -1,
+			delayevents: false
 		}
 	},
 	computed: {
@@ -451,8 +456,17 @@ export default {
 					this.$router.push({ name: 'survivor', params: { id: newPage }});
 					return;
 				}
+					
+				let jf = JSON.stringify(from);
+				let jt = JSON.stringify(to);
+				
+				//fixes very odd bug with vue endless changes.
+				if(to !== from && jf === jt)
+					return;
+					
 				let self = this;
 				clearTimeout(this.savetimer);
+				this.savetimer = -1;
 				this.savetimer = setTimeout(function() {
 					self.saveSurvivor(to);
 				},1000);
@@ -466,16 +480,62 @@ export default {
 		next();
 	},
 	methods: {
+		checkCorrectBoxes: function(e) {
+			if(this.delayevents)
+				return;
+				
+			if(e.target.tagName.toLowerCase() === 'span')
+				return;
+			
+			let realTarget = e.target.nextElementSibling;
+			
+			if(realTarget.classList.contains('retired'))
+				return;
+				
+			this.delayevents = true;
+			let parent = realTarget.parentNode.parentNode; //box > label > container
+			let list = Array.from(parent.querySelectorAll('span.chkbx'));
+			let tIdx = list.indexOf(realTarget);
+			
+			let highestCheckedIdx = 0;
+			list.forEach(function(el, idx) {
+				if(el.previousElementSibling.checked && !el.classList.contains('retired'))
+					highestCheckedIdx = idx;
+			});
+			
+			if(tIdx < highestCheckedIdx && !e.target.checked)
+				e.target.checked = true;
+			
+			list.forEach(function(el, idx) {
+				if(el.classList.contains('retired'))
+					return;
+			
+				if(tIdx >= highestCheckedIdx && idx < tIdx) {
+					if(el.previousElementSibling.checked !== e.target.checked && idx < tIdx)
+						el.click();
+				}
+				
+				if(tIdx < highestCheckedIdx) {
+					if(el.previousElementSibling.checked === (idx > tIdx))
+						el.click();
+				}
+			});
+			
+			this.delayevents = false;
+		},
+		
 		deleteSurvivor() {
 			if(confirm('Are you sure you want to delete '+this.survivor.name+'?  This CANNOT be undone!'))
 			{
 				clearTimeout(this.savetimer);
+				this.savetimer = -1;
 				this.$store.dispatch('deleteSurvivor', this.survivor.id);
 			}
 		},
 		
 		saveSurvivor(target) {
 			clearTimeout(this.savetimer);
+			this.savetimer = -1;
 			if(target === undefined) {
 				target = this.survivor;
 			}

@@ -21,9 +21,13 @@
 .menu-list .new-survivor, .menu-list .new-survivor.router-link-exact-active {
 	background: #23d160;
 }
-
-input[type="text"] {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type="text"],input[type="number"] {
 	background: transparent;-moz-appearance: none;
+    -moz-appearance:textfield;
 	-webkit-appearance: none;
 	-webkit-box-align: center;
 	-ms-flex-align: center;
@@ -101,6 +105,12 @@ label.big {
 
 .bordered {
 	border: 1px solid black;
+}
+
+.bordered div.bordered {
+	border-top: none;
+	border-left: none;
+	border-bottom: none;
 }
 
 input.bordered {
