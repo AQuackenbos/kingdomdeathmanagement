@@ -78,7 +78,7 @@ export default {
 			return retHtml;
 		},
 		getStatsHtml(item) {
-			if(!item.weapon_stats && !item.armor_stats) return 'NOPE';
+			if(!item.weapon_stats && !item.armor_stats) return '';
 			
 			let retHtml = '';
 			if(item.weapon_stats) {
