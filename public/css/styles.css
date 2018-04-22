@@ -247,3 +247,154 @@ textarea.lined {
 .menu-list .active {
 	background: #DDD;
 }
+
+/** Items **/
+.item {
+	background: #DEDEDE;
+	position: relative;
+	text-align: center;
+	width: 400px;
+	height: 400px;
+	padding: 25px;
+}
+
+.item .stats-area {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+}
+
+.item .stats-area.weapon {
+	width: 30px;
+	padding: 3px;
+	border-radius: 290486px;
+	background-color: #BCBCBC;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.item .stats-area.weapon .hitarea {
+	border-radius: 290486px;
+	background-color: #999999;
+	position: relative;
+}
+
+.item .stats-area.weapon .hitarea .plus {
+	position: absolute;
+	right: -12px;
+	top: -11px;
+	font-size: 1.8rem;
+	-webkit-text-stroke: 1px #999999;
+	text-stroke: 1px #999999;
+}
+
+.item .name {
+	font-weight: bold;
+	font-size: 1.25rem;
+}
+
+.item .types {
+	font-style: italic;
+}
+
+.item .image {
+	margin: 20px auto;
+	width: 150px;
+	height: 150px;
+}
+
+.item .connection {
+	border-style: double;
+}
+
+.item .connection.lr {
+	height: 50px;
+	width: 25px;
+}
+
+.item .connection.tb {
+	height: 25px;
+	width: 50px;
+}
+
+.item .c-left {
+	position: absolute;
+	left: 0;
+	top: 175px;
+	border-left: none;
+}
+
+.item .c-right {
+	position: absolute;
+	right: 0;
+	top: 175px;
+	border-right: none;
+}
+
+.item .c-bottom {
+	position: absolute;
+	left: 175px;
+	bottom: 0;
+	border-bottom: none;
+}
+
+.item .c-top {
+	position: absolute;
+	left: 175px;
+	top: 0;
+	border-bottom: none;
+}
+
+.item .bonus {
+	padding: 5px;
+	width: 100%;
+	text-align: center;
+}
+
+.item .bonus .tag {
+	width: 50%;
+	padding: 20px;
+	font-size: 1rem;
+}
+
+.item .bonus .tag.short {
+	width: 25%;
+}
+
+.item .bonus .tag.long {
+	width: 75%;
+}
+
+.item .bonus-square {
+	margin: 0 5px;
+	width: 25px;
+	height: 25px;
+	border: none !important;
+}
+
+.item .bonus-puzzle {
+	width: 25px;
+	height: 25px;
+	margin: 0 5px;
+	border: none !important;
+	background: none !important;
+}
+
+.item .color-green {
+	color: #34D334;
+	background-color: #34D334;
+	border-color: #34D334;
+	fill: #34D334;
+}
+.item .color-blue {
+	color: #4B7FEA;
+	background-color: #4B7FEA;
+	border-color: #4B7FEA;
+	fill: #4B7FEA;
+}
+.item .color-red {
+	color: #FB5151;
+	background-color: #FB5151;
+	border-color: #FB5151;
+	fill: #FB5151;
+}

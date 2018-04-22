@@ -8,7 +8,7 @@
 		hit: 7,
 		strength: 1
 	},
-	description: "On a [[Perfect Hit]], gain +1 survival.",
+	description: "On a {{Perfect Hit}}, gain +1 survival.",
 	connections: {
 		top: "red",
 		left: "red"
@@ -47,9 +47,9 @@
 	},
 	bonuses: {
 		requires: {
-			squares: { red: 2, blue: 2 }
+			boxes: { red: 2, blue: 2 }
 		},
-		description: "At the start of your act, if [[insane]], gain +1 [[MOVE]]."
+		desc: "At the start of your act, if [[insane]], gain +1 {|MOVE|}."
 	},
 	keywords: ["Unique","Irreplaceable","Accessory"]
 },

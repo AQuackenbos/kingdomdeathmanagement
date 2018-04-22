@@ -141,11 +141,7 @@ export default {
 				self.saveResources();
 			}, 1000);
 		},
-		updateResource: function(resource) {
-			if(resource.type === '') {
-				this.$store.dispatch('lookupResourceType', resource);
-			}
-		
+		updateResource: function(resource) {		
 			let self = this;
 			clearTimeout(this.savetimer);
 			this.savetimer = setTimeout(function() {

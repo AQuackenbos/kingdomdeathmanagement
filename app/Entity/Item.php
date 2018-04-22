@@ -22,6 +22,7 @@ class Item extends \Illuminate\Database\Eloquent\Model
 		$finalStructure = [
 			'metatype' => $params['metatype'],
 			'name'	=> trim($params['name']),
+			'description' => trim($params['description']),
 			'types' => [],
 			'image' => '',
 		];

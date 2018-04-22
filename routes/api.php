@@ -59,6 +59,11 @@ $app->group('/api', function() {
 		return json_encode($item->getAllLocations());
 	})->setName('locations');
 	
+	$this->get('/keywords[/]', function($request, $response, $args) {
+		$item = new \KDM\Entity\Keyword($this);
+		return json_encode($item->getAllKeywords());
+	})->setName('keywords');
+	
 	$this->map(['GET','POST','DELETE'],'/survivor[/]', function($request, $response, $args) {
 		$survivor = new \KDM\Entity\Survivor($this);
 		$settlement = validateSettlement($this);

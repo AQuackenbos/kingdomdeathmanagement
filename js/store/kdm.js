@@ -79,7 +79,8 @@ const emptySurvivor = {
 		surge: false,
 		value: 1,
 		born: 5,
-		died: ''
+		died: '',
+		cod: ''
 	},
 	understanding: {
 		analyze: false,
@@ -147,7 +148,11 @@ const state = {
 	//ref data,
 	emptyItem: emptyItem,
 	emptySurvivor: emptySurvivor,
-	references: {},
+	references: {
+		keywords: [],
+		items: [],
+		locations: []
+	},
 	//active data
 	activeItem: emptyItem,
 	activeSurvivor: emptySurvivor
@@ -158,7 +163,13 @@ const getters = {
 	getSettlement: (state) => state.settlement,
 	getSurvivors: (state) => state.survivors,
 	getActiveSurvivor: (state) => state.activeSurvivor,
-	getEmptySurvivor: (state) => state.emptySurvivor
+	getEmptySurvivor: (state) => state.emptySurvivor,
+	getKeyword: (state) => (keyword) => {
+		return state.references.keywords.find(k => k.keyword.toLowerCase() === keyword.toLowerCase());
+	},
+	getResourceType: (state) => (resource) => {
+		return ''; //@todo
+	}
 }
 
 // actions
@@ -178,6 +189,24 @@ const actions = {
 			dispatch('loadSurvivors');
 			dispatch('loadLocations');
 			dispatch('loadItems');
+			dispatch('loadKeywords');
+		})
+		.catch(e => {
+			console.dir(e.message);
+		});
+	},
+	
+	loadKeywords({ commit }, activeItemId) {
+		fetch('/api/keywords/', {
+			method: 'GET',				
+			headers: {
+				'Accept': 'application/json'
+			},
+			credentials: 'same-origin'
+		})
+		.then( r => r.json() )
+		.then( r => {
+			commit('loadKeywords', r.keywords);
 		})
 		.catch(e => {
 			console.dir(e.message);
@@ -282,10 +311,6 @@ const actions = {
 		});
 	},
 	
-	lookupResourceType({ commit }, resource) {
-		//does nothing yet - needs item refs
-	},
-	
 	saveResources({ commit }, resourceList) {
 		fetch('/api/settlement/resources/', {	
 			method: 'POST',				
@@ -314,14 +339,22 @@ const mutations = {
 
 	loadSurvivors (state, survivors) {
 		state.survivors = survivors;
+		state.survivors.splice();
 	},
 	
 	loadItems (state, items) {
 		state.references.items = items;
+		state.references.items.splice();
 	},
 	
 	loadLocations (state, locations) {
 		state.references.locations = locations;
+		state.references.locations.splice();
+	},
+	
+	loadKeywords (state, keywords) {
+		state.references.keywords = keywords;
+		state.references.keywords.splice();
 	},
 	
 	setActiveSurvivor (state, id) {
@@ -353,7 +386,7 @@ const mutations = {
 		
 		if(id === -1 || id === 'main')
 		{
-			state.activeItem = state.emptySurvivor;
+			state.activeItem = state.emptyItem;
 			return;
 		}
 		
