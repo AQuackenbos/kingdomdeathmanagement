@@ -67,7 +67,7 @@ export default {
 			}
 			
 			while(token = boldRgx.exec(desc)) {
-				retHtml = retHtml.replace(new RegExp(token[0],'g'),'<strong>'+token[1]+'</strong>');
+				retHtml = retHtml.replace(new RegExp(token[0].replace(/\[/g,'\\[').replace(/\]/g,'\\]'),'g'),'<strong>'+token[1]+'</strong>');
 			}
 			
 			while(token = iconRgx.exec(desc)) {
