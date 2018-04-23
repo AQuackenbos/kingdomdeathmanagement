@@ -250,7 +250,7 @@ textarea.lined {
 
 /** Items **/
 .item {
-	background: #DEDEDE;
+	background: #cfd3d3; /*#DEDEDE;*/
 	position: relative;
 	text-align: center;
 	width: 400px;
@@ -268,14 +268,14 @@ textarea.lined {
 	width: 30px;
 	padding: 3px;
 	border-radius: 290486px;
-	background-color: #BCBCBC;
+	background-color: #7b7c7a; /*#BCBCBC;*/
 	color: #FFFFFF;
 	font-weight: bold;
 }
 
 .item .stats-area.weapon .hitarea {
 	border-radius: 290486px;
-	background-color: #999999;
+	background-color: #454746; /*#999999;*/
 	position: relative;
 }
 
@@ -284,8 +284,18 @@ textarea.lined {
 	right: -12px;
 	top: -11px;
 	font-size: 1.8rem;
-	-webkit-text-stroke: 1px #999999;
-	text-stroke: 1px #999999;
+	-webkit-text-stroke: 1px #454746 /*#999999*/;
+	text-stroke: 1px #454746 /*#999999*/;
+}
+
+.item .stats-area.armor .armor-block {
+	background: url(../images/black-shield.svg) no-repeat;
+	background-position: center;
+	font-size: 1.8rem;
+	font-weight: bold;
+	color: #FFFFFF;
+	width: 50px;
+	height: 50px;
 }
 
 .item .name {
@@ -363,6 +373,16 @@ textarea.lined {
 
 .item .bonus .tag.long {
 	width: 75%;
+	font-size: 0.7rem;
+}
+
+.item .bonus .tag.long p {
+	width: 100%;
+	white-space: normal;
+}
+
+.item .bonus .tag.long p img {
+	width: 10px !important;
 }
 
 .item .bonus-square {
@@ -372,12 +392,24 @@ textarea.lined {
 	border: none !important;
 }
 
+.item .short .bonus-square {
+	margin: 0 1px;
+	width: 15px;
+	height: 15px;
+}
+
 .item .bonus-puzzle {
 	width: 25px;
 	height: 25px;
 	margin: 0 5px;
 	border: none !important;
 	background: none !important;
+}
+
+.item .short .bonus-puzzle {
+	width: 20px;
+	height: 20px;
+	margin: 0 1px;
 }
 
 .item .color-green {

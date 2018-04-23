@@ -26,7 +26,7 @@
 		<option>other</option>
 	</select><br />
 	<input name="resource_type" placeholder="Resource Type (if appl)" autocomplete="off"><br />
-	<input name="description" placeholder="Description" autocomplete="off"><br />
+	<textarea name="description" placeholder="Description" autocomplete="off"></textarea></br />
 	<input name="types" placeholder="Types (,)" autocomplete="off"><br />
 	<input name="keywords" placeholder="Keywords (,)" autocomplete="off"><br />
 	Type <select name="stats_type">

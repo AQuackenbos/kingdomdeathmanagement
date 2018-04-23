@@ -155,7 +155,7 @@ const state = {
 	},
 	//active data
 	activeItem: emptyItem,
-	activeSurvivor: emptySurvivor
+	activeSurvivor: Object.assign({},emptySurvivor)
 }
 
 // getters
@@ -366,7 +366,7 @@ const mutations = {
 		
 		if(id === "new")
 		{
-			state.activeSurvivor = state.emptySurvivor;
+			state.activeSurvivor = Object.assign({},state.emptySurvivor);
 			return;
 		}
 		

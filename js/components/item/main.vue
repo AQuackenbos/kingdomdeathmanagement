@@ -30,7 +30,8 @@ export default {
 		next();
 	},
 	updated: function() {
-		this.applyTippyTips();
+		let self = this;
+		setTimeout(self.applyTippyTips,300);
 	},
 	computed: {
 		item() {
@@ -60,7 +61,7 @@ export default {
 				
 				let kw = this.$store.getters.getKeyword(token[1]);
 				if(kw) {
-					ppEl.title = kw.description;
+					ppEl.title = this.parseDescHtml(kw.description);
 				}
 				
 				retHtml = retHtml.replace(new RegExp(token[0],'g'),ppEl.outerHTML);
@@ -71,7 +72,7 @@ export default {
 			}
 			
 			while(token = iconRgx.exec(desc)) {
-				retHtml = retHtml.replace(new RegExp(token[0],'g'),token[1]+' AS IMG');
+				retHtml = retHtml.replace(new RegExp(token[0].replace(/\|/g,'\\|'),'g'),'<img src="/images/'+token[1].toLowerCase()+'.svg" style="width:14px"/>');
 			}
 			
 			//@todo
@@ -81,10 +82,11 @@ export default {
 			if(!item.weapon_stats && !item.armor_stats) return '';
 			
 			let retHtml = '';
+			let el = document.createElement('div');
+			el.classList.add('stats-area');
+			
 			if(item.weapon_stats) {
-				let el = document.createElement('div');
 				el.id = "weapon-stats";
-				el.classList.add('stats-area');
 				el.classList.add('weapon');
 				
 				let actImg = document.createElement('img');
@@ -122,12 +124,23 @@ export default {
 				el.appendChild(spd);
 				el.appendChild(hitarea);
 				
-				retHtml += el.outerHTML;
 			}
 			
 			if(item.armor_stats) {
-			
+				el.id = "armor-stats";
+				el.classList.add('armor');
+				
+				let armArea = document.createElement('div');
+				armArea.classList.add('armor-block');
+				armArea.innerHTML = item.armor_stats.defense;
+				
+				let locImg = document.createElement('span'); // should be img
+				locImg.innerHTML = item.armor_stats.location;
+				
+				el.appendChild(armArea);
+				el.appendChild(locImg);
 			}
+			retHtml += el.outerHTML;
 			
 			return retHtml;
 		},
@@ -160,7 +173,7 @@ export default {
 					req.classList.add('tag');
 					req.classList.add('is-rounded');
 					req.classList.add('is-white');
-					if(bonus.hasOwnProperty('long-desc')) {
+					if(bonus.hasOwnProperty('long_desc')) {
 						req.classList.add('short');
 					}
 					
@@ -193,7 +206,7 @@ export default {
 					desc.classList.add('tag');
 					desc.classList.add('is-rounded');
 					desc.classList.add('is-light');
-					if(bonus.hasOwnProperty('long-desc')) {
+					if(bonus.hasOwnProperty('long_desc')) {
 						desc.classList.add('long');
 					}
 					
@@ -210,7 +223,7 @@ export default {
 					}
 					
 					if(bonus.hasOwnProperty('desc')) {
-						desc.innerHTML = this.parseDescHtml(bonus.desc);
+						desc.innerHTML = '<p>'+this.parseDescHtml(bonus.desc)+'</p>';
 					}
 					
 					el.appendChild(desc);

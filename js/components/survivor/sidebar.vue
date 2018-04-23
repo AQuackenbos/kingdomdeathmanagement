@@ -10,8 +10,8 @@
 				</li>
 			</ul>
 			<p class="menu-label">Survivors</p>
-			<ul class="menu-list survivors">	
-				<li v-for="survivor in survivors">
+			<transition-group name="list" tag="ul" class="menu-list survivors">	
+				<li v-for="survivor in survivors" :key="survivor.id">
 					<router-link :to="{ name: 'survivor', params: { id: survivor.id }}">
 						<span class="chkbx circle" style="background:#F00;border:none;" v-if="survivor.survival.died != '' && survivor.survival.died != null"></span>
 						<span class="chkbx circle" style="background:#ffc800;border:none;" v-else-if="survivor.xp.box16 == true"></span>
@@ -21,10 +21,22 @@
 						<span class="name">{{ survivor.name }}</span>
 					</router-link>
 				</li>
-			</ul>
+			</transition-group>
 		</aside>
 	</div>
 </template>
+
+<style>
+.list-complete-enter, .list-complete-leave-to {
+  transition: all 1s;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.list-complete-leave-active {
+  transition: all 1s;
+  position: absolute;
+}
+</style>
 
 <script>
 export default {

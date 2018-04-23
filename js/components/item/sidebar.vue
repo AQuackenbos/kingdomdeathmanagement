@@ -37,7 +37,9 @@ export default {
 	},
 	methods: {
 		getItemsForLocation(loc) {
-			return this.items.filter( i => i.location === loc.name );
+			return this.items
+					.filter( i => i.location === loc.name )
+					.sort((a,b) => a.name.localeCompare(b.name));
 		},
 		requestUpdate: function() {
 			this.$store.dispatch('loadLocations',this.$route.params.id);

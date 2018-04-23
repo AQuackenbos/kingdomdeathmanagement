@@ -1,4 +1,5 @@
 const path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
 	mode: 'development',
@@ -9,7 +10,7 @@ module.exports = {
 	},
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.esm.js'
+            'vue$': 'vue/dist/vue.common.js'
         },
         extensions: ['*', '.js', '.vue', '.json']
     },
@@ -29,5 +30,12 @@ module.exports = {
 				}
 			}
 		}]
-	}
+	}/*,
+	plugins: [
+		new webpack.DefinePlugin({
+			'process.env': {
+				NODE_ENV: '"production"'
+			}
+		})
+	]*/
 }

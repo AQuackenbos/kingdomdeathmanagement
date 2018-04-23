@@ -132,14 +132,17 @@ export default {
 			this.$store.commit('addBlankResource');
 		},
 		removeResource: function(id) {
-			clearTimeout(this.savetimer);
-			this.$store.commit('removeResource', id);
-			
-			let self = this;
-			clearTimeout(this.savetimer);
-			this.savetimer = setTimeout(function() {
-				self.saveResources();
-			}, 1000);
+			if(confirm('Are you sure you want to delete this resource? This CANNOT be undone!'))
+			{
+				clearTimeout(this.savetimer);
+				this.$store.commit('removeResource', id);
+				
+				let self = this;
+				clearTimeout(this.savetimer);
+				this.savetimer = setTimeout(function() {
+					self.saveResources();
+				}, 1000);
+			}
 		},
 		updateResource: function(resource) {		
 			let self = this;
