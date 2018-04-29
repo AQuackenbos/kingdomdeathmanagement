@@ -249,9 +249,13 @@ textarea.lined {
 }
 
 /** Items **/
+.item-panel {
+	position: relative;
+}
+
 .item {
 	background: #cfd3d3; /*#DEDEDE;*/
-	position: relative;
+	position: fixed;
 	text-align: center;
 	width: 400px;
 	height: 400px;
@@ -305,6 +309,8 @@ textarea.lined {
 
 .item .types {
 	font-style: italic;
+	width: 300px;
+	margin: 0 auto;
 }
 
 .item .image {
