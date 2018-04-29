@@ -16,20 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `reference_keywords`
---
-
-DROP TABLE IF EXISTS `reference_keywords`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `reference_keywords` (
-  `keyword_id` int(11) NOT NULL AUTO_INCREMENT,
-  `document` json DEFAULT NULL,
-  PRIMARY KEY (`keyword_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `reference_keywords`
 --
 
@@ -40,20 +26,6 @@ INSERT INTO `reference_keywords` VALUES (1,'{\"keyword\": \"Cumbersome\", \"desc
 UNLOCK TABLES;
 
 --
--- Table structure for table `reference_locations`
---
-
-DROP TABLE IF EXISTS `reference_locations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `reference_locations` (
-  `location_id` int(11) NOT NULL AUTO_INCREMENT,
-  `document` json DEFAULT NULL,
-  PRIMARY KEY (`location_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Dumping data for table `reference_locations`
 --
 
@@ -62,21 +34,6 @@ LOCK TABLES `reference_locations` WRITE;
 INSERT INTO `reference_locations` VALUES (1,'{\"name\": \"Rare Items\"}'),(2,'{\"name\": \"Lantern Horde\"}'),(3,'{\"name\": \"Organ Grinder\"}'),(4,'{\"name\": \"Catarium\"}'),(5,'{\"name\": \"Skinnery\"}'),(6,'{\"name\": \"Bone Smith\"}'),(7,'{\"name\": \"Leather Worker\"}'),(8,'{\"name\": \"Weapon Crafter\"}');
 /*!40000 ALTER TABLE `reference_locations` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `reference_items`
---
-
-DROP TABLE IF EXISTS `reference_items`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `reference_items` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `document` json DEFAULT NULL,
-  `location_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `reference_items`
@@ -97,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-29  0:24:15
+-- Dump completed on 2018-04-29  0:25:32
