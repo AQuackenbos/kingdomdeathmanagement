@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
 	mode: 'development',
-	entry: './js/main.js',
+	entry: ['babel-polyfill','./js/main.js'],
 	output: {
 		path: path.resolve(__dirname, 'public/js'),
 		filename: 'kdm.js'

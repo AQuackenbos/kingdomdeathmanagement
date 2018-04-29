@@ -24,14 +24,16 @@ export default {
 	data() {
 		return {}
 	},
+	beforeRouteEnter (to, from, next) {
+		let itemId = to.params.id;
+		next(vm => {
+			vm.updateActiveItem(itemId);
+		});
+	},
 	beforeRouteUpdate (to, from, next) {
 		let itemId = to.params.id;
-		this.$store.commit('setActiveItem',itemId);
+		this.updateActiveItem(itemId);
 		next();
-	},
-	updated: function() {
-		let self = this;
-		setTimeout(self.applyTippyTips,300);
 	},
 	computed: {
 		item() {
@@ -40,9 +42,14 @@ export default {
 	},
 	methods: {
 		applyTippyTips() {
-			tippy('.tippy-target',{
-				arrow: true
-			});
+			window.setTimeout(() => {
+				tippy('.tippy-target',{
+					arrow: true
+				});
+			},100);
+		},
+		updateActiveItem(itemId) {
+			this.$store.commit('setActiveItem',itemId);
 		},
 		parseDescHtml(desc) {
 			let retHtml = desc;

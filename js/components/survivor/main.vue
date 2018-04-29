@@ -1,10 +1,19 @@
 <template>
-	<div class="column survivor-panel">
+	<div class="column survivor-panel" v-if="survivor.id === -1">
 		<div class="columns is-multiline">
-			<div class="column is-12" v-if="survivor.id === -1">
+			<div class="column is-12">
 				<h2 class="title is-2">New Survivor</h2>
-				<h3 class="subtitle is-6">They will be saved once they have a name.</h3>
+				<h3 class="subtitle is-6" style="text-align:center">Enter a name for their Tombstone.</h3>
 			</div>
+			<div class="column is-12">
+				<!-- Name -->
+				<label class="label big" for="name">Name</label>
+				<input class="name" type="text" id="name" placeholder="Name" v-model="survivor.name"/>
+			</div>
+		</div>
+	</div>
+	<div class="column survivor-panel" v-else>
+		<div class="columns is-multiline">
 			<div class="column is-half">
 				<div class="columns is-multiline">
 					<div class="column is-8">

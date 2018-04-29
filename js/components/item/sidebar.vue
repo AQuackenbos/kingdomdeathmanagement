@@ -72,8 +72,10 @@ export default {
 		
 			let r = this.$route.path;
 			let start = document.querySelector('[href="'+r+'"]');
-			let container = start.closest('.location-container');
-			container.classList.add('active-container');
+			if (start) {
+				let container = start.closest('.location-container');
+				if(container) container.classList.add('active-container');
+			}
 		}
 	}
 }

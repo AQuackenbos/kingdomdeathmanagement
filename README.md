@@ -8,6 +8,6 @@ mysql -u username -p database_name < install.sql
 mysql -u username -p database_name < reference-data.sql
 composer install
 npm install
-webpack
+webpack -p
 ````
 Then run a server out of /public.

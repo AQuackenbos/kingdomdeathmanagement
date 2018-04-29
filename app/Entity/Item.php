@@ -48,6 +48,29 @@ class Item extends \Illuminate\Database\Eloquent\Model
 		if($params['resource_type'] != '')
 			$finalStructure['resource_type'] = $params['resource_type'];
 		
+		$recipe = [];
+		if(trim($params['recipe']['requires']) != '') {
+			$recipe['requires'] = array_filter(array_map('trim', explode(',',$params['recipe']['requires'])),function($v){ return $v !== ''; });
+		}
+		
+		if(trim($params['recipe']['materials']) != '') {
+			$mats = array_filter(array_map('trim', explode(',',$params['recipe']['materials'])),function($v){ return $v !== ''; });
+			if(count($mats)) {
+				$recipe['materials'] = [];
+				foreach($mats as $_m) {
+					$pieces = explode(':',$_m);
+					
+					$recipe['materials'][] = [
+						'name' => trim($pieces[0]),
+						'amount' => intval(trim($pieces[1]))
+					];
+				}
+			}
+		}
+		
+		if(count($recipe))
+			$finalStructure['recipe'] = $recipe;
+		
 		if(count($connections))
 			$finalStructure['connections'] = $connections;
 		

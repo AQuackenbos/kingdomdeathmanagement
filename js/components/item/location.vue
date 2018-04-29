@@ -1,15 +1,32 @@
 <template>
-	<div class="column location-panel is-centered" v-if="currLocation.location_id">
+	<div class="column location-panel is-centered" v-if="currLocation.location_id !== 0">
 		<h1 class="title">{{ currLocation.name }}</h1>
-		<h3 class="subtitle">[Recipes not yet entered in database.]</h3>
-		<h2 class="subtitle">Items</h2>
-		<ul class="item-list">
-			<li v-for="item in getItemsForLocation(currLocation)" :key="item.item_id">
-				<router-link :to="{ name: 'item', params: { id: item.item_id }}">
-					{{item.name}}
-				</router-link>
-			</li>
-		</ul>
+		<table class="table is-bordered is-striped is-hoverable is-fullwidth" v-if="locationItems.length > 0">
+			<thead>
+				<tr>
+					<th>Item</th>
+					<th>Recipe</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in locationItems" :key="item.item_id">					
+					<th>
+						<router-link :to="{ name: 'item', params: { id: item.item_id }}">
+							{{item.name}}
+						</router-link>
+						<div v-if="item.recipe && item.recipe.requires" style="font-weight:normal;text-align:right"><em>Req: {{ item.recipe.requires.join(', ') }}</em></div>
+					</th>
+					<td>
+						<ul v-if="item.recipe && item.recipe.materials">
+							<li v-for="mat in item.recipe.materials" :key="mat.name">
+								{{mat.amount.toString().replace('!','')}} x {{mat.name}}
+								<div v-if="mat.amount.toString().indexOf('!') !== -1"><strong>OR</strong></div>
+							</li>
+						</ul>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </template>
 
@@ -17,7 +34,10 @@
 export default {
 	name: 'location-view',
 	data () {
-		return {}
+		return {
+			currLocation: { location_id: 0, name: "Loading" },
+			locationItems: []
+		}
 	},
 	computed: {
 		items () {
@@ -25,17 +45,25 @@ export default {
 		},
 		locations () {
 			return this.$store.state.kdm.references.locations;
-		},
-		currLocation () {
-			let cL = this.locations.find(loc => loc.location_id === parseInt(this.$route.params.id,10));
-			let defaultLoc = { location_id: 0, name: "Loading" };
-			return cL === undefined ? defaultLoc : cL;
 		}
 	},
+	mounted () {
+		setTimeout(this.updateLocation,250);
+	},
+	beforeRouteUpdate (to, from, next) {
+		this.updateLocation();
+		next();
+	},
 	methods: {
-		getItemsForLocation(loc) {
-			return this.items
-					.filter( i => i.location === loc.name )
+		updateLocation() {
+			let cL = this.locations.find(loc => loc.location_id === parseInt(this.$route.params.id,10));
+			if (cL !== undefined) this.currLocation = cL;
+			this.updateLocationItems();
+		},
+		updateLocationItems() {
+			let self = this;
+			this.locationItems = this.items
+					.filter( i => i.location === self.currLocation.name )
 					.sort((a,b) => a.name.localeCompare(b.name));
 		}
 	}
