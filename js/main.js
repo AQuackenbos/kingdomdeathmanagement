@@ -26,8 +26,9 @@ import Settlement_Quarries from './components/settlement/quarries.vue'
 //* Survivor
 import Survivor_Main from './components/survivor/main.vue'
 import Survivor_Sidebar from './components/survivor/sidebar.vue'
-//* Item Reference
+//* Item & Location Reference
 import Item_Main from './components/item/main.vue'
+import Item_Location from './components/item/location.vue'
 import Item_Sidebar from './components/item/sidebar.vue'
 
 
@@ -120,6 +121,17 @@ const router = new VueRouter({
 			name: 'item',
 			components: {
 				default: Item_Main,
+				sidebar: Item_Sidebar
+			}
+		}]
+	},{
+		path: '/location',
+		component: Root,
+		children: [{
+			path: ':id',
+			name: 'location',
+			components: {
+				default: Item_Location,
 				sidebar: Item_Sidebar
 			}
 		}]

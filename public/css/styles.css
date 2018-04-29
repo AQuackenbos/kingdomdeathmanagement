@@ -430,3 +430,33 @@ textarea.lined {
 	border-color: #FB5151;
 	fill: #FB5151;
 }
+
+/** Location and Item Menu **/
+.spoiler-button {
+	width: 100%;
+	margin-bottom: 2rem;
+}
+
+.menu-list li.location-container > ul {
+	margin: 0;
+	transition: all 0.5s ease-in-out;
+	overflow: hidden;
+}
+
+.menu-list li.location-container.active-container > ul {
+	margin: .75rem;
+}
+
+.menu-list li.location-container > ul > li {
+	overflow: hidden;
+	transform: scaleY(0);
+	transform-origin: top;
+	transition: all 0.5s ease-in-out;
+	max-height: 0;
+	position: relative;
+}
+
+.menu-list li.location-container.active-container > ul > li{
+	transform: scaleY(1);
+	max-height: 2000px;
+}
