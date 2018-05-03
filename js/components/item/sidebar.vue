@@ -68,13 +68,19 @@ export default {
 		},
 		setActiveMenu() {
 			let al = document.querySelector('.active-container');
-			if(al) al.classList.remove('active-container');
+			if(al) {
+				al.classList.remove('active-container');
+				al.querySelector('ul').style.maxHeight = '0px';
+			}
 		
 			let r = this.$route.path;
 			let start = document.querySelector('[href="'+r+'"]');
 			if (start) {
 				let container = start.closest('.location-container');
-				if(container) container.classList.add('active-container');
+				if(container) {
+					container.classList.add('active-container');
+					container.querySelector('ul').style.maxHeight = container.querySelector('ul').scrollHeight.toString()+'px'
+				}
 			}
 		}
 	}

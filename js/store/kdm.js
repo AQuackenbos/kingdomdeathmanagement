@@ -397,9 +397,9 @@ const mutations = {
 		}
 	},
 	
-	addBlankResource (state) {
+	addBlankResource (state, type) {
 		var nextId = state.settlement.resources.reduce( (prev, curr) => (prev.id > curr.id) ? prev : curr , { id: 0 } ).id + 1;
-		state.settlement.resources.push( { id: nextId, name: '', type: '', qty: 0 } );
+		state.settlement.resources.push( { id: nextId, name: '', type: type, qty: 0 } );
 	},
 	
 	removeResource(state, resourceId) {
