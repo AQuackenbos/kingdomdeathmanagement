@@ -262,7 +262,7 @@ const actions = {
 		.then( r => {
 			commit('loadSurvivors', r.survivors);
 			
-			if(activeSurvivorId)
+			if(activeSurvivorId !== -1)
 				commit('setActiveSurvivor', activeSurvivorId);
 		})
 		.catch(e => {
@@ -282,10 +282,12 @@ const actions = {
 		})
 		.then( r => r.json() )
 		.then( r => {
+			let switchSurvivor = -1;
 			if(savedSurvivor.id === -1) {
 				r.newSurvivor.id = r.survivorId; //don't ask, seriously
+				switchSurvivor = r.survivorId;
 			}
-			dispatch('loadSurvivors', r.survivorId);
+			dispatch('loadSurvivors', switchSurvivor);
 		})
 		.catch(e => {
 			console.dir(e.message);

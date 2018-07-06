@@ -227,10 +227,10 @@ export default {
 		},
 		getTypes: function() {
 			return [
-				'Consumable',
 				'Hide',
 				'Bone',
 				'Organ',
+				'Consumable',
 				'???',
 				'Scrap',
 				'Gear'

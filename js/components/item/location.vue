@@ -14,7 +14,12 @@
 						<router-link :to="{ name: 'item', params: { id: item.item_id }}">
 							{{item.name}}
 						</router-link>
-						<div v-if="item.recipe && item.recipe.requires" style="font-weight:normal;text-align:right"><em>Req: {{ item.recipe.requires.join(', ') }}</em></div>
+						<div v-if="item.recipe && item.recipe.requires">
+							<div class="tags has-addons">
+								<span class="tag is-dark">Requires</span>
+								<span class="tag is-requirement">{{ item.recipe.requires.join(', ') }}</span>
+							</div>
+						</div>
 					</th>
 					<td>
 						<ul v-if="item.recipe && item.recipe.materials">
@@ -29,6 +34,12 @@
 		</table>
 	</div>
 </template>
+
+<style scoped>
+th { position: relative }
+.tags { position: absolute; right: 0.25rem; bottom: 0.25rem; }
+.is-requirement { background-color: #ea8d00; color: #FFFFFF; }
+</style>
 
 <script>
 export default {
