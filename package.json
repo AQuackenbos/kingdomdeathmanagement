@@ -27,6 +27,6 @@
 	"author": "Andrew Quackenbos",
 	"scripts": {
 		"build:dev": "webpack --env dev --progress --profile --colors",
-		"build:prod": "webpack --env prod --progress --profile --colors",
+		"build:prod": "webpack --env prod --progress --profile --colors"
 	}
 }
