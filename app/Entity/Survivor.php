@@ -62,7 +62,7 @@ class Survivor extends \Illuminate\Database\Eloquent\Model
 	protected function _canUserSaveForSettlement($settlement)
 	{
 		$user = $this->container->user;
-		return $user->settlements->contains($settlement->settlement_id);
+		return $user->canSaveForSettlement($settlement->settlement_id);
 	}
 	
 	public function saveSurvivor($survivorJsonData, $settlement = false)

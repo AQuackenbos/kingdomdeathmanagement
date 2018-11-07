@@ -18,6 +18,11 @@ class User extends \Illuminate\Database\Eloquent\Model
 		@$this->_pepper = $this->container['settings']['auth']['pepper'];
     }
 	
+	public function canSaveForSettlement($settlementId)
+	{
+		return $this->settlements->contains($settlementId);
+	}
+	
 	public function settlements()
 	{
 		return $this->belongsToMany('\KDM\Entity\Settlement','user_settlements','user_id','settlement_id');
