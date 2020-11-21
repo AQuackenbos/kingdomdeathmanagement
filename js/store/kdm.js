@@ -1,5 +1,6 @@
 // initial state
 const emptySurvivor = {
+	party: false,
 	ability_impair: {
 		skip_hunt: false,
 		text: ''
@@ -74,16 +75,15 @@ const emptySurvivor = {
 		cannot: false,
 		dash: false,
 		dodge: true,
-		encourage: true,
+		encourage: false,
 		endure: false,
 		surge: false,
 		value: 1,
-		born: 5,
+		born: 0,
 		died: '',
 		cod: ''
 	},
 	understanding: {
-		analyze: false,
 		box1: false,
 		box2: false,
 		box3: false,
@@ -93,6 +93,7 @@ const emptySurvivor = {
 		box7: false,
 		box8: false,
 		box9: false,
+		analyze: false,
 		explore: false,
 		tinker: false
 	},
@@ -102,6 +103,7 @@ const emptySurvivor = {
 		light_injury: false,
 	},
 	weapon_proficiency: {
+		type: '',
 		box1: false,
 		box2: false,
 		box3: false,
@@ -109,8 +111,7 @@ const emptySurvivor = {
 		box5: false,
 		box6: false,
 		box7: false,
-		box8: false,
-		type: '',
+		box8: false
 	},
 	xp: {
 		box1: false,
@@ -128,14 +129,14 @@ const emptySurvivor = {
 		box13: false,
 		box14: false,
 		box15: false,
-		box16: false,
+		box16: false
 	}
 };
 
-const emptyItem = { item_id: -1, name: "No Item Loaded"}
+const emptyItem = { item_id: -1, name: "No Item Loaded"};
 
 const state = {
-	settlement: { 
+	settlement: {
 		name: '',
 		description: '',
 		lantern_year: 0,
@@ -156,7 +157,7 @@ const state = {
 	//active data
 	activeItem: emptyItem,
 	activeSurvivor: Object.assign({},emptySurvivor)
-}
+};
 
 // getters
 const getters = {
@@ -170,14 +171,14 @@ const getters = {
 	getResourceType: (state) => (resource) => {
 		return ''; //@todo
 	}
-}
+};
 
 // actions
 const actions = {
 	initialize ({ commit, dispatch }) {
 		
-		fetch('/api/settlement/', {	
-			method: 'GET',				
+		fetch('/api/settlement/', {
+			method: 'GET',
 			headers: {
 				'Accept': 'application/json'
 			},
@@ -198,7 +199,7 @@ const actions = {
 	
 	loadKeywords({ commit }, activeItemId) {
 		fetch('/api/keywords/', {
-			method: 'GET',				
+			method: 'GET',
 			headers: {
 				'Accept': 'application/json'
 			},
@@ -215,7 +216,7 @@ const actions = {
 	
 	loadItems({ commit }, activeItemId) {
 		fetch('/api/items/', {
-			method: 'GET',				
+			method: 'GET',
 			headers: {
 				'Accept': 'application/json'
 			},
@@ -235,7 +236,7 @@ const actions = {
 	
 	loadLocations({ commit }) {
 		fetch('/api/locations/', {
-			method: 'GET',				
+			method: 'GET',
 			headers: {
 				'Accept': 'application/json'
 			},
@@ -271,8 +272,8 @@ const actions = {
 	},
 	
 	saveSurvivor({ commit, dispatch }, savedSurvivor) {
-		fetch('/api/survivor/', {	
-			method: 'POST',				
+		fetch('/api/survivor/', {
+			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
 				'Content-type': 'application/x-www-form-urlencoded'
@@ -294,9 +295,9 @@ const actions = {
 		});
 	},
 	
-	deleteSurvivor({ commit, dispatch }, deleteId) {		
-		fetch('/api/survivor/', {	
-			method: 'DELETE',				
+	deleteSurvivor({ commit, dispatch }, deleteId) {
+		fetch('/api/survivor/', {
+			method: 'DELETE',
 			headers: {
 				'Accept': 'application/json',
 				'Content-type': 'application/x-www-form-urlencoded'
@@ -314,8 +315,8 @@ const actions = {
 	},
 	
 	saveResources({ commit }, resourceList) {
-		fetch('/api/settlement/resources/', {	
-			method: 'POST',				
+		fetch('/api/settlement/resources/', {
+			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
 				'Content-type': 'application/x-www-form-urlencoded'
@@ -330,8 +331,27 @@ const actions = {
 		.catch(e => {
 			console.dir(e.message);
 		});
+	},
+	
+	saveYear({ commit }, year) {
+		fetch('/api/settlement/year/', {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-type': 'application/x-www-form-urlencoded'
+			},
+			credentials: 'same-origin',
+			body: 'data='+parseInt(year,10)
+		})
+		.then( r => r.json() )
+		.then( r => {
+			commit('updateNewSurvivorYear', parseInt(r.settlement.lantern_year,10));
+		})
+		.catch(e => {
+			console.dir(e.message);
+		});
 	}
-}
+};
 
 // mutations
 const mutations = {
@@ -359,6 +379,11 @@ const mutations = {
 		state.references.keywords.splice();
 	},
 	
+	updateNewSurvivorYear (state, year) {
+	  state.settlement.lantern_year = year;
+	  state.emptySurvivor.survival.born = year;
+	},
+	
 	setActiveSurvivor (state, id) {
 		if(typeof id === 'object')
 		{
@@ -372,7 +397,7 @@ const mutations = {
 			return;
 		}
 		
-		const surv = state.survivors.find(s => s.id === parseInt(id))
+		const surv = state.survivors.find(s => s.id === parseInt(id));
 		if(surv !== undefined)
 		{
 			state.activeSurvivor = surv;
@@ -392,7 +417,7 @@ const mutations = {
 			return;
 		}
 		
-		const item = state.references.items.find(i => i.item_id === parseInt(id))
+		const item = state.references.items.find(i => i.item_id === parseInt(id));
 		if(item !== undefined)
 		{
 			state.activeItem = item;

@@ -169,7 +169,7 @@ class User extends \Illuminate\Database\Eloquent\Model
 		}
 		
 		$settlement = \KDM\Entity\Settlement::findOrFail($settlementId);
-		if(count($settlement->users) >= 4)
+		if(count($settlement->users) >= 6)
 		{
 			$_SESSION['message'] = $_SESSION['message'].'<br>Did not add user "'.$email.'": settlement already has max users (4).';
 			return;

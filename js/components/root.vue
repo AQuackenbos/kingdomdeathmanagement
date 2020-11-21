@@ -34,3 +34,27 @@
   transform: translateX(1000px);
 }
 </style>
+
+<script>
+export default {
+	name: 'root',
+	data () {
+		return {
+		}
+	},
+	computed: {
+		survivors () {
+			return this.$store.state.kdm.survivors;
+		},
+		settlement() {
+			return this.$store.state.kdm.settlement;
+		}
+	},
+	mounted() {
+	},
+	methods: {
+		startEventListener: function() {
+		}
+	}
+}
+</script>

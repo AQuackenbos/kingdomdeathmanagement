@@ -23,6 +23,9 @@
 				<h3 class="title">{{ this.filterList(this.survivors, { alive: false }).length }}</h3>
 				<p>Average Age: {{ this.averageAge(this.filterList(this.survivors, { alive: false })) }}</p>
 			</div>
+			<div class="column is-12">
+			  <canvas id="timelineChart"></canvas>
+			</div>
 		</div>
 	</div>
 </template>
@@ -38,9 +41,11 @@ export default {
 			aliveCtx: 'aliveChart',
 			retiredCtx: 'retiredChart',
 			deadCtx: 'deadChart',
+			timelineCtx: 'timelineChart',
 			aliveChart: null,
 			retiredChart: null,
-			deadChart: null
+			deadChart: null,
+			timelineChart: null
 		}
 	},
 	updated() {
@@ -83,6 +88,12 @@ export default {
 				options: chartOpts
 			});
 			
+			this.timelineChart = new Chart(this.timelineCtx, {
+			  type: 'line',
+			  data: { datasets: [], labels: [] },
+			  options: chartOpts
+			});
+			
 			this.chartsInit = true;
 		},
 		
@@ -94,7 +105,7 @@ export default {
 				labels: ["Male","Female"],
 				datasets: [{
 					label: "Living Survivors",
-					data: [ 
+					data: [
 						this.filterList(this.survivors, { alive: true, retired: false, gender: 'M' }).length,
 						this.filterList(this.survivors, { alive: true, retired: false, gender: 'F' }).length
 					],
@@ -112,7 +123,7 @@ export default {
 				labels: ["Male","Female"],
 				datasets: [{
 					label: "Retired Survivors",
-					data: [ 
+					data: [
 						this.filterList(this.survivors, { alive: true, retired: true, gender: 'M' }).length,
 						this.filterList(this.survivors, { alive: true, retired: true, gender: 'F' }).length
 					],
@@ -130,7 +141,7 @@ export default {
 				labels: ["Male","Female"],
 				datasets: [{
 					label: "Deaths",
-					data: [ 
+					data: [
 						this.filterList(this.survivors, { alive: false, gender: 'M' }).length,
 						this.filterList(this.survivors, { alive: false, gender: 'F' }).length
 					],
@@ -144,6 +155,64 @@ export default {
 			this.deadChart.data = deadData;
 			this.deadChart.update();
 			
+			let yearLabels = [];
+			let birthTimelineData = [];
+			let deathTimelineData = [];
+			for(let loop = 0; loop <= (this.settlement.lantern_year + 1); loop++) {
+			  yearLabels.push(loop);
+			  if(loop == 0) {
+			    birthTimelineData.push(0);
+			  } else {
+			    birthTimelineData.push(this.filterList(this.survivors, { born_in: loop }).length);
+			  }
+			  
+			  deathTimelineData.push(this.filterList(this.survivors, { died_in: loop }).length);
+			}
+			
+			let timelineData = {
+			  labels: yearLabels,
+			  datasets: [{
+			    label: "Births",
+			    data: birthTimelineData,
+			    fill: false,
+			    borderColor: "#00ff00",
+			    lineTension: 0
+			  },{
+			    label: "Deaths",
+			    data: deathTimelineData,
+			    fill: false,
+			    borderColor: "#ff0000",
+			    lineTension: 0
+			  }]
+			};
+			this.timelineChart.options = {
+			  title: {
+			    text: "Birth Rate Timeline"
+			  },
+			  scales: {
+			    yAxes: [{
+			      ticks: {
+			        beginAtZero: true,
+			        stepSize: 1
+			      },
+			      scaleLabel: {
+			        display: true,
+			        labelString: "Births/Deaths"
+			      }
+			    }],
+			    xAxes: [{
+            tickets: {
+              stepSize: 1
+            },
+			      scaleLabel: {
+			        display: true,
+			        labelString: "Lantern Year"
+			      }
+			    }]
+			  }
+			};
+			this.timelineChart.data = timelineData;
+			this.timelineChart.update();
 		},
 		
 		filterList: function(list, flags) {
@@ -166,6 +235,14 @@ export default {
 			
 			if('gender' in flags) {
 				retList = retList.filter(s => s.gender === flags.gender);
+			}
+			
+			if('born_in' in flags) {
+			  retList = retList.filter(s => (parseInt(s.survival.born,10) === flags.born_in));
+			}
+			
+			if('died_in' in flags) {
+			  retList = retList.filter(s => (parseInt(s.survival.died,10) === flags.died_in));
 			}
 			
 			return retList;

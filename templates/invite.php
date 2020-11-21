@@ -37,7 +37,7 @@
 	}
 </style>
 <?php $settlement = \KDM\Entity\Settlement::findOrFail($_SESSION['active_settlement']) ?>
-<?php $userLimit = 4 //testing ?>
+<?php $userLimit = 6 //testing ?>
 <section class="hero is-success is-fullheight">
 	<div class="hero-body">
 		<div class="container has-text-centered">
@@ -74,7 +74,7 @@
 						<button class="button is-block is-info is-large is-fullwidth">Invite Users</button>
 						<?php else: ?>
 						<div class="notice">
-							A settlement can only have 4 users.
+							A settlement can only have <?= $userLimit ?> users.
 						</div>
 						<?php endif ?>
 					</form>

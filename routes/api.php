@@ -13,6 +13,22 @@ function validateSettlement($container)
 	return $settlement;
 }
 
+$app->group('/events', function() {
+	$this->get('/send[/]', function($request, $response, $args) {
+		header('Cache-Control: no-cache');
+		header("Content-Type: text/event-stream\n\n");
+		$counter = 0;
+		while(true) {
+			echo 'event: message'."\n";
+			echo 'data: '.$counter."\n\n";
+			ob_end_flush();
+			flush();
+			$counter++;
+			sleep(1);
+		}
+	});
+});
+
 $app->group('/api', function() {
 	$this->get('/settlement[/]', function($request, $response, $args) {
 		$settlement = validateSettlement($this);

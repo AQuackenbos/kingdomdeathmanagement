@@ -86,6 +86,14 @@
 						<span class="chkbx filled"></span>&nbsp;<span class="chkbx filled"></span>&nbsp;<span class="chkbx filled"></span>&nbsp;<span class="chkbx filled"></span>&nbsp;<i class="book"></i> Age
 						<span class="chkbx retired filled"></span><i class="book"></i> Retired
 					</div>
+					<div class="column is-12">
+						<hr />
+						<div class="columns">
+							<div class="column is-12">
+								<label for="party"><input type="checkbox" id="party" v-model="survivor.party"/><span class="chkbx"></span>&nbsp;Current Party Member</label><br />
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

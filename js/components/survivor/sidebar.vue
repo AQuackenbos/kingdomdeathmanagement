@@ -9,9 +9,22 @@
 					<router-link class="button new-survivor is-success" :to="{name: 'survivor', params: { id: 'new' }}">Add New Survivor</router-link>
 				</li>
 			</ul>
+			<p class="menu-label">Current Party</p>
+			<transition-group name="list" tag="ul" class="menu-list survivors">	
+				<li v-for="survivor in partySurvivors" :key="survivor.id">
+					<router-link :to="{ name: 'survivor', params: { id: survivor.id }}">
+						<span class="chkbx circle" style="background:#F00;border:none;" v-if="survivor.survival.died != '' && survivor.survival.died != null"></span>
+						<span class="chkbx circle" style="background:#ffc800;border:none;" v-else-if="survivor.xp.box16 == true"></span>
+						<span class="chkbx circle" style="background:#0F0;border:none;" v-else></span>
+						<span class="gender" v-if="survivor.gender === 'M'">&#9794;</span>
+						<span class="gender" v-else>&#9792;</span>
+						<span class="name">{{ survivor.name }}</span>
+					</router-link>
+				</li>
+			</transition-group>
 			<p class="menu-label">Survivors</p>
 			<transition-group name="list" tag="ul" class="menu-list survivors">	
-				<li v-for="survivor in survivors" :key="survivor.id">
+				<li v-for="survivor in nonpartySurvivors" :key="survivor.id">
 					<router-link :to="{ name: 'survivor', params: { id: survivor.id }}">
 						<span class="chkbx circle" style="background:#F00;border:none;" v-if="survivor.survival.died != '' && survivor.survival.died != null"></span>
 						<span class="chkbx circle" style="background:#ffc800;border:none;" v-else-if="survivor.xp.box16 == true"></span>
@@ -47,6 +60,12 @@ export default {
 	computed: {
 		survivors () {
 			return this.$store.state.kdm.survivors;
+		},
+		partySurvivors() {
+			return this.$store.state.kdm.survivors.filter(s => (s.party && s.party === true));
+		},
+		nonpartySurvivors() {
+			return this.$store.state.kdm.survivors.filter(s => ((!s.party) || s.party === false));
 		}
 	},
 	mounted() {
