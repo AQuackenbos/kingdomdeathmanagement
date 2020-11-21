@@ -1,32 +1,74 @@
 {
-	"name": "kingdomdeathmanagement",
-	"version": "0.1.0",
-	"license": "UNLICENSED",
-	"repository": "github:AQuackenbos/kingdomdeathmanagement",
-	"description": "Kingdom Death Management frontend app",
-	"dependencies": {
-		"babel-cli": "^6.26.0",
-		"babel-core": "^6.26.0",
-		"babel-loader": "^7.1.4",
-		"babel-polyfill": "^6.26.0",
-		"babel-preset-env": "^1.6.1",
-		"chart.js": "^2.7.2",
-		"css-loader": "^0.28.11",
-		"tippy.js": "^2.5.2",
-		"vue": "^2.5.16",
-		"vue-cli": "^2.9.3",
-		"vue-loader": "^14.2.2",
-		"vue-router": "^3.0.1",
-		"vue-template-compiler": "^2.5.16",
-		"vuex": "^3.0.1"
-	},
-	"devDependencies": {
-		"webpack": "^4.4.1",
-		"webpack-cli": "^2.0.13"
-	},
-	"author": "Andrew Quackenbos",
-	"scripts": {
-		"build:dev": "webpack --env dev --progress --profile --colors",
-		"build:prod": "webpack --env prod --progress --profile --colors"
-	}
+  "name": "kingdomdeathmanagement",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kingdom Death Management frontend app",
+  "author": {
+    "name": "Andrew Quackenbos"
+  },
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "build:dev": "webpack --env dev --progress --profile --colors",
+    "build:prod": "webpack --env prod --progress --profile --colors"
+  },
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "chart.js": "^2.7.2",
+    "core-js": "^3.6.5",
+    "css-loader": "^0.28.11",
+    "tippy.js": "^2.5.2",
+    "vue": "^2.6.11",
+    "vue-cli": "^2.9.3",
+    "vue-loader": "^14.2.2",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.5.16",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "_id": "kingdomdeathmanagement@0.1.0",
+  "bugs": {
+    "url": "https://github.com/AQuackenbos/kingdomdeathmanagement/issues"
+  },
+  "homepage": "https://github.com/AQuackenbos/kingdomdeathmanagement#readme",
+  "license": "UNLICENSED",
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AQuackenbos/kingdomdeathmanagement.git"
+  }
 }
