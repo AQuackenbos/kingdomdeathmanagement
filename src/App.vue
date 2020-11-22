@@ -1,10 +1,14 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <Navigation/>
+    <div class="columns">
+      <transition appear name="fade" mode="out-in">
+        <router-view name="sidebar"></router-view>
+      </transition>
+      <transition appear name="slide" mode="out-in">
+        <router-view :key="$route.fullPath"></router-view>
+      </transition>
     </div>
-    <router-view/>
   </div>
 </template>
 
@@ -30,3 +34,14 @@
   color: #42b983;
 }
 </style>
+
+<script>
+// @ is an alias to /src
+import Navigation from '@/components/navigation.vue'
+
+export default {
+  components: {
+    Navigation
+  }
+}
+</script>
