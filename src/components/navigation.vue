@@ -27,6 +27,6 @@
 
 <script>
 export default {
-	name: 'navigation'
+	name: 'Navigation'
 }
 </script>
