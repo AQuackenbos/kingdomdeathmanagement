@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-transparent" v-if="!loading && user">
+  <nav class="navbar is-transparent" v-if="!loading && user && currentCampaign">
     <div class="navbar-brand">
     <router-link class="navbar-item" :to="{name: 'Home'}">
       <img src="/images/lantern.png" alt="Kingdom Death Management">
@@ -7,13 +7,11 @@
     </div>
     <div id="navbarExampleTransparentExample" class="navbar-menu">
       <div class="navbar-start">
-      <router-link class="navbar-item" :to="{name: 'Survivors' }">Survivor DB</router-link>
-      <!--
-        <router-link class="navbar-item" :to="{name: 'settlement'}">Settlement</router-link>
-        <router-link class="navbar-item" :to="{name: 'survivor', params: { id: 'new' }}">Survivors</router-link>
-        <router-link class="navbar-item" :to="{name: 'item', params: {id: 'main' }}">Items&nbsp;<span class="tags has-addons"><span class="tag is-info">Reference</span><span class="tag is-danger">WIP</span></span></router-link>
-        <a class="navbar-item" href="#">Gearsets&nbsp;<span class="tag is-warning">Coming Soon</span></a>
-      -->
+      <b-button tag="router-link" class="navbar-item" :to="{name: 'Settlement' }" icon-left="landmark">Settlement</b-button>
+      <b-button tag="router-link" class="navbar-item" :to="{name: 'Timeline' }" icon-left="stream">Timeline</b-button>
+      <b-button tag="router-link" class="navbar-item" :to="{name: 'Survivors' }" icon-left="user-injured">Survivors</b-button>
+      <b-button tag="router-link" class="navbar-item" :to="{name: 'Storage' }" icon-left="box-open">Storage</b-button>
+      <b-button tag="router-link" class="navbar-item" :to="{name: 'Innovations' }" icon-left="book">Innovations</b-button>
       </div>
       <div class="navbar-end">
         <a class="navbar-item" @click.prevent="logout">Logout</a>
@@ -31,7 +29,8 @@ export default {
   computed: {
     ...mapGetters({
       user: 'user',
-      loading: 'loading'
+      loading: 'loading',
+      currentCampaign: 'currentCampaign'
     })
   },
   

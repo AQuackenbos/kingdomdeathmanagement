@@ -1,8 +1,8 @@
 <template>
   <div>
-    Campaigns:
+    ((Campaigns))
     <div v-for="c in campaigns" :key="c.id">
-      {{ c.name }}
+      {{ c.name }} - Lantern Year {{ c.year}}
     </div>
     <hr />
     <CampaignCreate />
@@ -30,8 +30,8 @@ export default {
     })
   },
   created() {
-    let userId = this.user.id
-    this.$bind('campaigns', db.collection('campaigns').where('members', 'array-contains', userId))
+    let userId = this.user.uid
+    this.$bind('campaigns', db.collection('campaigns').where('members', 'array-contains', userId), { maxRefDepth: 1 })
   },
   methods: {
     ...mapActions([

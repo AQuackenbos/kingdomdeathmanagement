@@ -1,7 +1,7 @@
 <template>
   <div class="column is-12 is-centered" v-if="!loading">
     <div v-if="user">
-      Logged in.
+      <h1 class="title">Select a Campaign</h1>
       <CampaignList />
     </div>
     <div v-else>
