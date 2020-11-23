@@ -22,32 +22,9 @@ firebase.analytics()
 const auth = app.auth()
 const db = app.firestore()
 
-const login = function() {
-  const provider = new app.auth.GoogleAuthProvider();
-  app.auth().signInWithPopup(provider)
-  .then(function(result) {
-    console.log(result);
-  })
-  .catch(function(error){
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    const email = error.email;
-    const credential = error.credential;
-    console.log(errorCode, errorMessage, email, credential);
-    })
-}
-
-const logout = function() {
-  app.auth().signOut()
-  .then(function() {})
-  .catch(function(error) {
-    console.log(error)});
-};
-
 export {
-	app as firebase,
+  firebase,
+	app,
 	auth,
-	db, 
-    login,
-    logout
+	db
 }

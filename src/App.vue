@@ -1,15 +1,18 @@
 <template>
-  <div id="app">
+  <main id="app" class="">
+    <b-loading :is-full-page="true" :can-cancel="false" v-model="loading"/>
     <Navigation/>
-    <div class="columns">
-      <transition appear name="fade" mode="out-in">
-        <router-view name="sidebar"></router-view>
-      </transition>
-      <transition appear name="slide" mode="out-in">
-        <router-view :key="$route.fullPath"></router-view>
-      </transition>
+    <div class="container">
+      <div class="columns">
+        <transition appear name="fade" mode="out-in">
+          <router-view name="sidebar"></router-view>
+        </transition>
+        <transition appear name="slide" mode="out-in">
+          <router-view :key="$route.fullPath"></router-view>
+        </transition>
+      </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <style>
@@ -37,9 +40,15 @@
 
 <script>
 // @ is an alias to /src
+import { mapGetters } from 'vuex'
 import Navigation from '@/components/navigation.vue'
 
 export default {
+  computed: {
+    ...mapGetters({
+      loading: 'loading'
+    })
+  },
   components: {
     Navigation
   }
