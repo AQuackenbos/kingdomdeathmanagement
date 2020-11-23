@@ -2,6 +2,7 @@
   <div class="column is-12 is-centered" v-if="!loading">
     <div v-if="user">
       Logged in.
+      <CampaignList />
     </div>
     <div v-else>
       <img alt="Vue logo" src="../assets/lantern.png">
@@ -15,9 +16,14 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { firebase } from '@/firebase'
+import CampaignList from '@/components/campaign/list'
+
 
 export default {
   name: 'Home',
+  components: {
+    CampaignList
+  },
   computed: {
     ...mapGetters({
       user: 'user',
