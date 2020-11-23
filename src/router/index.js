@@ -16,9 +16,41 @@ const routes = [
   {
     path: '/survivors',
     name: 'Survivors',
-    
+    component: () => import('../views/Survivors.vue'),
     meta: {
       requiresAuth: true
+    }
+  },
+  {
+    path: '/settlement',
+    name: 'Settlement',
+    component: () => import('../views/Settlement.vue'),
+    meta: {
+        requiresAuth: true
+    }
+  },
+  {
+    path: '/timeline',
+    name: 'Timeline',
+    component: () => import('../views/Timeline.vue'),
+    meta: {
+        requiresAuth: true
+    }
+  },
+  {
+    path: '/innovations',
+    name: 'Innovations',
+    component: () => import('../views/Innovations.vue'),
+    meta: {
+        requiresAuth: true
+    }
+  },
+  {
+    path: '/storage',
+    name: 'Storage',
+    component: () => import('../views/Storage.vue'),
+    meta: {
+        requiresAuth: true
     }
   }
 ]
