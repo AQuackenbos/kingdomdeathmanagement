@@ -1,9 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
+  plugins: [
+    createPersistedState({
+      storage: window.sessionStorage  
+    })
+  ],
   state: {
     user: null,
     currentCampaign: null,
@@ -56,6 +62,7 @@ export const store = new Vuex.Store({
     
     clearUser({ commit }) {
       commit("SET_USER", null)
+      window.sessionStorage.clear();
     }
   }
 });
