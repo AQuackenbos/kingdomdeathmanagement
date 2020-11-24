@@ -2,7 +2,7 @@
   <main id="app" class="">
     <b-loading :is-full-page="true" :can-cancel="false" v-model="loading"/>
     <Navigation/>
-    <div class="container is-fluid">
+    <div class="container">
       <div class="columns">
         <transition appear name="fade" mode="out-in">
           <router-view :key="$route.fullPath"></router-view>

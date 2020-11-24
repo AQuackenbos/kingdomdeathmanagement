@@ -1,13 +1,17 @@
 <template>
     <div class="column" v-if="!loading && user && campaign">
         <div class="columns">
-            <div class="column is-2 survivor-list">
+            <div class="column is-one-quarter survivor-list">
+                <b-message type="is-warning" has-icon v-if="isDirty">
+                    You must save these changes to the database for them to persist automatically. <br />
+                    <b-button icon-left="cloud" @click.prevent="saveToFirestore">Save</b-button>
+                </b-message>
                 <div class="field">
                     <b-switch :value="hideDead" type="is-info">Hide Dead</b-switch>
                 </div>
                 <b-menu>
                     <b-menu-list label="Survivors">
-                        <b-menu-item v-for="s in shownSurvivors" :key="s.id">
+                        <b-menu-item v-for="s in shownSurvivors" :key="s.id" @click.prevent="setSurvivor(s.id)" :active="currentSurvivor && s.id === currentSurvivor.id">
                             <template slot="label">
                                 {{ s.name }}
                             </template>
@@ -22,8 +26,11 @@
                     </b-menu-list>
                 </b-menu>
             </div>
-            <div class="column is-10">
-                <div class="columns is-multiline" v-if="currentSurvivor">
+            <div class="column survivor-panel" v-if="currentSurvivor === null">
+                <p>Select or Add a Survivor to load their information.</p>
+            </div>
+            <div class="column survivor-panel" v-else>
+                <div class="columns is-multiline">
                     <div class="column is-half">
                         <div class="columns is-multiline">
                             <div class="column is-8">
@@ -71,7 +78,7 @@
                             <div class="column is-9" style="text-align:right;margin-top:8px">
                                 <span class="xp">
                                     <label v-for="(n,i) in createRange(16)" :key="i">
-                                        <input type="checkbox" :checked="experience >= (i+1)" @click.prevent="setExperience(i+1)"/>
+                                        <input type="checkbox" :checked="currentSurvivor.experience >= (i+1)" @click.prevent="currentSurvivor.experience = (i+1) ; isDirty = true"/>
                                         <span class="chkbx" :class="{ heavy: i === 1 || i === 5 || i === 9 || i === 14, retired: i === 15 }"></span>
                                     </label>
                                 </span>
@@ -249,7 +256,7 @@
                             <div class="column is-5" style="padding-left:0">
                                 <span>
                                     <label v-for="(n,i) in createRange(8)" :key="i">
-                                        <input type="checkbox" :checked="weaponProficiency >= (i+1)" @click.prevent="setWeaponProficiency(i+1)"/>
+                                        <input type="checkbox" :checked="currentSurvivor.weapon_proficiency.level >= (i+1)" @click="currentSurvivor.weapon_proficiency.level = (i+1) ; isDirty = true"/>
                                         <span class="chkbx" :class="{ heavy: i === 2 || i === 7 }"></span>
                                     </label>
                                 </span>
@@ -264,7 +271,7 @@
                                 <br />
                                 <span>
                                     <label v-for="(n,i) in createRange(9)" :key="i">
-                                        <input type="checkbox" :checked="courage >= (i+1)" @click.prevent="setCourage(i+1)"/>
+                                        <input type="checkbox" :checked="currentSurvivor.courage.level >= (i+1)" @click="currentSurvivor.courage.level = (i+1) ; isDirty = true"/>
                                         <span class="chkbx" :class="{ heavy: i === 2 || i === 8 }"></span>
                                     </label>
                                 </span>
@@ -277,7 +284,7 @@
                                 <br />
                                 <span>
                                     <label v-for="(n,i) in createRange(9)" :key="i">
-                                        <input type="checkbox" :checked="understanding >= (i+1)" @click.prevent="setUnderstanding(i+1)"/>
+                                        <input type="checkbox" :checked="currentSurvivor.understanding.level >= (i+1)" @click="currentSurvivor.understanding.level = (i+1) ; isDirty = true"/>
                                         <span class="chkbx" :class="{ heavy: i === 2 || i === 8 }"></span>
                                     </label>
                                 </span>
@@ -348,12 +355,12 @@
                             <div class="column is-5">
                                 <label class="big">Fighting Arts</label>
                             </div>
-                            <div class="column is-3" style="margin-top:7px">
+                            <div class="column is-4" style="margin-top:7px">
                                 <label>Maximum 3</label>
                             </div>
-                            <div class="column is-4 small-text" style="padding-right:0; margin-top: 11px;">
+                            <div class="column is-3 small-text" style="padding-right:0; margin-top: 11px;">
                                 <label><input type="checkbox" id="facn" v-model="currentSurvivor.fighting_arts.cannot"/><span class="chkbx small"></span></label>
-                                <label for="facn">Cannot use Fighting Arts</label>
+                                <label for="facn">Cannot use</label>
                             </div>
                             <div class="column is-12">
                                 <input type="text" class="lined" id="fa1" v-model="currentSurvivor.fighting_arts.art_1"/>
@@ -365,10 +372,10 @@
                             <div class="column is-5">
                                 <label class="big">Disorders</label>
                             </div>
-                            <div class="column is-3" style="margin-top:7px">
+                            <div class="column is-4" style="margin-top:7px">
                                 <label>Maximum 3</label>
                             </div>
-                            <div class="column is-4 small-text" style="padding-right:0; margin-top: 11px;">
+                            <div class="column is-3 small-text" style="padding-right:0; margin-top: 11px;">
                                 &nbsp;
                             </div>
                             <div class="column is-12">
@@ -404,10 +411,10 @@
                     </div>
                 </div>
                 <div class="field" v-if="currentSurvivor.id !== -1">
-                    <div class="notification is-danger">
-                        <span class="">Deleting a survivor is PERMANENT and cannot be undone.</span>
-                        <a class="button is-danger is-inverted" style="float:right; margin-left: 20px;" @click.prevent="deleteSurvivor"><span class="delete"></span>&nbsp;Delete Survivor</a>
-                    </div>
+                    <b-message type="is-danger" has-icon>
+                        <span class="">Deleting a survivor is PERMANENT and cannot be undone.</span><br />
+                        <b-button type="is-danger" @click.prevent="deleteSurvivor" icon-left="times-circle">Delete Survivor</b-button>
+                    </b-message>
                 </div>
             </div>
         </div>
@@ -417,6 +424,11 @@
 <style scoped lang="scss">
 .survivor-list {
     text-align: left;
+}
+
+.survivor-panel {
+    text-align: left;
+    font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 }
 
 .container {
@@ -443,6 +455,7 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
+
 input[type="text"],input[type="number"] {
 	background: transparent;-moz-appearance: none;
     -moz-appearance:textfield;
@@ -513,7 +526,7 @@ input.lined {
 	color: #555;
 }
 
-#app label {
+#app .survivor-panel.label {
 	display: inline;
 }
 
@@ -571,6 +584,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 span.chkbx {
+    margin-left: 0.25em;
 	border: 1px solid black;
 	width: 15px;
 	height: 15px;
@@ -593,6 +607,7 @@ span.chkbx.big {
 span.chkbx.small {
 	width: 8px;
 	height: 8px;
+    margin-right: 0.25em;
 }
 
 span.chkbx.heavy {
@@ -614,6 +629,12 @@ span.chkbx.filled {
 
 hr {
 	margin: 0;
+    border: 1px solid #dbdbdb;
+    height: 1px;
+}
+
+.columns:not(:last-child) {
+    margin-bottom: calc(1.5rem - .75rem);
 }
 
 .columns.text-addon hr {
@@ -664,7 +685,7 @@ textarea.lined {
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { db } from '@/firebase'
 
 export default {
@@ -673,8 +694,29 @@ export default {
         return {
             campaign: null,
             survivors: [],
-            currentSurvivor: { survival: {}, defenses: { brain: {}, head: {}, arms: {}, body: {}, waist: {}, legs: {} }, weapon_proficiency: {}, courage: {}, understanding: {}, fighting_arts: {}, disorders: {}, ability_impair: {}, per_lifetime: {} },
-            hideDead: true
+            currentSurvivor: null,
+            hideDead: true,
+            isDirty: false
+        }
+    },
+    watch: {
+        currentSurvivor: {
+            deep: true,
+            handler(to, from) {
+                if(from === null || from === undefined) return
+                if(!to || !from || !to.id || !from.id || to.id !== from.id) return
+                
+                this.isDirty = true
+            }
+        },
+        
+        isDirty: {
+            handler() {
+                //do nothing
+                this.$nextTick(() => {
+                    //do nothing again
+                })
+            }
         }
     },
     computed: {
@@ -686,22 +728,6 @@ export default {
         
         shownSurvivors() {
             return this.survivors
-        },
-        
-        weaponProficiency() {
-            return 0
-        },
-        
-        experience() {
-            return 0
-        },
-        
-        courage() {
-            return 0
-        },
-        
-        understanding() {
-            return 0
         }
     },
     created() {
@@ -709,32 +735,70 @@ export default {
         this.$bind('survivors', db.collection(`campaigns/${this.currentCampaign}/survivors`))
     },
     methods: {
-        addSurvivor() {
-            console.log('add');
-        },
+        ...mapActions([
+            'setLoading'
+        ]),
         
         createRange(size) {
             return [...Array(size).keys()]
         },
         
+        saveToFirestore() {
+            let survivor = this.currentSurvivor
+            this.setLoading(true)
+            db.collection(`campaigns/${this.currentCampaign}/survivors`).doc(survivor.id).update(survivor)
+                .then(() => {
+                    this.isDirty = false
+                    this.setLoading(false)
+                })
+        },
+        
+        addSurvivor() {
+            this.setLoading(true)
+            
+            let emptySurvivor = {
+                survival: {}, 
+                defenses: {
+                    brain: {},
+                    head: {},
+                    arms: {},
+                    body: {},
+                    waist: {},
+                    legs: {}
+                }, 
+                weapon_proficiency: {},
+                courage: {},
+                understanding: {},
+                fighting_arts: {},
+                disorders: {},
+                ability_impair: {},
+                per_lifetime: {}
+            }
+            
+            let survivorRef = db.collection(`campaigns/${this.currentCampaign}/survivors`).doc()
+            survivorRef.set(emptySurvivor).then(() => this.setSurvivor(survivorRef.id))
+        },
+        
         deleteSurvivor() {
-        
+            this.$buefy.dialog.confirm({
+                message: 'Are you sure you want to delete this survivor?',
+                onConfirm: () => {
+                    this.setLoading(true)
+                    db.collection(`campaigns/${this.currentCampaign}/survivors`).doc(this.currentSurvivor.id).delete().then(() => {
+                        this.currentSurvivor = null
+                        this.setLoading(false)
+                    })
+                }
+            })
         },
         
-        setExperience(xp) {
-            console.log(xp)
-        },
-        
-        setWeaponProficiency(wp) {
-            console.log(wp)
-        },
-        
-        setCourage(c) {
-            console.log(c)
-        },
-        
-        setUnderstanding(u) {
-            console.log(u)
+        setSurvivor(id) {
+            if(this.currentSurvivor?.id === id) return
+            
+            this.isDirty = false
+            this.setLoading(true)
+            this.$bind('currentSurvivor', db.collection(`campaigns/${this.currentCampaign}/survivors`).doc(id))
+            this.setLoading(false)
         }
     }
 }
