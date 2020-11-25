@@ -688,6 +688,12 @@ textarea.lined {
 import { mapGetters, mapActions } from 'vuex'
 import { db } from '@/firebase'
 
+/**
+@TODO: Set up "Loading Sections" via
+    position: relative containers and
+    the loadingSections object
+**/
+
 export default {
     name: 'Survivors',
     data() {
@@ -696,7 +702,10 @@ export default {
             survivors: [],
             currentSurvivor: null,
             hideDead: true,
-            isDirty: false
+            isDirty: false,
+            loadingSections: {
+                name: false
+            }
         }
     },
     watch: {

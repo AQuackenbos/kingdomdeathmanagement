@@ -5,7 +5,8 @@ const innovations = [
     {
         reference: "language",
         deck: true,
-        innovated: false
+        innovated: false,
+        year: null
     }
 ]
 const locations = [

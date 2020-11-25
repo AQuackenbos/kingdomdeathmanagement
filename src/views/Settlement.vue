@@ -4,6 +4,7 @@
         ((Current year))<br />
         (List Quarries)<br />
         (List Locations)<br />
+        (Survival Limit/Settlement Bonuses/etc)<br />
     </div>
 </template>
 

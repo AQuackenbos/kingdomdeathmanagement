@@ -154,7 +154,7 @@ export default {
                 storyEvents: [],
                 settlementEvents: [],
                 showdowns: [],
-                innovated: false,
+                innovation: '',
                 quarry: null,
                 successful: false,
             }
@@ -170,6 +170,14 @@ export default {
             
             console.log('Pushing all years')
             await Promise.all(timelinePushes)
+            
+            campaign.collection('timeline').doc('0').update({
+                quarry: 'White Lion (Prologue)'
+            })
+            
+            campaign.collection('timeline').doc('1').update({
+                settlementEvents: firebase.firestore.FieldValue.arrayUnion('First Story')
+            })
             
             kdm.quarries.forEach(q => {
                 console.log('Adding Quarry: '+q)
