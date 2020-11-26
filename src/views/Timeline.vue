@@ -23,14 +23,18 @@
             @focus="activeRow = ly.id"
             :ref="'year' + ly.id"
         >
-            <div class="column is-1">{{ly.year}}</div>
+            <div class="column is-1">
+                <span>{{ly.year}}</span>
+                <br />
+                <b-button v-if="campaign.year !== ly.year && activeRow === ly.id" rounded type="is-info" icon-right="calendar-check" @click.prevent="changeYear(ly.year)"/>
+            </div>
             <div class="column is-2">
                 <div v-for="(se,idx) in ly.storyEvents" :key="idx">
                     <img class="special-icon small icon-story" src="images/story.png"/>
                     {{ se }}
                 </div>
                 <span v-if="activeRow === ly.id">
-                    <b-button type="is-success" size="is-small" icon-right="plus" @click.prevent="addStoryEvent(ly.id)" />
+                    <b-button type="is-success" icon-right="plus" @click.prevent="addStoryEvent(ly.id)" />
                 </span>
             </div>
             <div class="column is-2">
@@ -39,7 +43,7 @@
                     {{ se }}
                 </div>
                 <span v-if="activeRow === ly.id">
-                    <b-button type="is-success" size="is-small" icon-right="plus" @click.prevent="addSettlementEvent(ly.id)" />
+                    <b-button type="is-success" icon-right="plus" @click.prevent="addSettlementEvent(ly.id)" />
                 </span>
             </div>
             <div class="column is-2">
@@ -51,7 +55,7 @@
                     </span>
                 </div>
                 <span v-if="activeRow === ly.id">
-                    <b-button type="is-success" size="is-small" icon-right="plus" @click.prevent="addShowdown(ly.id)" />
+                    <b-button type="is-success" icon-right="plus" @click.prevent="addShowdown(ly.id)" />
                 </span>
             </div>
             <div class="column is-2">
@@ -60,7 +64,7 @@
                     {{ ly.innovation }}
                 </span>
                 <span v-if="activeRow === ly.id">
-                    <b-button v-if="!ly.innovation" type="is-success" size="is-small" icon-right="plus" @click.prevent="addInnovation(ly.id)" />
+                    <b-button v-if="!ly.innovation" type="is-success" icon-right="plus" @click.prevent="addInnovation(ly.id)" />
                 </span>
             </div>
             <div class="column is-2">
@@ -69,10 +73,12 @@
                     {{ ly.quarry }}
                 </span>
                 <span v-else-if="activeRow === ly.id">
-                    <b-select placeholder="Quarry" v-model="selectingQuarry">
-                        <option v-for="q in quarries" :key="q.id" :value="q.name">{{ q.name }}</option>
-                    </b-select>
-                    <b-button type="is-success" size="is-small" icon-right="plus" @click.prevent="confirmQuarry(ly.id)" />
+                    <b-field>
+                        <b-select placeholder="Quarry" v-model="selectingQuarry">
+                            <option v-for="q in quarries" :key="q.id" :value="q.name">{{ q.name }}</option>
+                        </b-select>
+                        <b-button type="is-success" icon-right="plus" @click.prevent="confirmQuarry(ly.id)" />
+                    </b-field>
                 </span>
             </div>
             <div class="column is-1">
@@ -263,6 +269,17 @@ export default {
                 successful: ref
             }).then(() => {
                 this.setYearLoading(year, false)
+            })
+        },
+        
+        changeYear(year) {
+            this.$buefy.dialog.confirm({
+                message: 'Change to Lantern Year '+year+'?',
+                onConfirm: () => {
+                    db.collection('campaigns').doc(this.currentCampaign).update({
+                        year: year
+                    })
+                }
             })
         }
     }
