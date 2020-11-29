@@ -175,11 +175,6 @@
     height: 20px;
   }
 }
-
-.special-icon.small {
-    width: 20px;
-    height: 20px;
-}
 </style>
 
 <script>
