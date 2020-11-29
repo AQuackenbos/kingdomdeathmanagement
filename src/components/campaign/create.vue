@@ -85,8 +85,10 @@ export default {
                 locations: [],
                 //Tracking data
                 year: 0,
-                survival: 1,
-                survivalMax: 1,
+                survival: {
+                    departing: 0,
+                    max: 1
+                },
                 bonuses: {
                     departing: '',
                     arriving: '',
