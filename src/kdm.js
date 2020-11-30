@@ -159,7 +159,8 @@ const survivor = {
         reroll: {
             available: false,
             used: false
-        }
+        },
+        notes: null
     },
     defenses: {
         arms: {
