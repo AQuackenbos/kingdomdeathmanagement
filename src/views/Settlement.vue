@@ -195,7 +195,9 @@ export default {
         survivors: [],
         quarries: [],
         locations: [],
-        users: []
+        users: [],
+        showAddQuarry: false,
+        showAddLocation: false
       }
     },
     computed: {
