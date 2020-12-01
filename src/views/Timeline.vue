@@ -24,9 +24,8 @@
             :ref="'year' + ly.id"
         >
             <div class="column is-1">
-                <span>{{ly.year}}</span>
-                <br />
-                <b-button v-if="campaign.year !== ly.year && activeRow === ly.id" rounded type="is-info" icon-right="calendar-check" @click.prevent="changeYear(ly.year)"/>
+                <b-button v-if="campaign.year !== ly.year && activeRow === ly.id" rounded type="is-info" icon-left="calendar-check" @click.prevent="changeYear(ly.year)">{{ ly.year }}</b-button>
+                <span v-else>{{ly.year}}</span>
             </div>
             <div class="column is-2">
                 <div v-for="(se,idx) in ly.storyEvents" :key="idx">
@@ -82,7 +81,7 @@
                 </span>
             </div>
             <div class="column is-1">
-                <b-checkbox v-model="ly.successful" @input="flagSuccess(ly.id, $event)"/>
+                <b-checkbox v-model="ly.successful" type="is-info" @input="flagSuccess(ly.id, $event)"/>
             </div>
         </div>
     </div>

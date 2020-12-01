@@ -116,28 +116,28 @@ export default {
                         consequence: "Game Over"
                     }
                 ],
-                principles: [
-                    {
+                principles: {
+                    "new_life": {
                         name: "New Life",
                         choices: ["Protect the Young", "Survival of the Fittest"],
                         selected: null
                     },
-                    {
+                    "death": {
                         name: "Death",
                         choices: ["Cannibalize", "Graves"],
                         selected: null
                     },
-                    {
+                    "society": {
                         name: "Society",
                         choices: ["Collective Toil", "Accept Darkness"],
                         selected: null
                     },
-                    {
+                    "conviction": {
                         name: "Conviction",
                         choices: ["Barbaric", "Romantic"],
                         selected: null
                     }
-                ]
+                }
             }
             
             let campaignRef = db.collection('campaigns').doc()

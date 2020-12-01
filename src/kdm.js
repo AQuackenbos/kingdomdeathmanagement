@@ -101,32 +101,32 @@ const showdowns = [
 const survivor = {
     stats: {
         movement: {
-            inherent: 5,
+            base: 5,
             items: 0,
             tokens: 0
         },
         accuracy: {
-            inherent: 0,
+            base: 0,
             items: 0,
             tokens: 0
         },
         strength: {
-            inherent: 0,
+            base: 0,
             items: 0,
             tokens: 0
         },
         evasion: {
-            inherent: 0,
+            base: 0,
             items: 0,
             tokens: 0
         },
         luck: {
-            inherent: 0,
+            base: 0,
             items: 0,
             tokens: 0
         },
         speed: {
-            inherent: 0,
+            base: 0,
             items: 0,
             tokens: 0
         }

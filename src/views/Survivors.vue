@@ -12,8 +12,11 @@
                 </b-field>
                 <b-menu>
                     <b-menu-list label="Survivors">
-                        <b-menu-item v-for="s in shownSurvivors" :key="s.id" @click.prevent="setSurvivor(s.id)" :active="currentSurvivor && s.id === currentSurvivor.id">
+                        <b-menu-item :class="{ 'is-primary': s.lifetime.died === null, 'is-danger': s.lifetime.died !== null }" v-for="s in shownSurvivors" :key="s.id" @click.prevent="setSurvivor(s.id)" :active="currentSurvivor && s.id === currentSurvivor.id">
                             <template #label>
+                                <span v-if="s.lifetime.gender === 'M'"><b-icon size="is-small" icon="mars" /></span>
+                                <span v-else-if="s.lifetime.gender === 'F'"><b-icon size="is-small" icon="venus" /></span>
+                                <span v-else><b-icon size="is-small" icon="genderless" /></span>
                                 {{ s.lifetime.name }}
                             </template>
                         </b-menu-item>
@@ -31,6 +34,16 @@
                 <p>Select or Add a Survivor to load their information.</p>
             </div>
             <div class="column survivor-panel" v-else>
+                <b-message v-if="showBonuses" type="is-success" has-icon :closable="false">
+                    <h1 class="subtitle is-size-6">If you have any of the following, all survivors gain the corresponding bonuses:</h1>
+                    <ul>
+                        <li><span class="has-text-weight-bold">Graves</span>: +1 understanding</li>
+                        <li><span class="has-text-weight-bold">Survival of the Fittest</span>: +1 Strength, +1 Evasion</li>
+                        <li><span class="has-text-weight-bold">Accept Darkness</span>: +2 to Brain Trauma rolls</li>
+                        <li><span class="has-text-weight-bold">Barbaric</span>: +1 Strength</li>
+                        <li><span class="has-text-weight-bold">Romantic</span>: When born, Draw 3 random Fighting Arts and Choose 1 to learn.</li>
+                    </ul>
+                </b-message>
                 <div class="columns is-multiline">
                     <div class="column is-6">
                         <b-field label="Name" label-position="on-border" ref="name">
@@ -53,25 +66,47 @@
                         </b-field>
                         <b-field grouped ref="life">
                             <b-field label="Born" label-position="on-border">
-                                <b-input v-model="currentSurvivor.lifetime.born" maxlength="2" style="width:4em" @change.native="saveField('lifetime.born', 'life')"/>
+                                <b-input v-model="currentSurvivor.lifetime.born" class="year-input" maxlength="2" style="width:4em" @change.native="saveField('lifetime.born', 'life')"/>
                             </b-field>
                             <b-field label="Died" label-position="on-border">
-                                <b-input v-model="currentSurvivor.lifetime.died" maxlength="2" style="width:4em" @change.native="saveField('lifetime.died', 'life')"/>
+                                <b-input v-model="currentSurvivor.lifetime.died" class="year-input" maxlength="2" style="width:4em" @change.native="saveField('lifetime.died', 'life')"/>
                             </b-field>
                             <b-field label="Cause of Death" label-position="on-border" expanded>
                                 <b-input v-model="currentSurvivor.lifetime.cause" icon="skull" @change.native="saveField('lifetime.cause', 'life')"/>
                             </b-field>
                         </b-field>
                         <b-field ref="cannot">
-                            <b-checkbox type="is-danger" v-model="currentSurvivor.lifetime.cannot.hunt" @change.native="saveField('lifetime.cannot.hunt', 'cannot')" style="margin-right:3em">
+                            <b-checkbox type="is-danger" v-model="currentSurvivor.lifetime.cannot.hunt" @input="saveField('lifetime.cannot.hunt', 'cannot')" style="margin-right:3em">
                                 Cannot Depart on Hunts
                             </b-checkbox>
-                            <b-checkbox type="is-danger" v-model="currentSurvivor.lifetime.cannot.survival" @change.native="saveField('lifetime.cannot.survival', 'cannot')">
+                            <b-checkbox type="is-danger" v-model="currentSurvivor.lifetime.cannot.survival" @input="saveField('lifetime.cannot.survival', 'cannot')">
                                 Cannot Spend Survival
                             </b-checkbox>
                         </b-field>
                     </div>
                     <div class="column is-6">
+                        <b-field grouped ref="survival">
+                            <b-field label="Survival" label-position="on-border">
+                                <b-input v-model="currentSurvivor.survival.amount" class="year-input" style="width:5em" @change.native="saveField('survival.amount', 'survival')"/>
+                            </b-field>
+                            <b-field label="Max" label-position="on-border">
+                                <b-input :value="campaign.survival.max" class="year-input" style="width:3.5em" disabled />
+                            </b-field>
+                            <div class="block">
+                                <b-checkbox
+                                    type="is-light" 
+                                    size="is-small"
+                                    :false-value="false"
+                                    style="text-transform: capitalize"
+                                    v-model="currentSurvivor.survival.abilities[a]" 
+                                    v-for="a in ['dodge','encourage','surge','dash','endure']" 
+                                    :key="a"
+                                    @input="saveField(`survival.abilities.${a}`, 'survival')"
+                                    >
+                                    {{ a }}
+                                </b-checkbox>
+                            </div>
+                        </b-field>
                         <b-field grouped label="Experience" ref="xp">
                             <p class="control" v-for="n in createRange(16)" :key="n">
                                 <b-tooltip type="is-light" position="is-bottom" v-if="n === 1 || n === 5 || n === 9 || n === 14 || n === 15" multilined>
@@ -94,6 +129,7 @@
                             </p>
                         </b-field>
                         <b-field grouped label="Weapon Expertise" ref="wp" class="wp">
+                            <b-input v-model="currentSurvivor.weapon.selected" placeholder="Weapon Type" icon="shield-alt" @change.native="saveField('weapon.selected', 'wp')" expanded />
                             <p class="control" v-for="n in createRange(8)" :key="n">
                                 <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 7" >
                                     <button class="button is-small kdm-box thick-border"
@@ -112,30 +148,44 @@
                                     @click.prevent="setWeaponProficiency(n+1)"
                                     v-else></button>
                             </p>
-                            <b-input v-model="currentSurvivor.weapon.selected" placeholder="Weapon Type" icon="shield-alt" @change.native="saveField('weapon.selected', 'wp')" expanded />
                         </b-field>
-                        <b-field grouped ref="survival">
-                            <b-field label="Survival" label-position="on-border">
-                                <b-input v-model="currentSurvivor.survival.amount" class="has-text-centered" style="width:5em" @change.native="saveField('survival.amount', 'survival')"/>
-                            </b-field>
-                            <b-field label="Maximum" label-position="on-border">
-                                <b-input :value="campaign.survival.max" style="width:5.5em" disabled />
-                            </b-field>
-                            <hr />
-                            <b-field>
-                                <b-checkbox-button
-                                    type="is-light" 
-                                    size="is-small"
-                                    :false-value="false"
-                                    style="text-transform: capitalize"
-                                    v-model="currentSurvivor.survival.abilities[a]" 
-                                    v-for="a in ['dodge','encourage','surge','dash','endure']" 
-                                    :key="a"
-                                    @change.native="saveField(`survival.abilities.${a}`, 'survival')">
-                                    {{ a }}
-                                </b-checkbox-button>
-                            </b-field>
-                        </b-field>
+                    </div>
+                    <div class="column is-12">
+                        <hr />
+                    </div>
+                    <div class="column is-12 stats" ref="stats">
+                        <div class="columns">
+                            <div class="column is-2">
+                                <b-field label="Movement" label-position="on-border">
+                                    <b-input size="is-large" class="year-input" expanded v-model="currentSurvivor.stats.movement.base" @change.native="saveField('stats.movement.base', 'stats')" />
+                                </b-field>
+                            </div>
+                            <div class="column is-2">
+                                <b-field label="Accuracy" label-position="on-border">
+                                    <b-input size="is-large" class="year-input" expanded v-model="currentSurvivor.stats.accuracy.base" @change.native="saveField('stats.accuracy.base', 'stats')" />
+                                </b-field>
+                            </div>
+                            <div class="column is-2">
+                                <b-field label="Strength" label-position="on-border">
+                                    <b-input size="is-large" class="year-input" expanded v-model="currentSurvivor.stats.strength.base" @change.native="saveField('stats.strength.base', 'stats')" />
+                                </b-field>
+                            </div>
+                            <div class="column is-2">
+                                <b-field label="Evasion" label-position="on-border">
+                                    <b-input size="is-large" class="year-input" expanded v-model="currentSurvivor.stats.evasion.base" @change.native="saveField('stats.evasion.base', 'stats')" />
+                                </b-field>
+                            </div>
+                            <div class="column is-2">
+                                <b-field label="Luck" label-position="on-border">
+                                    <b-input size="is-large" class="year-input" expanded v-model="currentSurvivor.stats.luck.base" @change.native="saveField('stats.luck.base', 'stats')" />
+                                </b-field>
+                            </div>
+                            <div class="column is-2">
+                                <b-field label="Speed" label-position="on-border">
+                                    <b-input size="is-large" class="year-input" expanded v-model="currentSurvivor.stats.speed.base" @change.native="saveField('stats.speed.base', 'stats')" />
+                                </b-field>
+                            </div>
+                        </div>
                     </div>
                     <div class="column is-12">
                         <hr />
@@ -206,11 +256,47 @@
                             <template #message>
                                 <span>Maximum of 3</span>
                                 <b-field>
-                                    <b-checkbox type="is-danger" v-model="currentSurvivor.lifetime.cannot.fightingArts" @change.native="saveField('lifetime.cannot.fightingArts','fa')" >Cannot Use Fighting Arts</b-checkbox>
+                                    <b-checkbox type="is-danger" v-model="currentSurvivor.lifetime.cannot.fightingArts" @change.native="saveField('lifetime.cannot.fightingArts','fa')">Cannot Use Fighting Arts</b-checkbox>
                                 </b-field>
                             </template>
                             <b-taginput v-model="currentSurvivor.abilities.fightingArts" placeholder="Add Fighting Art" maxtags="3" type="is-info" @input="saveField('abilities.fightingArts','fa')"/>
                         </b-field>
+                    </div>
+                    <div class="column is-3">
+                        <b-field label="Disorders" ref="do">
+                            <template #message>
+                                <span>Maximum of 3</span>
+                            </template>
+                            <b-taginput v-model="currentSurvivor.abilities.disorders" placeholder="Add Disorder" maxtags="3" type="is-info" @input="saveField('abilities.disorders','do')"/>
+                        </b-field>
+                    </div>
+                    <div class="column is-3">
+                        <b-field label="Abilities" ref="ab">
+                            <template #message>
+                                <b-field grouped label="Lifetime Reroll">
+                                    <b-checkbox type="is-success" v-model="currentSurvivor.lifetime.reroll.available" @change.native="saveField('lifetime.reroll.available', 'ab')">Available</b-checkbox>
+                                    <b-checkbox type="is-danger" v-model="currentSurvivor.lifetime.reroll.used" @change.native="saveField('lifetime.reroll.used', 'ab')">Used</b-checkbox>
+                                </b-field>
+                            </template>
+                            <b-taginput v-model="currentSurvivor.abilities.abilities" placeholder="Add Ability" type="is-info" @input="saveField('abilities.abilities','ab')"/>
+                        </b-field>
+                    </div>
+                    <div class="column is-3">
+                        <b-field label="Impairments" ref="im">
+                            <template #message>
+                                <b-field type="is-danger">
+                                    <p class="control">
+                                        <span class="button is-static">Must Skip Hunt LY</span>
+                                    </p>
+                                    <b-input v-model="currentSurvivor.survival.skipHunt" placeholder="-" class="year-input" @change.native="saveField('survival.skipHunt', 'im')" expanded />
+                                </b-field>
+                            </template>
+                            <b-taginput v-model="currentSurvivor.abilities.impairments" placeholder="Add Impairment" type="is-info" @input="saveField('abilities.impairments','im')"/>
+                        </b-field>
+                    </div>
+                    <div class="column is-12">
+                        <h1 class="title">Severe Injuries</h1>
+                        (List them here)
                     </div>
                 </div>
                 <div class="field">
@@ -225,6 +311,18 @@
 </template>
 
 <style lang="scss">
+@import "~bulma/sass/utilities/_all";
+
+.year-input > input {
+    text-align: center;
+}
+
+.stats .input.is-large {
+    font-size: 4rem;
+    padding-left: calc(0.5em - 1px);
+    padding-right: calc(0.5em - 1px);
+}
+
 .field {
     position: relative
 }
@@ -250,16 +348,22 @@
     margin-right: 1em;
 }
 
+.menu-list a.is-active {
+    background-color: $info;
+}
+
 .kdm-box {
     height: 2em;
     width: 2em;
     padding: 0;
+    
     &.thick-border {
         border: .4em solid black;
         &.is-dark {
         border: .3em solid #aaa;
         }
     }
+    
     &.extra-thick {
         border: .75em solid black;
     }
@@ -306,7 +410,26 @@ export default {
         }),
         
         shownSurvivors() {
-            return this.survivors
+            return this.survivors.filter(s => {
+                if(!this.hideDead) return true
+                if(s.lifetime.died === null || s.lifetime.died === '') return true
+                return false
+            }).sort((a,b) => {
+                if((a.lifetime.died === null || a.lifetime.died === '') && (b.lifetime.died !== null && b.lifetime.died !== ''))
+                    return -1
+                if((b.lifetime.died === null || b.lifetime.died === '') && (a.lifetime.died !== null && a.lifetime.died !== ''))
+                    return 1
+                    
+                let aName = a.lifetime.name.toUpperCase()
+                let bName = b.lifetime.name.toUpperCase()
+                
+                if(aName > bName)
+                    return 1
+                if(bName > aName)
+                    return -1
+                    
+                return 0
+            })
         },
         
         tooltips() {
