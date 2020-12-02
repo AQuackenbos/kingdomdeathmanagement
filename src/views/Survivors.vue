@@ -296,7 +296,12 @@
                     </div>
                     <div class="column is-12">
                         <h1 class="title">Severe Injuries</h1>
-                        (List them here)
+                        <div class="content" v-if="injuries.length === 0">
+                            None.
+                        </div>
+                        <div class="content" v-else>
+                            LOTS LOL
+                        </div>
                     </div>
                 </div>
                 <div class="field">
@@ -457,6 +462,18 @@ export default {
                     8: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">White Secret</span>'
                 }
             }
+        },
+        
+        survivor() {
+            return this.currentSurvivor
+        },
+        
+        injuries() {
+            if(!this.currentSurvivor) return []
+            
+            let d = this.currentSurvivor.defenses
+            
+            return d.arms.severe.concat(d.body.severe, d.head.severe, d.waist.severe, d.legs.severe)
         }
     },
     created() {

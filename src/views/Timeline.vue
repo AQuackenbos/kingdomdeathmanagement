@@ -232,14 +232,16 @@ export default {
         
         addShowdown(year) {
             this.$buefy.dialog.prompt({
-                message: 'Add Showdown to Lantern Year '+year+':',
+                message: 'Add Showdown to Lantern Year '+year+': <p class="is-size-7">You can include a level separated by a colon (":").</p>',
                 inputAttrs: {
                     required: true
                 },
                 trapFocus: true,
                 onConfirm: (sd) => {
                     this.setYearLoading(year, true)
-                    let [name, level] = sd.trim().split(' ')
+                    let [name, level] = sd.trim().split(':')
+                    if(!level) level = 0
+                    
                     db.collection(`campaigns/${this.currentCampaign}/timeline`).doc(year.toString()).update({
                         showdowns: firebase.firestore.FieldValue.arrayUnion({
                             name: name,

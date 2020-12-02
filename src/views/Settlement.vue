@@ -42,8 +42,24 @@
                 <div class="block">
                   <ul>
                     <li v-for="q in campaignQuarries" :key="q.id">{{ q.name }}</li>
-                    <li><b-button type="is-info" size="is-small" icon-left="folder-plus" @click="addQuarry">Add Quarry</b-button></li>
+                    <li><b-button type="is-info" size="is-small" icon-left="folder-plus" @click="showAddQuarry = true">Add Quarry</b-button></li>
                   </ul>
+                  <b-modal
+                    v-model="showAddQuarry"
+                    has-modal-card
+                    trap-focus
+                    :destroy-on-hide="false"
+                    aria-role="dialog"
+                    aria-modal>
+                    <template #default="props">
+                      <QuarryAdd 
+                        :quarries="quarries"
+                        :campaign="campaign"
+                        @close="props.close"
+                        @add="addQuarry"
+                      />
+                    </template>
+                  </b-modal>
                 </div>
               </div>
             </div>
@@ -57,8 +73,24 @@
                 <div class="block">
                   <ul>
                     <li v-for="l in campaignLocations" :key="l.id">{{ l.name }}</li>
-                    <li><b-button type="is-info" size="is-small" icon-left="map-marker-alt" @click="addLocation">Add Location</b-button></li>
+                    <li><b-button type="is-info" size="is-small" icon-left="map-marker-alt" @click="showAddLocation = true">Add Location</b-button></li>
                   </ul>
+                  <b-modal
+                    v-model="showAddLocation"
+                    has-modal-card
+                    trap-focus
+                    :destroy-on-hide="false"
+                    aria-role="dialog"
+                    aria-modal>
+                    <template #default="props">
+                      <LocationAdd 
+                        :locations="locations"
+                        :campaign="campaign"
+                        @close="props.close"
+                        @add="addLocation"
+                      />
+                    </template>
+                  </b-modal>
                 </div>
               </div>
             </div>
@@ -185,10 +217,16 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { db } from '@/firebase'
+import { db, firebase } from '@/firebase'
+import QuarryAdd from '@/components/quarry/add'
+import LocationAdd from '@/components/location/add'
 
 export default {
     name: 'Settlement',
+    components: {
+      QuarryAdd,
+      LocationAdd
+    },
     data() {
       return {
         campaign: null,
@@ -197,7 +235,8 @@ export default {
         locations: [],
         users: [],
         showAddQuarry: false,
-        showAddLocation: false
+        showAddLocation: false,
+        quarry: null
       }
     },
     computed: {
@@ -301,12 +340,28 @@ export default {
         })
       },
       
-      addQuarry() {
-      
+      addQuarry(quarryId) {
+        if(!quarryId || quarryId.length === 0) return
+        
+        this.setLoading(true)
+        db.collection('campaigns').doc(this.currentCampaign).update({
+            quarries: firebase.firestore.FieldValue.arrayUnion(quarryId)
+        }).then(() => {
+          this.setLoading(false)
+          this.showAddQuarry = false
+        })
       },
       
-      addLocation() {
-      
+      addLocation(locationId) {
+        if(!locationId || locationId.length === 0) return
+        
+        this.setLoading(true)
+        db.collection('campaigns').doc(this.currentCampaign).update({
+            locations: firebase.firestore.FieldValue.arrayUnion(locationId)
+        }).then(() => {
+          this.setLoading(false)
+          this.showAddLocation = false
+        })
       },
       
       invitePlayer() {
