@@ -1,6 +1,6 @@
 <template>
     <div class="buttons is-centered">
-        <b-button 
+        <b-button
             size="is-large"
             icon-left="plus-circle"
             rounded
@@ -211,10 +211,10 @@ export default {
             
             kdm.innovations.forEach(i => {
                 console.log('Adding innovation to deck: '+i.reference)
-                campaign.collection('innovations').doc(i.reference).set({
-                    innovation: db.collection('innovations').doc(i.reference),
+                campaign.collection('innovations').doc(i.id).set({
                     deck: i.deck,
-                    innovated: i.innovated
+                    innovated: i.innovated,
+                    year: i.year
                 }).then(() => this.updateProgress('Building innovation deck'))
             })
         }

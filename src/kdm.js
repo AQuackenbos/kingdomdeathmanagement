@@ -4,7 +4,7 @@ const quarries = [
 
 const innovations = [
   {
-    reference: "language",
+    id: "language",
     deck: true,
     innovated: false,
     year: null

@@ -33,7 +33,7 @@ export default {
     },
     computed: {
         validLocations() {
-            if(!this.campaign || !this.quarries) return []
+            if(!this.campaign || !this.locations) return []
             
             return this.locations.filter(l => {
                 return !this.campaign.locations.includes(l.id)
