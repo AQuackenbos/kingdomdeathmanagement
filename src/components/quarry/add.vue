@@ -7,7 +7,7 @@
         <section class="modal-card-body">
             <p class="content">
                 Select a Quarry to add to your Settlement's hunt list.
-                <b-message type="is-danger">This list contains all valid quarries.</b-message>
+                <b-message type="is-warning">This list contains all valid quarries.</b-message>
             </p>
             <b-field label="Quarry" label-position="on-border">
                 <b-select placeholder="Add Quarry" icon="paw" v-model="quarry" required expanded>

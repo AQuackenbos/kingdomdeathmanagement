@@ -1,101 +1,255 @@
 <template>
-    <div class="column is-12" v-if="!loading && user && campaign">
+  <div class="column is-12" v-if="!loading && user && campaign">
+    <div class="columns is-multiline">
+    <div class="column is-12">
+      <h1 class="title">Innovations Researched</h1>
+    </div>
+    <div class="column is-12" v-if="researched.length === 0">
+      Your settlement has not gained any innovations yet.
+    </div>
+    <div class="column is-3" v-for="i in researched" :key="i.id">
+      <article class="panel" v-if="i.innovation" :class="category[i.innovation.category]">
+        <div class="panel-heading">
+          <b-icon v-if="i.innovation" :icon="icon[i.innovation.category]" size="is-small" />
+          {{ i.innovation.name }}
+          <b-dropdown aria-role="list" position="is-bottom-left" class="is-pulled-right">
+            <b-button slot="trigger" :type="category[i.innovation.category]"><b-icon icon="ellipsis-h" /></b-button>
+            <b-dropdown-item aria-role="listItem" @click="returnToDeck(i)"><b-icon icon="trash-alt" size="is-small" type="is-danger" />Return to Deck</b-dropdown-item>
+          </b-dropdown>
+        </div>
+        <div class="panel-block">
+          <p>
+            <span>Innovated in &nbsp;</span>
+            <strong>Lantern Year {{ i.year }}</strong>
+          </p>
+        </div>
+        <div class="panel-block" v-if="i.innovation">
+          <InnovationDesc
+            :innovation="i.innovation"
+          />
+        </div>
+        <div class="panel-block" v-if="i.innovation.consequences">
+          <p>Added <strong>{{ i.innovation.consequences.length }}</strong> innovations to the deck.</p>
+        </div>
+      </article>
+      <article v-else>WARNING: No Innovation Found for {{ i.id }}</article>
+    </div>
+    <div class="column is-12">
+      <hr />
+    </div>
+    <div class="column is-12" v-if="!showDeck">
+      <b-button @click.prevent="showDeck = true" type="is-info" expanded>Show Innovation Deck</b-button>
+    </div>
+    <div class="column is-12" v-else>
       <div class="columns is-multiline">
-        <div class="column is-12">
-          <h1 class="title">Innovations Researched</h1>
-        </div>
-        <div class="column is-3" v-for="i in researched" :key="i.id">
-          <article class="panel" :class="category[i.innovation.category]">
-            <p class="panel-heading">
-              {{ i.innovation.name }}
-            </p>
-            <div class="panel-block">
-              Innovated in &nbsp; <span class="has-text-weight-bold">Lantern Year {{ i.year }}</span>
-            </div>
-            <div class="panel-block">
-              (Desc)
-            </div>
-            <div class="panel-block">
-              <p>Adds <strong>{{ i.innovation.consequences.length }}</strong> innovations to the deck.</p>
-            </div>
-          </article>
-        </div>
-        <div class="column is-12">
+        <div class="column is-12" v-if="showDeck">
           <h1 class="title">In Deck</h1>
         </div>
         <div class="column is-3" v-for="i in deck" :key="i.id">
           <article class="panel" :class="category[i.innovation.category]">
-            <p class="panel-heading">
+            <div class="panel-heading">
+              <b-icon v-if="i.innovation" :icon="icon[i.innovation.category]" size="is-small" />
               {{ i.innovation.name }}
-            </p>
-            <div class="panel-block">
-              (Desc)
-            </div>
-            <div class="panel-block">
-              <p>Adds <strong>{{ i.innovation.consequences.length }}</strong> innovations to the deck.</p>
+              <b-dropdown aria-role="list" position="is-bottom-left" class="is-pulled-right">
+                <b-button slot="trigger" type="is-dark"><b-icon icon="caret-down" /></b-button>
+                <b-dropdown-item aria-role="listItem" @click="researchInnovation(i)"><b-icon icon="plus-square" size="is-small" type="is-success" />Research</b-dropdown-item>
+                <b-dropdown-item aria-role="listItem" @click="removeFromDeck(i)"><b-icon icon="trash-alt" size="is-small" type="is-danger" />Remove</b-dropdown-item>
+              </b-dropdown>
             </div>
           </article>
         </div>
+        <div class="column is-12">
+            <b-button @click="promptAdd" type="is-warning" icon-left="exclamation-circle">Add Any Innovation To Deck</b-button>
+            <b-modal
+              v-model="showAddInnovation"
+              has-modal-card
+              trap-focus
+              :destroy-on-hide="false"
+              aria-role="dialog"
+              aria-modal>
+              <template #default="props">
+                <InnovationAdd 
+                  :innovations="innovations"
+                  :campaign="campaign"
+                  @close="props.close"
+                  @add="addToDeck"
+                />
+              </template>
+            </b-modal>
+        </div>
       </div>
     </div>
+    </div>
+  </div>
 </template>
 
+<style lang="scss">
+div.dropdown-trigger {
+    margin-top: -.25em
+}
+</style>
+
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { db } from '@/firebase'
+import InnovationAdd from '@/components/innovation/add'
+import InnovationDesc from '@/components/innovation/description'
 
 export default {
-    name: 'Innovations',
-    data() {
-        return {
-            campaign: null,
-            innovations: [],
-            campaignInnovations: []
-        }
-    },
-    computed: {
-        ...mapGetters({
-            loading: 'loading',
-            user: 'user',
-            currentCampaign: 'currentCampaign'
-        }),
-        
-        category() {
-          return {
-            'starting': 'is-black',
-            'science': 'is-link',
-            'home': 'is-danger',
-            'education': 'is-success',
-            'faith': 'is-light',
-            'art': 'is-warning',
-            'music': 'is-primary',
-            'other': 'is-info'
-          }
-        },
-        
-        researched() {
-         return this.campaignInnovations.filter(i => i.innovated)
-          .map(i => {
-            i.innovation = this.innovations.find(a => a.id === i.id)
-            return i
-          })
-        },
-        
-        deck() {
-         return this.campaignInnovations.filter(i => i.deck)
-          .map(i => {
-            i.innovation = this.innovations.find(a => a.id === i.id)
-            return i
-          })
-        }
-    },
-    created() {
-        this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
-        this.$bind('campaignInnovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
-        this.$bind('innovations', db.collection('innovations'))
-    },
-    methods: {
-      
+  name: 'Innovations',
+  data() {
+    return {
+      campaign: null,
+      innovations: [],
+      campaignInnovations: [],
+      showDeck: false,
+      showAddInnovation: false
     }
+  },
+  components: {
+    InnovationAdd,
+    InnovationDesc
+  },
+  computed: {
+    ...mapGetters({
+      loading: 'loading',
+      user: 'user',
+      currentCampaign: 'currentCampaign'
+    }),
+    
+    category() {
+      return {
+        'starting': 'is-black',
+        'science': 'is-info',
+        'home': 'is-danger',
+        'education': 'is-success',
+        'faith': 'is-light',
+        'art': 'is-warning',
+        'music': 'is-primary',
+        'other': 'is-white'
+      }
+    },
+    
+    icon() {
+      return {
+        'starting': 'star',
+        'science': 'flask',
+        'home': 'home',
+        'education': 'book-open',
+        'faith': 'cross',
+        'art': 'theater-masks',
+        'music': 'music',
+        'other': 'asterisk'
+      }
+    },
+    
+    
+    researched() {
+     return this.campaignInnovations.filter(i => i.innovated)
+      .map(i => {
+        i.innovation = this.innovations.find(a => a.id === i.id)
+        return i
+      })
+    },
+    
+    deck() {
+     return this.campaignInnovations.filter(i => i.deck)
+      .map(i => {
+        i.innovation = this.innovations.find(a => a.id === i.id)
+        return i
+      })
+    }
+  },
+  created() {
+    this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
+    this.$bind('campaignInnovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
+    this.$bind('innovations', db.collection('innovations'))
+  },
+  methods: {
+    ...mapActions([
+      'setLoading'
+    ]),
+  
+    innovatedThisYear() {
+      return this.campaignInnovations.filter(ci => ci.year === this.campaign.year).length > 0
+    },
+    
+    returnToDeck(i) {
+        this.$buefy.dialog.confirm({
+            message: "Are you sure?  This is a relatively rare event.  <br /><em>This will NOT remove any consequences of this Innovation from the deck.</em>",
+            trapFocus: true,
+            closeOnConfirm: true,
+            onConfirm: () => {
+                this.setLoading(true)
+                db.collection(`campaigns/${this.currentCampaign}/innovations`).doc(i.id).update({
+                    deck: true,
+                    innovated: false,
+                    year: null
+                }).then(() => this.setLoading(false))
+            }
+        })
+    },
+    
+    researchInnovation(i) {
+        let innovation = this.innovations.find(inno => i.id === inno.id)
+        let confirmMsg = `Research <strong>${innovation.name}</strong>?`
+        if(this.innovatedThisYear) {
+            confirmMsg = `Research <strong>${innovation.name}</strong>? <br /><em>You have already Innovated this year.  Make sure this is on purpose.</em>`
+        }
+        
+        this.$buefy.dialog.confirm({
+            message: confirmMsg,
+            trapFocus: true,
+            closeOnConfirm: true,
+            onConfirm: () => {
+                this.setLoading(true)
+                db.collection(`campaigns/${this.currentCampaign}/innovations`).doc(i.id).update({
+                    deck: false,
+                    innovated: true,
+                    year: this.campaign.year
+                }).then(() => this.setLoading(false))
+                
+                if(innovation.consequences?.length) {
+                    innovation.consequences.forEach(c => {
+                        this.addToDeck(c)
+                    })
+                }
+                return
+            }
+        })
+    },
+    
+    removeFromDeck(i) {
+        this.$buefy.dialog.confirm({
+            message: "Are you sure?  Removing Innovations from the deck is very rare.",
+            trapFocus: true,
+            closeOnConfirm: true,
+            onConfirm: () => {
+                this.setLoading(true)
+                db.collection(`campaigns/${this.currentCampaign}/innovations`).doc(i.id).delete().then(() => this.setLoading(false))
+            }
+        })
+    },
+    
+    addToDeck(id) {
+        this.showAddInnovation = false
+        db.collection(`campaigns/${this.currentCampaign}/innovations`).doc(id).set({
+            deck: true,
+            innovated: false,
+            year: null
+        }).then(() => this.$buefy.toast.open({ message: `Added card to Innovation deck.` }))
+    },
+    
+    promptAdd() {
+        this.$buefy.dialog.confirm({
+            message: 'This is pretty rare.  Are you sure?',
+            trapFocus: true,
+            closeOnConfirm: true,
+            onConfirm: () => {
+                this.showAddInnovation = true
+            }
+        })
+    }
+  }
 }
 </script>

@@ -7,7 +7,7 @@
         <section class="modal-card-body">
             <p class="content">
                 Select a Location to add to your Settlement's Locations list.
-                <b-message type="is-danger">This list contains all valid locations available.</b-message>
+                <b-message type="is-warning">This list contains all valid locations available.</b-message>
             </p>
             <b-field label="Location" label-position="on-border">
                 <b-select placeholder="Add Location" icon="location-arrow" v-model="location" required expanded>

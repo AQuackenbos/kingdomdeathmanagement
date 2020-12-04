@@ -58,13 +58,11 @@
                 </span>
             </div>
             <div class="column is-2">
-                <span v-if="ly.innovation">
+                <div v-for="i in innovationsByYear[ly.id]" :key="i.id">
                     <b-icon icon="flask" custom-size="xs" />
-                    {{ ly.innovation }}
-                </span>
-                <span v-if="activeRow === ly.id">
-                    <b-button v-if="!ly.innovation" type="is-success" icon-right="plus" @click.prevent="addInnovation(ly.id)" />
-                </span>
+                    <span v-if="i.innovation">{{ i.innovation.name }}</span>
+                    <span v-else>{{ i.id }}</span>
+                </div>
             </div>
             <div class="column is-2">
                 <span v-if="ly.quarry">
@@ -140,7 +138,8 @@ export default {
             allQuarries: [],
             activeRow: null,
             loadingComponents: {},
-            selectingQuarry: null
+            selectingQuarry: null,
+            innovations: []
         }
     },
     computed: {
@@ -154,14 +153,32 @@ export default {
             return this.allQuarries.filter(q => {
                 return this.campaign.quarries.includes(q.id)
             })
+        },
+        
+        innovationsByYear() {
+            if(!this.innovations) return []
+        
+            let years = this.innovations.map(i => i.year).filter((v,i,s) => s.indexOf(v) === i && v !== null)
+            let innos = {}
+            years.forEach(y => {
+                if(!(y in innos)) innos[y.toString()] = []
+                this.innovations.filter(i => i.year === y).forEach(i => {
+                    i.innovation = this.allInnovations.find(inno => i.id === inno.id)
+                    innos[y.toString()].push(i)
+                })
+            })
+            
+            return innos
         }
     },
     created() {
         this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
         this.$bind('timeline', db.collection(`campaigns/${this.currentCampaign}/timeline`).orderBy('year', 'asc'))
+        this.$bind('allInnovations', db.collection('innovations'))
         this.$bind('allQuarries', db.collection('quarries'))
+        this.$bind('innovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
     },
-    methods: {
+    methods: {    
         setYearLoading(year, loading) {
             if(!this.loadingComponents[year] && loading) {
                 this.loadingComponents[year] = this.$buefy.loading.open({
@@ -174,24 +191,6 @@ export default {
                 this.loadingComponents[year].close()
                 delete this.loadingComponents[year]
             }
-        },
-    
-        addInnovation(year) {
-            this.$buefy.dialog.prompt({
-                message: 'What did you innovate in Lantern Year '+year+'?',
-                inputAttrs: {
-                    required: true
-                },
-                trapFocus: true,
-                onConfirm: (inno) => {
-                    this.setYearLoading(year, true)
-                    db.collection(`campaigns/${this.currentCampaign}/timeline`).doc(year.toString()).update({
-                        innovation: inno
-                    }).then(() => {
-                        this.setYearLoading(year, false)
-                    })
-                }
-            })
         },
         
         addStoryEvent(year) {
