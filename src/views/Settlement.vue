@@ -21,14 +21,15 @@
           <div class="column is-3">
             <div class="card">
               <header class="card-header">
-                <p class="card-header-title is-centered">Campaign Survival</p>
+                <p class="card-header-title is-centered">Survival</p>
               </header>
               <div class="card-content">
                 <div class="block">
                     <h1 class="subtitle">Limit</h1>
-                    <h2 class="title can-update" @click="updateSurvival('max')">{{ campaign.survival.max }}</h2>
+                    <h2 class="title can-update max-survival" @click="updateSurvival">{{ campaign.survival.max }}</h2>
+                    <p class="has-text-size-7 is-size-7" style="color:#aaa;margin-bottom:.25em">(+{{ maxSurvivalBonus }} from Innovations)</p>
                     <h1 class="subtitle">Departing</h1>
-                    <h2 class="title can-update" @click="updateSurvival('departing')">{{ campaign.survival.departing }}</h2>
+                    <h2 class="title">{{ departingSurvival }}</h2>
                 </div>
               </div>
             </div>
@@ -213,6 +214,10 @@
     height: 20px;
   }
 }
+
+.max-survival {
+  margin-bottom: 0;
+}
 </style>
 
 <script>
@@ -234,6 +239,8 @@ export default {
         quarries: [],
         locations: [],
         users: [],
+        innovations: [],
+        allInnovations: [],
         showAddQuarry: false,
         showAddLocation: false,
         quarry: null
@@ -270,6 +277,20 @@ export default {
       
       members() {
         return this.users.filter(u => this.campaign.members.includes(u.id))
+      },
+      
+      maxSurvivalBonus() {
+        return this.researchedInnovations.filter(i => i.increaseLimit).length
+      },
+      
+      departingSurvival() {
+        return this.researchedInnovations.filter(i => i.departingSurvival).length
+      },
+      
+      researchedInnovations() {
+        return this.allInnovations.filter(i => {
+          return this.innovations.find(inno => inno.id === i.id && inno.innovated)
+        })
       }
     },
     created() {
@@ -278,6 +299,8 @@ export default {
       this.$bind('quarries', db.collection('quarries'))
       this.$bind('users', db.collection('users'))
       this.$bind('locations', db.collection('locations'))
+      this.$bind('innovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
+      this.$bind('allInnovations', db.collection('innovations'))
     },
     methods: {
       ...mapActions([
@@ -307,15 +330,15 @@ export default {
         })
       },
       
-      updateSurvival(type) {
+      updateSurvival() {
         this.$buefy.dialog.prompt({
-          message: `Update Survival (${type})`,
+          message: `Update Max Survival`,
           trapFocus: true,
           inputAttrs: {
             type: 'number',
-            value: this.campaign.survival[type]
+            value: this.campaign.survival.max
           },
-          onConfirm: (val) => this.updateField(`survival.${type}`, parseInt(val))
+          onConfirm: (val) => this.updateField('survival.max', parseInt(val))
         })
       },
       

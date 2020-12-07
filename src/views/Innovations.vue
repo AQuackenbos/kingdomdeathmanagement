@@ -8,22 +8,23 @@
       Your settlement has not gained any innovations yet.
     </div>
     <div class="column is-3" v-for="i in researched" :key="i.id">
-      <article class="panel" v-if="i.innovation" :class="category[i.innovation.category]">
+      <article class="panel innovation" v-if="i.innovation" :class="category[i.innovation.category]" :id="i.id">
         <div class="panel-heading">
-          <b-icon v-if="i.innovation" :icon="icon[i.innovation.category]" size="is-small" />
-          {{ i.innovation.name }}
+          <b-tooltip label="Lantern Year Innovated" position="is-top" type="is-dark" class="is-pulled-left">
+            <b-button rounded type="is-dark" size="is-small" class="is-pulled-left">
+                <strong>{{ i.year }}</strong>
+            </b-button>
+          </b-tooltip>
+          <b-tooltip :label="capitalize(i.innovation.category)" type="is-dark" position="is-top">
+            <b-icon :icon="icon[i.innovation.category]" size="is-small" />
+          </b-tooltip>
+          <span style="margin-left:.5em">{{ i.innovation.name }}</span>
           <b-dropdown aria-role="list" position="is-bottom-left" class="is-pulled-right">
             <b-button slot="trigger" :type="category[i.innovation.category]"><b-icon icon="ellipsis-h" /></b-button>
             <b-dropdown-item aria-role="listItem" @click="returnToDeck(i)"><b-icon icon="trash-alt" size="is-small" type="is-danger" />Return to Deck</b-dropdown-item>
           </b-dropdown>
         </div>
         <div class="panel-block">
-          <p>
-            <span>Innovated in &nbsp;</span>
-            <strong>Lantern Year {{ i.year }}</strong>
-          </p>
-        </div>
-        <div class="panel-block" v-if="i.innovation">
           <InnovationDesc
             :innovation="i.innovation"
           />
@@ -51,7 +52,7 @@
               <b-icon v-if="i.innovation" :icon="icon[i.innovation.category]" size="is-small" />
               {{ i.innovation.name }}
               <b-dropdown aria-role="list" position="is-bottom-left" class="is-pulled-right">
-                <b-button slot="trigger" type="is-dark"><b-icon icon="caret-down" /></b-button>
+                <b-button slot="trigger" :type="category[i.innovation.category]"><b-icon icon="ellipsis-h" /></b-button>
                 <b-dropdown-item aria-role="listItem" @click="researchInnovation(i)"><b-icon icon="plus-square" size="is-small" type="is-success" />Research</b-dropdown-item>
                 <b-dropdown-item aria-role="listItem" @click="removeFromDeck(i)"><b-icon icon="trash-alt" size="is-small" type="is-danger" />Remove</b-dropdown-item>
               </b-dropdown>
@@ -86,6 +87,14 @@
 <style lang="scss">
 div.dropdown-trigger {
     margin-top: -.25em
+}
+
+span.b-tooltip.is-pulled-left {
+    margin-top: -.4em
+}
+
+#song_of_the_brave .panel-heading {
+    min-height: 3.75em;
 }
 </style>
 
@@ -150,6 +159,13 @@ export default {
         i.innovation = this.innovations.find(a => a.id === i.id)
         return i
       })
+      .sort((a,b) => {
+        if(a.year > b.year)
+            return 1
+        if(b.year > a.year)
+            return -1
+        return 0
+      })
     },
     
     deck() {
@@ -169,6 +185,10 @@ export default {
     ...mapActions([
       'setLoading'
     ]),
+  
+    capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1)
+    },
   
     innovatedThisYear() {
       return this.campaignInnovations.filter(ci => ci.year === this.campaign.year).length > 0
@@ -193,7 +213,7 @@ export default {
     researchInnovation(i) {
         let innovation = this.innovations.find(inno => i.id === inno.id)
         let confirmMsg = `Research <strong>${innovation.name}</strong>?`
-        if(this.innovatedThisYear) {
+        if(this.innovatedThisYear()) {
             confirmMsg = `Research <strong>${innovation.name}</strong>? <br /><em>You have already Innovated this year.  Make sure this is on purpose.</em>`
         }
         

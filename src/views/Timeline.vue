@@ -12,7 +12,7 @@
             <div class="column is-2">Special Showdown</div>
             <div class="column is-2">Innovated</div>
             <div class="column is-2">Quarry</div>
-            <div class="column is-1">Success</div>
+            <div class="column is-1">Endeavors</div>
         </div>
         <div class="columns timeline-row" 
             :class="{ current: ly.year === campaign.year }" 
@@ -66,20 +66,26 @@
             </div>
             <div class="column is-2">
                 <span v-if="ly.quarry">
-                    <img class="special-icon small icon-nemesis" src="images/nemesis.png"/>
-                    {{ ly.quarry }}
+                    <div>
+                        <img class="special-icon small icon-nemesis" src="images/nemesis.png"/>
+                        <span>{{ ly.quarry }}</span>
+                    </div>
+                    <b-checkbox size="is-small" v-model="ly.successful" type="is-info" @input="flagSuccess(ly.id, $event)">Successful Hunt</b-checkbox>
                 </span>
                 <span v-else-if="activeRow === ly.id">
                     <b-field>
                         <b-select placeholder="Quarry" v-model="selectingQuarry">
                             <option v-for="q in quarries" :key="q.id" :value="q.name">{{ q.name }}</option>
                         </b-select>
+                        <b-select placeholder="Lv." v-model="sQLevel">
+                            <option v-for="n in [1,2,3]" :key="n" :value="n">{{ n }}</option>
+                        </b-select>
                         <b-button type="is-success" icon-right="plus" @click.prevent="confirmQuarry(ly.id)" />
                     </b-field>
                 </span>
             </div>
             <div class="column is-1">
-                <b-checkbox v-model="ly.successful" type="is-info" @input="flagSuccess(ly.id, $event)"/>
+                <b-button rounded type="is-black" icon-right="asterisk" class="circle-icon" @click.prevent="showEndeavors(ly.id)" />
             </div>
         </div>
     </div>
@@ -91,6 +97,10 @@
 .timeline-row .is-2, 
 .timeline-row .is-3 {
   text-align: left
+}
+
+button.circle-icon {
+    padding: 0.5em 1em;
 }
 
 .header {
@@ -139,7 +149,8 @@ export default {
             activeRow: null,
             loadingComponents: {},
             selectingQuarry: null,
-            innovations: []
+            innovations: [],
+            sQLevel: null
         }
     },
     computed: {
@@ -256,9 +267,10 @@ export default {
         confirmQuarry(year) {
             this.setYearLoading(year, true)
             db.collection(`campaigns/${this.currentCampaign}/timeline`).doc(year.toString()).update({
-                quarry: this.selectingQuarry
+                quarry: this.selectingQuarry + ' Lv. ' + this.sQLevel
             }).then(() => {
                 this.selectingQuarry = null
+                this.sQLevel = null
                 this.setYearLoading(year, false)
             })
         },
@@ -280,6 +292,28 @@ export default {
                         year: year
                     })
                 }
+            })
+        },
+        
+        showEndeavors(year) {
+            let iconHtml = '<button data-v-e945440a="" type="button" class="button is-small circle-icon is-black is-rounded disabled"><span class="icon is-small"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="asterisk" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-asterisk fa-w-16 fa-1x"><path fill="currentColor" d="M478.21 334.093L336 256l142.21-78.093c11.795-6.477 15.961-21.384 9.232-33.037l-19.48-33.741c-6.728-11.653-21.72-15.499-33.227-8.523L296 186.718l3.475-162.204C299.763 11.061 288.937 0 275.48 0h-38.96c-13.456 0-24.283 11.061-23.994 24.514L216 186.718 77.265 102.607c-11.506-6.976-26.499-3.13-33.227 8.523l-19.48 33.741c-6.728 11.653-2.562 26.56 9.233 33.037L176 256 33.79 334.093c-11.795 6.477-15.961 21.384-9.232 33.037l19.48 33.741c6.728 11.653 21.721 15.499 33.227 8.523L216 325.282l-3.475 162.204C212.237 500.939 223.064 512 236.52 512h38.961c13.456 0 24.283-11.061 23.995-24.514L296 325.282l138.735 84.111c11.506 6.976 26.499 3.13 33.227-8.523l19.48-33.741c6.728-11.653 2.563-26.559-9.232-33.036z" class=""></path></svg></span></button>'
+            let currYear = this.timeline[year]
+            currYear;
+            let endeavorsSpent = currYear.endeavors
+            
+            let alertHtml = ''
+            if(endeavorsSpent?.length) {
+                alertHtml = endeavorsSpent.map(e => {
+                    return '<p class="content">' + iconHtml + ' ' + e + '</p>'
+                }).join('<hr />')
+            } else {
+                alertHtml = '<p>No Endeavors spent this lantern year.</p>'
+            }
+            
+            this.$buefy.dialog.alert({
+                title: 'Endeavors Spent',
+                message: `${alertHtml}`,
+                confirmText: 'OK'
             })
         }
     }
