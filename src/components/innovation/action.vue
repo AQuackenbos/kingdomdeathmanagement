@@ -1,27 +1,95 @@
 <template>
-    <section class="content" style="width:100%">
-        ACTION: {{ action.name }}
-        <div class="field">
-        <div class="field-body">
-        <div class="field has-addons">
-            <p class="control">
-                <span class="button is-static">
-                    <b-icon icon="asterisk" type="is-dark" size="is-small" />
-                </span>
-            </p>
-            <p>
-                a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content a lot of content 
-            </p>
-        </div>
-        </div>
-        </div>
+    <div class="action content">
+    <section class="field is-grouped" style="width:100%">
+      <p class="left light-brown">
+        <b-button rounded class="circle-icon is-static" size="is-small" type="is-black" icon-right="asterisk" v-for="n in action.cost" :key="n" />
+      </p>
+      <p class="right brown">
+        <strong v-if="action.name">{{ action.name }} &mdash;&nbsp;</strong>
+        <span v-if="action.description" v-html="action.description" />
+      </p>
     </section>
+    <table class="table is-striped" v-if="action.results">
+      <tbody>
+        <tr v-for="(r,i) in action.results" :key="i">
+          <td class="left" v-html="r.roll" />
+          <td class="right" v-html="r.result" />
+        </tr>
+      </tbody>
+    </table>
+    </div>
 </template>
 
 <style lang="scss">
 .brown {
-    background: #9c6833 !important;
-    color: #fff !important;
+  background: #9c6833 !important;
+  color: #fff !important;
+}
+
+.light-brown {
+  background: #e4b98e !important;
+}
+
+.button.circle-icon {
+  padding: 0.5em 1em;
+}
+
+
+.action {
+  &:not(:last-child) {
+    margin-bottom: 1em;
+  }
+  
+  .special-icon {
+    width: 20px;
+    height: 20px;
+    margin-bottom: -5px;
+    border-radius: 10px;
+    background: white;
+  }
+
+  strong {
+    color: white;
+  }
+  
+  .field {
+    margin-bottom: 0;
+  }
+  
+  .table {
+    margin-top: 0;
+  }
+  
+  p, td {
+    font-size: 0.75em;
+    border: 1px solid black;
+    margin-bottom: 0 !important;
+    padding: .5em;
+    
+    ul {
+      margin-top: 0;
+    }
+    
+    &.left {
+      width: 20%;
+      border-radius: .5em 0 0 .5em;
+    }
+    
+    &.right {
+      width: 80%;
+      border-radius: 0 .5em .5em 0;
+      text-align: left;
+    }
+  }
+  
+  td strong {
+    color: black;
+  }
+  
+  .button {
+    background: black;
+    color: white;
+  }
 }
 
 </style>

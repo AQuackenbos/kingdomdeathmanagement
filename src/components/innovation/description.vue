@@ -78,6 +78,13 @@
         strong {
             color: #fff;
         }
+        
+        .field {
+          margin-bottom: .25em;
+          .tag {
+            margin-bottom: 0;
+          }
+        }
     }
 
     .flavor {
