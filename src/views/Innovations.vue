@@ -49,8 +49,10 @@
         <div class="column is-3" v-for="i in deck" :key="i.id">
           <article class="panel" :class="category[i.innovation.category]">
             <div class="panel-heading">
-              <b-icon v-if="i.innovation" :icon="icon[i.innovation.category]" size="is-small" />
-              {{ i.innovation.name }}
+          <b-tooltip :label="capitalize(i.innovation.category)" type="is-dark" position="is-top">
+            <b-icon :icon="icon[i.innovation.category]" size="is-small" />
+          </b-tooltip>
+              <span>{{ i.innovation.name }}</span>
               <b-dropdown aria-role="list" position="is-bottom-left" class="is-pulled-right">
                 <b-button slot="trigger" :type="category[i.innovation.category]"><b-icon icon="ellipsis-h" /></b-button>
                 <b-dropdown-item aria-role="listItem" @click="researchInnovation(i)"><b-icon icon="plus-square" size="is-small" type="is-success" />Research</b-dropdown-item>
@@ -141,14 +143,14 @@ export default {
     
     icon() {
       return {
-        'starting': 'star',
+        'starting': 'seedling',
         'science': 'flask',
         'home': 'home',
         'education': 'book-open',
         'faith': 'cross',
         'art': 'theater-masks',
         'music': 'music',
-        'other': 'asterisk'
+        'other': 'star'
       }
     },
     
