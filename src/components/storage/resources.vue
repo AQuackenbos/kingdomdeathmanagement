@@ -104,6 +104,7 @@ export default {
         .map(r => r.category.trim().toLowerCase())
         .filter((v,i,s) => s.indexOf(v) === i && v !== null)
         .map(r => r.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '))
+        .sort()
     },
     
     categories() {
