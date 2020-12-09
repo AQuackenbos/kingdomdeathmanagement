@@ -2,7 +2,15 @@
   <div class="column is-12" v-if="!loading && user && campaign">
     <div class="columns is-multiline">
     <div class="column is-12">
-      <h1 class="title">Innovations Researched</h1>
+      <h1 class="title">
+        Innovations Researched
+        <b-field label="Sort by" label-position="on-border" class="is-pulled-right" style="margin-top:.25em">
+            <b-select icon="sort" v-model="sortBy">
+                <option value="year">Lantern Year Innovated</option>
+                <option value="name">Innovation Name</option>
+            </b-select>
+        </b-field>
+      </h1>
     </div>
     <div class="column is-12" v-if="researched.length === 0">
       Your settlement has not gained any innovations yet.
@@ -114,7 +122,8 @@ export default {
       innovations: [],
       campaignInnovations: [],
       showDeck: false,
-      showAddInnovation: false
+      showAddInnovation: false,
+      sortBy: 'year'
     }
   },
   components: {
@@ -162,9 +171,9 @@ export default {
         return i
       })
       .sort((a,b) => {
-        if(a.year > b.year)
+        if(a[this.sortBy] > b[this.sortBy])
             return 1
-        if(b.year > a.year)
+        if(b[this.sortBy] > a[this.sortBy])
             return -1
         return 0
       })

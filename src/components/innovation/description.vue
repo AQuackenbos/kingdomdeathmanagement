@@ -105,6 +105,7 @@
         .field.is-small {
             width: 5.5em !important;
             .input {
+                cursor: default !important;
                 border: 1px solid black;
                 text-align: center;
                 font-weight: bold;
