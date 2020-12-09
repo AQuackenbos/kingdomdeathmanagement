@@ -109,7 +109,7 @@
                         </b-field>
                         <b-field grouped label="Experience" ref="xp">
                             <p class="control" v-for="n in createRange(16)" :key="n">
-                                <b-tooltip type="is-light" position="is-bottom" v-if="n === 1 || n === 5 || n === 9 || n === 14 || n === 15" multilined>
+                                <b-tooltip type="is-light" position="is-bottom" v-if="n === 1 || n === 5 || n === 9 || n === 14 || n === 15" size="is-small" multilined>
                                     <button class="button is-small kdm-box thick-border"
                                         :class="{ 
                                             'is-dark': currentSurvivor.lifetime.experience > n ,
@@ -193,7 +193,7 @@
                     <div class="column is-6 cu" ref="courage">
                         <b-field grouped label="Courage">
                             <p class="control" v-for="n in createRange(9)" :key="n">
-                                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" multilined>
+                                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small" multilined>
                                     <button class="button is-large kdm-box thick-border"
                                         :class="{ 
                                             'is-dark': currentSurvivor.mentality.courage.level > n
@@ -222,7 +222,7 @@
                     <div class="column is-6 cu">
                         <b-field grouped label="Understanding">
                             <p class="control" v-for="n in createRange(9)" :key="n">
-                                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" multilined>
+                                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small" multilined>
                                     <button class="button is-large kdm-box thick-border"
                                         :class="{ 
                                             'is-dark': currentSurvivor.mentality.understanding.level > n

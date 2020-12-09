@@ -13,6 +13,9 @@
             :campaign="campaign"
           />
         </b-tab-item>
+        <b-tab-item label="Grids" icon="th">
+          (WIP)
+        </b-tab-item>
       </b-tabs>
     </section>
   </div>
