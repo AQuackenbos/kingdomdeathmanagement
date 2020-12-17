@@ -20,6 +20,11 @@
                 <div class="column is-4"></div>
                 <div class="column is-4">
                     <b-field>
+                        <b-dropdown v-model="item.type" aria-role="list">
+                            <button class="button is-white" type="button" slot="trigger">
+                                <template 
+                            </button>
+                        </b-dropdown>
                         <b-select placeholder="Item Type" icon="question-circle" v-model="item.type">
                             <option value="weapon">Weapon</option>
                             <option value="armor">Armor</option>
