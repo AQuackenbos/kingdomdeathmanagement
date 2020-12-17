@@ -2,7 +2,7 @@
     <div class="action content">
     <section class="field is-grouped" style="width:100%">
       <p class="left light-brown">
-        <b-button rounded class="circle-icon is-static" size="is-small" type="is-black" icon-right="asterisk" v-for="n in action.cost" :key="n" />
+        <a class="bl-endeavor is-size-3" style="color:black;background:white;border-radius:5em;" v-for="n in action.cost" :key="n"><br /></a>
       </p>
       <p class="right brown">
         <strong v-if="action.name">{{ action.name }} &mdash;&nbsp;</strong>
@@ -38,14 +38,6 @@
 .action {
   &:not(:last-child) {
     margin-bottom: 1em;
-  }
-  
-  .special-icon {
-    width: 20px;
-    height: 20px;
-    margin-bottom: -5px;
-    border-radius: 10px;
-    background: white;
   }
 
   strong {

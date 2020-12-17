@@ -26,7 +26,7 @@
           <b-tooltip :label="capitalize(i.innovation.category)" type="is-dark" position="is-top">
             <b-icon :icon="icon[i.innovation.category]" size="is-small" />
           </b-tooltip>
-          <span style="margin-left:.5em">{{ i.innovation.name }}</span>
+          <span style="margin-left:.5em" class="is-size-6">{{ i.innovation.name }}</span>
           <b-dropdown aria-role="list" position="is-bottom-left" class="is-pulled-right">
             <b-button slot="trigger" :type="category[i.innovation.category]"><b-icon icon="ellipsis-h" /></b-button>
             <b-dropdown-item aria-role="listItem" @click="returnToDeck(i)"><b-icon icon="trash-alt" size="is-small" type="is-danger" />Return to Deck</b-dropdown-item>
@@ -60,7 +60,7 @@
           <b-tooltip :label="capitalize(i.innovation.category)" type="is-dark" position="is-top">
             <b-icon :icon="icon[i.innovation.category]" size="is-small" />
           </b-tooltip>
-              <span>{{ i.innovation.name }}</span>
+              <span class="is-size-6">{{ i.innovation.name }}</span>
               <b-dropdown aria-role="list" position="is-bottom-left" class="is-pulled-right">
                 <b-button slot="trigger" :type="category[i.innovation.category]"><b-icon icon="ellipsis-h" /></b-button>
                 <b-dropdown-item aria-role="listItem" @click="researchInnovation(i)"><b-icon icon="plus-square" size="is-small" type="is-success" />Research</b-dropdown-item>
@@ -103,9 +103,6 @@ span.b-tooltip.is-pulled-left {
     margin-top: -.4em
 }
 
-#song_of_the_brave .panel-heading {
-    min-height: 3.75em;
-}
 </style>
 
 <script>

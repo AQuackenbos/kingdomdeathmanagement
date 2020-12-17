@@ -39,7 +39,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { db } from '@/firebase'
 import GearAdd from '@/components/storage/gear/add'
-db;
+
 export default {
   name: 'Gear',
   props: ['campaign'],
@@ -52,14 +52,28 @@ export default {
   components: {
     GearAdd
   },
+  created() {
+    this.$bind('gear', db.collection(`campaign/${this.currentCampaign}/gear`))
+  },
   computed: {
     ...mapGetters({
       loading: 'loading',
       currentCampaign: 'currentCampaign'
     }),
     
+    categoryNames() {
+      return this.gear
+        .map(r => r.category.trim().toLowerCase())
+        .filter((v,i,s) => s.indexOf(v) === i && v !== null)
+        .map(r => r.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '))
+        .sort()
+    },
+    
     categories() {
-      return [{name:'cat left'},{name:'cat right'}]
+      let categories = []
+      let names = this.categoryNames
+      names.forEach(n => categories.push({ name: n, gear: this.gear.filter(r => r.category.trim().toLowerCase() === n.trim().toLowerCase()) }))
+      return categories
     },
     
     categoriesLeft() {
@@ -79,7 +93,11 @@ export default {
   methods: {
     ...mapActions([
       'setLoading'
-    ])
+    ]),
+    
+    addGear(g) {
+      return g
+    }
   }
 }
 </script>

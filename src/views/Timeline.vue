@@ -29,7 +29,7 @@
             </div>
             <div class="column is-2">
                 <div v-for="(se,idx) in ly.storyEvents" :key="idx">
-                    <img class="special-icon small icon-story" src="images/story.png"/>
+                    <span class="bl-story-event" />&nbsp;
                     {{ se }}
                 </div>
                 <span v-if="activeRow === ly.id">
@@ -38,7 +38,7 @@
             </div>
             <div class="column is-2">
                 <div v-for="(se,idx) in ly.settlementEvents" :key="idx">
-                    <img class="special-icon small icon-settlement" src="images/settlement.png"/>
+                    <span class="bl-settlement-event" />&nbsp;
                     {{ se }}
                 </div>
                 <span v-if="activeRow === ly.id">
@@ -47,7 +47,7 @@
             </div>
             <div class="column is-2">
                 <div v-for="(sd,idx) in ly.showdowns" :key="idx">
-                    <img class="special-icon small icon-nemesis" src="images/nemesis.png"/>
+                        <span class="bl-nemesis-event" />&nbsp;
                     {{ sd.name }}
                     <span v-if="sd.level > 0">
                     - Lvl {{ sd.level }}
@@ -67,7 +67,7 @@
             <div class="column is-2">
                 <span v-if="ly.quarry">
                     <div>
-                        <img class="special-icon small icon-nemesis" src="images/nemesis.png"/>
+                        <span class="bl-nemesis-event" />&nbsp;
                         <span>{{ ly.quarry }}</span>
                     </div>
                     <b-checkbox size="is-small" v-model="ly.successful" type="is-info" @input="flagSuccess(ly.id, $event)">Successful Hunt</b-checkbox>
@@ -85,7 +85,7 @@
                 </span>
             </div>
             <div class="column is-1">
-                <b-button rounded type="is-black" icon-right="asterisk" class="circle-icon" @click.prevent="showEndeavors(ly.id)" />
+                <a @click.prevent="showEndeavors(ly.id)" class="bl-endeavor is-size-2" style="color:black" />
             </div>
         </div>
     </div>
@@ -124,15 +124,6 @@ button.circle-icon {
     border: 1px solid black
 }
 
-.special-icon {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.special-icon.small {
-    width: 20px;
-    height: 20px;
-}
 </style>
 
 <script>
