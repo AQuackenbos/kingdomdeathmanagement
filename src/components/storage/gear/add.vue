@@ -6,43 +6,153 @@
         <section class="modal-card-body">
             <div class="columns is-multiline">
                 <div class="column is-4">
-                    <div v-if="item.type === 'armor' || grantsArmor">
+                    <b-field grouped v-if="item.type === 'armor' || (item.type === 'other' && grantsArmor)">
                         <b-field label="Armor" label-position="on-border">
-                            <b-input v-model="item.armor.amount" size="is-small" />
+                            <b-input v-model="item.armor.amount" size="is-small" class="single-value" />
                         </b-field>
                         <b-field>
-                            <b-select v-model="item.armor.location" size="is-small" placeholder="Location">
-                                <option value="head"><span class="bl-head"></span> Head</option>
-                            </b-select>
+                            <b-dropdown v-model="item.armor.location" aria-role="list" position="is-bottom-right">
+                                <button class="button is-dark" type="button" slot="trigger">
+                                    <template v-if="item.armor.location">
+                                        <span :class="iconTranslation[item.armor.location]" style="margin-right:.25em"></span>
+                                        <span>{{ item.armor.location.charAt(0).toUpperCase() + item.armor.location.slice(1) }}</span>
+                                    </template>
+                                    <template v-else>
+                                        <span>Select Armor Location</span>
+                                    </template>
+                                </button>
+                                <b-dropdown-item :value="l" aria-role="listitem" v-for="l in ['all','head','body','arms','legs','waist']" :key="l">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <span :class="iconTranslation[l]"></span>
+                                        </div>
+                                        <div class="media-content">
+                                            {{ l.charAt(0).toUpperCase() + l.slice(1) }}
+                                        </div>
+                                    </div>
+                                </b-dropdown-item>
+                            </b-dropdown>
                         </b-field>
-                    </div>
+                    </b-field>
+                    <b-field grouped v-if="item.type === 'weapon' || (item.type === 'other' && grantsAttack)">
+                        <b-field label="Speed" label-position="on-border">
+                            <b-input v-model="item.weapon.speed" size="is-small" class="single-value" />
+                        </b-field>
+                        <b-field label="Accuracy" label-position="on-border">
+                            <b-input v-model="item.weapon.accuracy" size="is-small" class="single-value" />
+                        </b-field>
+                        <b-field label="Strength" label-position="on-border">
+                            <b-input v-model="item.weapon.strength" size="is-small" class="single-value" />
+                        </b-field>
+                    </b-field>
+                    <b-field label="Classifications" label-position="on-border" style="margin-top:.5em">
+                        <b-taginput
+                            v-model="item.classifications"
+                            icon="tag"
+                            placeholder="Add Classification"
+                            aria-close-label="Remove"
+                            size="is-small"
+                        />
+                    </b-field>
                 </div>
-                <div class="column is-4"></div>
+                <div class="column is-4">
+                    <b-field label="Name" label-position="on-border">
+                        <b-input v-model="item.name" size="is-small" />
+                    </b-field>
+                    <b-select placeholder="Connection" v-model="item.connections.top" size="is-small">
+                        <option>None</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                    </b-select>
+                </div>
                 <div class="column is-4">
                     <b-field>
-                        <b-dropdown v-model="item.type" aria-role="list">
-                            <button class="button is-white" type="button" slot="trigger">
-                                <template 
+                        <b-dropdown v-model="item.type" aria-role="list" position="is-bottom-left">
+                            <button class="button is-dark" type="button" slot="trigger">
+                                <template v-if="item.type">
+                                    <span :class="iconTranslation[item.type]" style="margin-right:.25em"></span>
+                                    <span>{{ item.type.charAt(0).toUpperCase() + item.type.slice(1) }}</span>
+                                </template>
+                                <template v-else>
+                                    <span>Select a Type</span>
+                                </template>
                             </button>
+                            <b-dropdown-item :value="t" aria-role="listitem" v-for="t in ['weapon','armor','item']" :key="t">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span :class="iconTranslation[t]"></span>
+                                    </div>
+                                    <div class="media-content">
+                                        {{ t.charAt(0).toUpperCase() + t.slice(1) }}
+                                    </div>
+                                </div>
+                            </b-dropdown-item>
                         </b-dropdown>
-                        <b-select placeholder="Item Type" icon="question-circle" v-model="item.type">
-                            <option value="weapon">Weapon</option>
-                            <option value="armor">Armor</option>
-                            <option value="item">Other</option>
-                        </b-select>
-                    </b-field>
-                    <b-field v-if="item.type === 'weapon'">
-                        <b-input />
                     </b-field>
                 </div>
-                <div class="column is-4">left def</div>
+                <div class="column is-4">
+                    <b-select placeholder="Connection" v-model="item.connections.left" size="is-small">
+                        <option>None</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                    </b-select>
+                </div>
                 <div class="column is-4">
                     <div class="box gear-card">
-                        <div class="contents">gear entry junk</div>
+                        <div class="contents">(GEAR CARD COMPONENT!)</div>
                     </div>
                 </div>
-                <div class="column is-4">right def</div>
-                <div class="column is-12">bottom def</div>
+                <div class="column is-4">
+                    <b-select placeholder="Connection" v-model="item.connections.right" size="is-small">
+                        <option>None</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                    </b-select>
+                </div>
+                <div class="column is-4">
+                    <b-field label="Keywords" label-position="on-border" style="margin-top:.5em">
+                        <b-taginput
+                            v-model="item.keywords"
+                            icon="tag"
+                            placeholder="Add Classification"
+                            aria-close-label="Remove"
+                            size="is-small"
+                        />
+                    </b-field>
+                    <b-field label="Free Squares" label-position="on-border" style="margin-top:.5em">
+                        <b-taginput
+                            v-model="item.squares"
+                            icon="square"
+                            placeholder="Add Square"
+                            aria-close-label="Remove"
+                            size="is-small"
+                            :before-adding="(t) => { return ['red','green','blue'].includes(t.toLowerCase()) }"
+                            :allow-duplicates="true"
+                        />
+                    </b-field>
+                </div>
+                <div class="column is-4">
+                    <b-select placeholder="Connection" v-model="item.connections.bottom" size="is-small">
+                        <option>None</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                    </b-select>
+                </div>
+                <div class="column is-4">
+                    <b-field label="Description" label-position="on-border">
+                        <b-input type="textarea" v-model="item.description" size="is-small" />
+                    </b-field>
+                </div>
+                <div class="column is-6">
+                
+                </div>
+                <div class="column is-6">
+                
+                </div>
             </div>
         </section>
         <footer class="modal-card-foot">
@@ -59,11 +169,23 @@
 }
 
 .field {
-    &::v-deep {/*
-        .input.is-small {
-            width: 3em
+    &::v-deep {
+        .is-grouped {
+            .label {
+                text-overflow: inherit;
+                left: 0;
+                overflow: visible;
+                max-width: none;
+            }
         }
-    */}
+        .single-value {
+            width: 3em;
+            
+            .input {
+                text-align: center;
+            }
+        }
+    }
 }
 
 .gear-card {
@@ -79,14 +201,14 @@ export default {
         campaign: Object,
         item: {
             type: Object,
-            default: () => { return { armor: {}, weapon: {}, classifications: [], keywords: [], description: '', bonuses: [] } }
+            default: () => { return { armor: {}, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', bonuses: [], squares: [] } }
         }
     },
     data() {
         return {
             nameInUse: false,
             grantsArmor: false,
-            
+            grantsAttack: false
         }
     },
     computed: {
@@ -97,6 +219,20 @@ export default {
                 (this.item.name !== null || this.item.name !== '') &&
                 (this.item.types && this.item.types.length > 0)
             )
+        },
+        
+        iconTranslation() {
+            return {
+                'weapon': 'bl-nemesis-event',
+                'armor': 'bl-armor',
+                'item': 'bl-lantern',
+                'all': 'bl-armor',
+                'head': 'bl-head',
+                'body': 'bl-body',
+                'arms': 'bl-arms',
+                'legs': 'bl-legs',
+                'waist': 'bl-waist'
+            }
         }
     },
     methods: {
