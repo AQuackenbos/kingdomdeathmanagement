@@ -19,9 +19,7 @@
                 <div class="level">
                     <div class="level-left">
                         <div class="level-item">
-                            <b-button type="is-white" class="circle-icon" size="is-small" rounded @click.prevent v-for="n in getRange(b.cost)" :key="n">
-                                <b-icon icon="asterisk" size="is-small" />
-                            </b-button>
+                            <a class="bl-endeavor is-size-3" style="color:black;background:white;border-radius:5em;" @click.prevent v-for="n in getRange(b.cost)" :key="n"><br /></a>
                             <strong>Build</strong>
                         </div>
                         <div class="level-item">
@@ -105,6 +103,7 @@
         .field.is-small {
             width: 5.5em !important;
             .input {
+                cursor: default !important;
                 border: 1px solid black;
                 text-align: center;
                 font-weight: bold;

@@ -156,7 +156,7 @@
                     </div>
                     <div class="level-right">
                       <div class="level-item">
-                        <img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">{{ m.consequence }}</span>
+                        <span class="bl-story-event" style="margin-right:.25em"></span>&nbsp;<span class="has-text-weight-bold">{{ m.consequence }}</span>
                       </div>
                     </div>
                   </div>
@@ -173,7 +173,7 @@
                     </div>
                     <div class="level-right">
                       <div class="level-item">
-                        <img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">{{ m.consequence }}</span>
+                        <span class="bl-story-event" style="margin-right:.25em"></span>&nbsp;<span class="has-text-weight-bold">{{ m.consequence }}</span>
                       </div>
                     </div>
                   </div>
