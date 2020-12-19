@@ -72,7 +72,7 @@
                                 <b-input v-model="currentSurvivor.lifetime.died" class="year-input" maxlength="2" style="width:4em" @change.native="saveField('lifetime.died', 'life')"/>
                             </b-field>
                             <b-field label="Cause of Death" label-position="on-border" expanded>
-                                <b-input v-model="currentSurvivor.lifetime.cause" icon="skull" @change.native="saveField('lifetime.cause', 'life')"/>
+                                <b-input v-model="currentSurvivor.lifetime.cause" :disabled="dead" icon="skull" @change.native="saveField('lifetime.cause', 'life')"/>
                             </b-field>
                         </b-field>
                         <b-field ref="cannot">
@@ -94,12 +94,12 @@
                             </b-field>
                             <div class="block">
                                 <b-checkbox
-                                    type="is-light" 
+                                    type="is-light"
                                     size="is-small"
                                     :false-value="false"
                                     style="text-transform: capitalize"
-                                    v-model="currentSurvivor.survival.abilities[a]" 
-                                    v-for="a in ['dodge','encourage','surge','dash','endure']" 
+                                    v-model="currentSurvivor.survival.abilities[a]"
+                                    v-for="a in ['dodge','encourage','surge','dash','endure']"
                                     :key="a"
                                     @input="saveField(`survival.abilities.${a}`, 'survival')"
                                     >
@@ -111,7 +111,7 @@
                             <p class="control" v-for="n in createRange(16)" :key="n">
                                 <b-tooltip type="is-light" position="is-bottom" v-if="n === 1 || n === 5 || n === 9 || n === 14 || n === 15" multilined>
                                     <button class="button is-small kdm-box thick-border"
-                                        :class="{ 
+                                        :class="{
                                             'is-dark': currentSurvivor.lifetime.experience > n ,
                                             'extra-thick': n === 15
                                         }"
@@ -120,9 +120,9 @@
                                         <span v-html="tooltips.xp[n]" />
                                     </template>
                                 </b-tooltip>
-                                <button class="button is-small kdm-box" 
-                                    :class="{ 
-                                        'is-dark': currentSurvivor.lifetime.experience > n 
+                                <button class="button is-small kdm-box"
+                                    :class="{
+                                        'is-dark': currentSurvivor.lifetime.experience > n
                                     }"
                                     @click.prevent="setExperience(n+1)"
                                     v-else></button>
@@ -133,7 +133,7 @@
                             <p class="control" v-for="n in createRange(8)" :key="n">
                                 <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 7" >
                                     <button class="button is-small kdm-box thick-border"
-                                        :class="{ 
+                                        :class="{
                                             'is-dark': currentSurvivor.weapon.proficiency > n
                                         }"
                                         @click.prevent="setWeaponProficiency(n+1)"></button>
@@ -141,9 +141,9 @@
                                         <span v-html="tooltips.wp[n]" />
                                     </template>
                                 </b-tooltip>
-                                <button class="button is-small kdm-box" 
-                                    :class="{ 
-                                        'is-dark': currentSurvivor.weapon.proficiency > n 
+                                <button class="button is-small kdm-box"
+                                    :class="{
+                                        'is-dark': currentSurvivor.weapon.proficiency > n
                                     }"
                                     @click.prevent="setWeaponProficiency(n+1)"
                                     v-else></button>
@@ -195,7 +195,7 @@
                             <p class="control" v-for="n in createRange(9)" :key="n">
                                 <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" multilined>
                                     <button class="button is-large kdm-box thick-border"
-                                        :class="{ 
+                                        :class="{
                                             'is-dark': currentSurvivor.mentality.courage.level > n
                                         }"
                                         @click.prevent="setCourageLevel(n+1)"></button>
@@ -203,9 +203,9 @@
                                         <span v-html="tooltips.courage[n]" />
                                     </template>
                                 </b-tooltip>
-                                <button class="button is-large kdm-box" 
-                                    :class="{ 
-                                        'is-dark': currentSurvivor.mentality.courage.level > n 
+                                <button class="button is-large kdm-box"
+                                    :class="{
+                                        'is-dark': currentSurvivor.mentality.courage.level > n
                                     }"
                                     @click.prevent="setCourageLevel(n+1)"
                                     v-else></button>
@@ -224,7 +224,7 @@
                             <p class="control" v-for="n in createRange(9)" :key="n">
                                 <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" multilined>
                                     <button class="button is-large kdm-box thick-border"
-                                        :class="{ 
+                                        :class="{
                                             'is-dark': currentSurvivor.mentality.understanding.level > n
                                         }"
                                         @click.prevent="setUnderstandingLevel(n+1)"></button>
@@ -232,9 +232,9 @@
                                         <span v-html="tooltips.understanding[n]" />
                                     </template>
                                 </b-tooltip>
-                                <button class="button is-large kdm-box" 
-                                    :class="{ 
-                                        'is-dark': currentSurvivor.mentality.understanding.level > n 
+                                <button class="button is-large kdm-box"
+                                    :class="{
+                                        'is-dark': currentSurvivor.mentality.understanding.level > n
                                     }"
                                     @click.prevent="setUnderstandingLevel(n+1)"
                                     v-else></button>
@@ -286,7 +286,7 @@
                             <template #message>
                                 <b-field type="is-danger">
                                     <p class="control">
-                                        <span class="button is-static">Must Skip Hunt LY</span>
+                                        <span class="button is-static" style="color:black !important">Must Skip Hunt LY</span>
                                     </p>
                                     <b-input v-model="currentSurvivor.survival.skipHunt" placeholder="-" class="year-input" @change.native="saveField('survival.skipHunt', 'im')" expanded />
                                 </b-field>
@@ -425,8 +425,8 @@ export default {
                 if((b.lifetime.died === null || b.lifetime.died === '') && (a.lifetime.died !== null && a.lifetime.died !== ''))
                     return 1
                     
-                let aName = a.lifetime.name.toUpperCase()
-                let bName = b.lifetime.name.toUpperCase()
+                let aName = a.lifetime.name?.toUpperCase()
+                let bName = b.lifetime.name?.toUpperCase()
                 
                 if(aName > bName)
                     return 1
@@ -474,6 +474,15 @@ export default {
             let d = this.currentSurvivor.defenses
             
             return d.arms.severe.concat(d.body.severe, d.head.severe, d.waist.severe, d.legs.severe)
+        },
+        
+        dead() {
+          if(!this.currentSurvivor) return false
+          
+          return !(
+            this.currentSurvivor.lifetime.died !== null &&
+            this.currentSurvivor.lifetime.died !== ''
+          )
         }
     },
     created() {
