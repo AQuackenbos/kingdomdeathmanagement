@@ -11,14 +11,16 @@
                             <b-input v-model="item.armor.amount" size="is-small" class="single-value" />
                         </b-field>
                         <b-field>
-                            <b-dropdown v-model="item.armor.location" aria-role="list" position="is-bottom-right">
-                                <button class="button is-dark" type="button" slot="trigger">
-                                    <template v-if="item.armor.location">
-                                        <span :class="iconTranslation[item.armor.location]" style="margin-right:.25em"></span>
-                                        <span>{{ item.armor.location.charAt(0).toUpperCase() + item.armor.location.slice(1) }}</span>
+                            <b-dropdown v-model="item.armor.locations" aria-role="list" position="is-bottom-right" size="is-small" multiple>
+                                <button class="button is-dark is-small" type="button" slot="trigger">
+                                    <template v-if="item.armor.locations.length > 0">
+                                        <div v-for="l in item.armor.locations" :key="l" style="margin-right:.5em">
+                                            <span :class="iconTranslation[l]" style="margin-right:.25em"></span>
+                                            <span>{{ l.charAt(0).toUpperCase() + l.slice(1) }}</span>
+                                        </div>
                                     </template>
                                     <template v-else>
-                                        <span>Select Armor Location</span>
+                                        <span>Select Armor Location(s)</span>
                                     </template>
                                 </button>
                                 <b-dropdown-item :value="l" aria-role="listitem" v-for="l in ['all','head','body','arms','legs','waist']" :key="l">
@@ -69,7 +71,7 @@
                 <div class="column is-4">
                     <b-field>
                         <b-dropdown v-model="item.type" aria-role="list" position="is-bottom-left">
-                            <button class="button is-dark" type="button" slot="trigger">
+                            <button class="button is-dark is-small" type="button" slot="trigger">
                                 <template v-if="item.type">
                                     <span :class="iconTranslation[item.type]" style="margin-right:.25em"></span>
                                     <span>{{ item.type.charAt(0).toUpperCase() + item.type.slice(1) }}</span>
@@ -122,7 +124,7 @@
                             size="is-small"
                         />
                     </b-field>
-                    <b-field label="Free Squares" label-position="on-border" style="margin-top:.5em">
+                    <b-field label="Add Squares" label-position="on-border" style="margin-top:.5em">
                         <b-taginput
                             v-model="item.squares"
                             icon="square"
@@ -148,10 +150,10 @@
                     </b-field>
                 </div>
                 <div class="column is-6">
-                
+                    (UNLOCKABLES)
                 </div>
                 <div class="column is-6">
-                
+                    (ACTIONS?)
                 </div>
             </div>
         </section>
@@ -201,7 +203,7 @@ export default {
         campaign: Object,
         item: {
             type: Object,
-            default: () => { return { armor: {}, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', bonuses: [], squares: [] } }
+            default: () => { return { armor: { locations: [] }, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', bonuses: [], squares: [] } }
         }
     },
     data() {
