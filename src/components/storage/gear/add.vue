@@ -6,7 +6,7 @@
         <section class="modal-card-body">
             <div class="columns is-multiline">
                 <div class="column is-4">
-                    <b-field grouped v-if="item.type === 'armor' || (item.type === 'other' && grantsArmor)">
+                    <b-field grouped v-if="item.type === 'armor' || item.grants.armor">
                         <b-field label="Armor" label-position="on-border">
                             <b-input v-model="item.armor.amount" size="is-small" class="single-value" />
                         </b-field>
@@ -36,7 +36,7 @@
                             </b-dropdown>
                         </b-field>
                     </b-field>
-                    <b-field grouped v-if="item.type === 'weapon' || (item.type === 'other' && grantsAttack)">
+                    <b-field grouped v-if="item.type === 'weapon' || item.grants.attack">
                         <b-field label="Speed" label-position="on-border">
                             <b-input v-model="item.weapon.speed" size="is-small" class="single-value" />
                         </b-field>
@@ -69,28 +69,34 @@
                     </b-select>
                 </div>
                 <div class="column is-4">
-                    <b-field>
-                        <b-dropdown v-model="item.type" aria-role="list" position="is-bottom-left">
-                            <button class="button is-dark is-small" type="button" slot="trigger">
-                                <template v-if="item.type">
-                                    <span :class="iconTranslation[item.type]" style="margin-right:.25em"></span>
-                                    <span>{{ item.type.charAt(0).toUpperCase() + item.type.slice(1) }}</span>
-                                </template>
-                                <template v-else>
-                                    <span>Select a Type</span>
-                                </template>
-                            </button>
-                            <b-dropdown-item :value="t" aria-role="listitem" v-for="t in ['weapon','armor','item']" :key="t">
-                                <div class="media">
-                                    <div class="media-left">
-                                        <span :class="iconTranslation[t]"></span>
-                                    </div>
-                                    <div class="media-content">
-                                        {{ t.charAt(0).toUpperCase() + t.slice(1) }}
-                                    </div>
-                                </div>
-                            </b-dropdown-item>
-                        </b-dropdown>
+                    <b-field grouped>
+                        <b-field>
+                          <b-dropdown v-model="item.type" aria-role="list" position="is-bottom-left">
+                              <button class="button is-dark is-small" type="button" slot="trigger">
+                                  <template v-if="item.type">
+                                      <span :class="iconTranslation[item.type]" style="margin-right:.25em"></span>
+                                      <span>{{ item.type.charAt(0).toUpperCase() + item.type.slice(1) }}</span>
+                                  </template>
+                                  <template v-else>
+                                      <span>Select a Type</span>
+                                  </template>
+                              </button>
+                              <b-dropdown-item :value="t" aria-role="listitem" v-for="t in ['weapon','armor','item']" :key="t">
+                                  <div class="media">
+                                      <div class="media-left">
+                                          <span :class="iconTranslation[t]"></span>
+                                      </div>
+                                      <div class="media-content">
+                                          {{ t.charAt(0).toUpperCase() + t.slice(1) }}
+                                      </div>
+                                  </div>
+                              </b-dropdown-item>
+                          </b-dropdown>
+                        </b-field>
+                        <b-field v-if="item.type === 'item'">
+                          <b-switch size="is-small" v-model="item.grants.attack">Attack</b-switch>
+                          <b-switch size="is-small" v-model="item.grants.armor">Armor</b-switch>
+                        </b-field>
                     </b-field>
                 </div>
                 <div class="column is-4">
@@ -102,9 +108,7 @@
                     </b-select>
                 </div>
                 <div class="column is-4">
-                    <div class="box gear-card">
-                        <div class="contents">(GEAR CARD COMPONENT!)</div>
-                    </div>
+                  <GearCard :item="item" :campaign="campaign" />
                 </div>
                 <div class="column is-4">
                     <b-select placeholder="Connection" v-model="item.connections.right" size="is-small">
@@ -124,9 +128,9 @@
                             size="is-small"
                         />
                     </b-field>
-                    <b-field label="Add Squares" label-position="on-border" style="margin-top:.5em">
+                    <b-field label="Add Whole Affinities" label-position="on-border" style="margin-top:.5em">
                         <b-taginput
-                            v-model="item.squares"
+                            v-model="item.affinities"
                             icon="square"
                             placeholder="Add Square"
                             aria-close-label="Remove"
@@ -189,28 +193,27 @@
         }
     }
 }
-
-.gear-card {
-    border: 1px solid black;
-}
 </style>
 
 <script>
+import GearCard from '@/components/storage/gear/card'
+
 export default {
-    name: 'ResourceAdd',
+    name: 'GearAdd',
+    components: {
+      GearCard
+    },
     props: {
-        gear: Array, 
+        gear: Array,
         campaign: Object,
         item: {
             type: Object,
-            default: () => { return { armor: { locations: [] }, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', bonuses: [], squares: [] } }
+            default: () => { return { grants: {}, armor: { locations: [] }, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', bonuses: [], affinities: [] } }
         }
     },
     data() {
         return {
-            nameInUse: false,
-            grantsArmor: false,
-            grantsAttack: false
+            nameInUse: false
         }
     },
     computed: {

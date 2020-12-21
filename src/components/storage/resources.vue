@@ -12,7 +12,7 @@
       aria-role="dialog"
       aria-modal>
       <template #default="props">
-        <ResourceAdd 
+        <ResourceAdd
           :resources="resources"
           :campaign="campaign"
           @close="props.close"
@@ -51,8 +51,8 @@
               <tr v-for="r in c.resources" :key="r.id">
                 <td width="25%">
                   <b-field type="is-info" label="Qty" label-position="on-border">
-                    <b-input 
-                      v-model="r.qty" 
+                    <b-input
+                      v-model="r.qty"
                       size="is-small"
                       type="number"
                       class="is-info"
@@ -85,12 +85,14 @@
 .resource-sheet {
   .corner-button {
     position: fixed;
+    z-index: 10;
     bottom: 2em;
     right: 2em;
   }
 
   .corner-control {
     position: fixed;
+    z-index: 10;
     bottom: 2em;
     left: 2em;
   }
