@@ -49,11 +49,12 @@
       </div>
       <div class="is-size-6" v-if="item.keywords.length > 0">
         <span v-for="(k,kidx) in item.keywords" :key="kidx">
+          <!-- Add Tooltip -->
           <strong>{{ k }}</strong>
           <span v-if="(kidx+1) !== item.keywords.length">, </span>
         </span>
       </div>
-      <div class="is-size-7" v-html="item.description" />
+      <div class="is-size-7" v-html="parsedDescription" />
     </div>
     <div class="connection" :class="p" v-for="p in ['top','bottom','left','right']" :key="p">
       <span class="bl-milestone" v-if="item.connections[p]" :style="{ color: item.connections[p] }"></span>
@@ -174,16 +175,27 @@
 </style>
 
 <script>
+import { db } from '@/firebase'
+
 export default {
   name: 'GearCard',
   props: {
     item: {
       type: Object,
-      default: () => { return { grants: {}, armor: { locations: [] }, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', bonuses: [], affinities: [] } }
+      default: () => ({ grants: {}, armor: { locations: [] }, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', unlock: {}, action: '', affinities: [] })
     },
     campaign: Object
   },
+  data() {
+    return {
+      keywords: []
+    }
+  },
   computed: {
+    parsedDescription() {
+      return this.item.description //TODO
+    },
+    
     classifications() {
       return [
         this.item.type,
@@ -204,6 +216,9 @@ export default {
         'waist': 'bl-waist'
       }
     }
+  },
+  created() {
+    this.$bind('keywords', db.collection('keywords'))
   }
 }
 </script>

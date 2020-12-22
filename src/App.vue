@@ -1,5 +1,8 @@
 <template>
   <main id="app" class="">
+    <b-message type="is-danger" title="TODO LIST" size="is-small">
+      Move Keywords and Innovations to Storage.  Move default Gear Item to export.  Change Logout button to Account menu.  Add Display Name changing.
+    </b-message>
     <b-loading :is-full-page="true" :can-cancel="false" v-model="loading"/>
     <Navigation/>
     <div class="container">
