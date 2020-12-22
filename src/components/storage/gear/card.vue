@@ -1,10 +1,10 @@
 <template>
   <div class="box gear-card">
     <div class="armor" v-if="item.type === 'armor' || item.grants.armor">
-      <div class="armor-amount">
+      <div class="armor-block">
         <span class="bl-armor is-size-4"></span>
         <span class="amount">{{ item.armor.amount }}</span>
-        <span :class="iconTranslation[l]" v-for="l in item.armor.locations" :key="l"></span>
+        <span class="armor-loc" :class="iconTranslation[l]" v-for="l in item.armor.locations" :key="l"></span>
       </div>
     </div>
     <div class="weapon" v-if="item.type === 'weapon' || item.grants.attack">
@@ -47,14 +47,30 @@
           <b-icon icon="square-full" :style="{ color: a.toLowerCase() }" size="is-medium" />
         </div>
       </div>
-      <div class="is-size-6" v-if="item.keywords.length > 0">
+      <div class="is-size-6 keywords" v-if="item.keywords.length > 0">
         <span v-for="(k,kidx) in item.keywords" :key="kidx">
           <!-- Add Tooltip -->
           <strong>{{ k }}</strong>
           <span v-if="(kidx+1) !== item.keywords.length">, </span>
         </span>
       </div>
-      <div class="is-size-7" v-html="parsedDescription" />
+      <div class="is-size-7 description" v-if="item.description.length > 0" v-html="parsedDescription" />
+      <div class="is-size-7 action" v-if="item.action.length > 0">
+        <span class="bl-action"></span>: <span v-html="parsedAction" />
+      </div>
+      <div class="is-size-7 unlock" v-if="item.unlock.requires && item.unlock.requires.length > 0">
+        <section class="field is-grouped" style="width:100%">
+          <p class="left">
+            <b-icon 
+              v-for="(r,ridx) in item.unlock.requires.map(r => r.toLowerCase())" :key="ridx"
+              :icon="r.includes('connection') ? 'puzzle-piece' : 'square-full'"
+              size="is-small"
+              :type="r.includes('red') ? 'is-danger' : r.includes('blue') ? 'is-info' : 'is-success'"
+            />
+          </p>
+          <p class="right" v-html="parsedUnlock" />
+        </section>
+      </div>
     </div>
     <div class="connection" :class="p" v-for="p in ['top','bottom','left','right']" :key="p">
       <span class="bl-milestone" v-if="item.connections[p]" :style="{ color: item.connections[p] }"></span>
@@ -77,25 +93,33 @@
       
     }
     
+    .unlock {
+      .left,.right {
+        padding: .5em;
+      }
+    
+      .left {
+        background: #eee;
+        border-radius: .5em 0 0 .5em;
+        text-align: center;
+        width: 30%;
+      }
+      
+      .right {
+        border-radius: 0 .5em .5em 0;
+        text-align: left;
+        background: #ddd;
+        width: 70%;
+      }
+    }
+    
     .armor, .weapon {
       position: absolute;
       top: .5em;
       left: .5em;
       
-      .armor-amount {
-        color: black;
-        z-index: 4;
-        
-        .bl-armor {
-          vertical-align: bottom;
-        }
-        
-        .amount {
-          position: absolute;
-          left: .35em;
-          color: white;
-          z-index: 5;
-        }
+      .armor-loc {
+        vertical-align: text-top;
       }
       
       .weapon-holder {
@@ -162,7 +186,7 @@
       }
       
       &.top {
-        top: -.6em;
+        top: -.75em;
         left: calc(50% - .5em);
       }
       
@@ -193,7 +217,15 @@ export default {
   },
   computed: {
     parsedDescription() {
-      return this.item.description //TODO
+      return this.parseBlock(this.item.description)
+    },
+    
+    parsedAction() {
+      return this.parseBlock(this.item.action)
+    },
+    
+    parsedUnlock() {
+      return this.parseBlock(this.item.unlock.description)
     },
     
     classifications() {
@@ -219,6 +251,15 @@ export default {
   },
   created() {
     this.$bind('keywords', db.collection('keywords'))
+  },
+  methods: {
+    parseBlock(text) {
+      return text
+        .replaceAll('[A]', '<span class="bl-action"></span>')
+        .replaceAll('[M]', '<span class="bl-movement"></span>')
+        .replaceAll('[E]', '<span class="bl-endeavor"></span>')
+        .replaceAll('[S]', '<span class="bl-story-event"></span>')
+    }
   }
 }
 </script>

@@ -74,6 +74,7 @@
 
 [class^="bl-"], [class*=" bl-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
+  vertical-align: middle;
   font-family: 'blackledger' !important;
   speak: none;
   font-style: normal;
@@ -119,6 +120,23 @@
     -o-transform-origin: 0 100%;
     transform-origin: 0 100%;
     margin: 3px -6px 1px 10px;
+}
+
+.armor-block {
+  position: relative;
+  
+  .bl-armor {
+    vertical-align: bottom;
+    color: black;
+    font-size: 1.5em;
+  }
+  
+  .amount {
+    position: absolute;
+    left: 0.35em;
+    color: white;
+    z-index: 5;
+  }
 }
 
 .bl-expansion-dragonking:before {

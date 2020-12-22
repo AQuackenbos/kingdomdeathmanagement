@@ -147,6 +147,35 @@
             <option value="blue">Blue</option>
             <option value="green">Green</option>
           </b-select>
+          <p class="content is-size-7">
+            Description box replacement key:
+            <b-field grouped>
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">[A]</b-tag>
+                  <b-tag type="is-dark"><span class="bl-action"></span></b-tag>
+                </b-taglist>
+              </div>
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">[M]</b-tag>
+                  <b-tag type="is-dark"><span class="bl-movement"></span></b-tag>
+                </b-taglist>
+              </div>
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">[E]</b-tag>
+                  <b-tag type="is-dark"><span class="bl-endeavor"></span></b-tag>
+                </b-taglist>
+              </div>
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">[S]</b-tag>
+                  <b-tag type="is-dark"><span class="bl-story-event"></span></b-tag>
+                </b-taglist>
+              </div>
+            </b-field>
+          </p>
         </div>
         <div class="column is-4">
           <b-field label="Description" label-position="on-border">
@@ -235,7 +264,11 @@ export default {
   data() {
     return {
       nameInUse: false,
-      filteredRequirements: []
+      filteredRequirements: [
+        'Red Affinity', 'Red Connection',
+        'Blue Affinity', 'Blue Connection',
+        'Green Affinity', 'Green Connection'
+      ]
     }
   },
   computed: {
