@@ -240,7 +240,6 @@ export default {
         locations: [],
         users: [],
         innovations: [],
-        allInnovations: [],
         showAddQuarry: false,
         showAddLocation: false,
         quarry: null
@@ -248,9 +247,10 @@ export default {
     },
     computed: {
       ...mapGetters({
-          loading: 'loading',
-          user: 'user',
-          currentCampaign: 'currentCampaign'
+        loading: 'loading',
+        user: 'user',
+        currentCampaign: 'currentCampaign',
+        allInnovations: 'innovations'
       }),
       
       leftMilestones() {
@@ -288,9 +288,7 @@ export default {
       },
       
       researchedInnovations() {
-        return this.allInnovations.filter(i => {
-          return this.innovations.find(inno => inno.id === i.id && inno.innovated)
-        })
+        return this.allInnovations.filter(i => this.innovations.find(inno => inno.id === i.id && inno.innovated))
       }
     },
     created() {
@@ -300,7 +298,6 @@ export default {
       this.$bind('users', db.collection('users'))
       this.$bind('locations', db.collection('locations'))
       this.$bind('innovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
-      this.$bind('allInnovations', db.collection('innovations'))
     },
     methods: {
       ...mapActions([

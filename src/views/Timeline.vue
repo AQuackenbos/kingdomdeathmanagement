@@ -148,7 +148,8 @@ export default {
         ...mapGetters({
             loading: 'loading',
             user: 'user',
-            currentCampaign: 'currentCampaign'
+            currentCampaign: 'currentCampaign',
+            allInnovations: 'innovations'
         }),
         
         quarries() {
@@ -176,7 +177,6 @@ export default {
     created() {
         this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
         this.$bind('timeline', db.collection(`campaigns/${this.currentCampaign}/timeline`).orderBy('year', 'asc'))
-        this.$bind('allInnovations', db.collection('innovations'))
         this.$bind('allQuarries', db.collection('quarries'))
         this.$bind('innovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
     },

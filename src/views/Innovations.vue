@@ -116,7 +116,6 @@ export default {
   data() {
     return {
       campaign: null,
-      innovations: [],
       campaignInnovations: [],
       showDeck: false,
       showAddInnovation: false,
@@ -128,11 +127,12 @@ export default {
     InnovationDesc
   },
   computed: {
-    ...mapGetters({
-      loading: 'loading',
-      user: 'user',
-      currentCampaign: 'currentCampaign'
-    }),
+    ...mapGetters([
+        'loading',
+        'user',
+        'currentCampaign',
+        'innovations'
+    ]),
     
     category() {
       return {
@@ -187,7 +187,6 @@ export default {
   created() {
     this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
     this.$bind('campaignInnovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
-    this.$bind('innovations', db.collection('innovations'))
   },
   methods: {
     ...mapActions([

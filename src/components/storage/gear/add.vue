@@ -62,7 +62,7 @@
             <b-input v-model="item.name" size="is-small" />
           </b-field>
           <b-select placeholder="Connection (Top)" v-model="item.connections.top" size="is-small">
-            <option>None</option>
+            <option :value="null">None</option>
             <option value="red">Red</option>
             <option value="blue">Blue</option>
             <option value="green">Green</option>
@@ -102,7 +102,7 @@
         <div class="column is-4 side-conn">
           <b-field>
             <b-select placeholder="Connection (Left)" v-model="item.connections.left" size="is-small">
-              <option>None</option>
+              <option :value="null">None</option>
               <option value="red">Red</option>
               <option value="blue">Blue</option>
               <option value="green">Green</option>
@@ -135,7 +135,7 @@
         <div class="column is-4 side-conn">
           <b-field>
             <b-select placeholder="Connection (Right)" v-model="item.connections.right" size="is-small">
-              <option>None</option>
+              <option :value="null">None</option>
               <option value="red">Red</option>
               <option value="blue">Blue</option>
               <option value="green">Green</option>
@@ -181,7 +181,7 @@
         </div>
         <div class="column is-4">
           <b-select placeholder="Connection (Bottom)" v-model="item.connections.bottom" size="is-small">
-            <option>None</option>
+            <option :value="null">None</option>
             <option value="red">Red</option>
             <option value="blue">Blue</option>
             <option value="green">Green</option>
@@ -236,7 +236,6 @@
   padding-right: 0
 }
 
-
 .field {
   &::v-deep {
     .is-grouped {
@@ -260,6 +259,7 @@
 
 <script>
 import GearCard from '@/components/storage/gear/card'
+import { defaultGearItem } from '@/util'
 
 export default {
   name: 'GearAdd',
@@ -271,7 +271,7 @@ export default {
     campaign: Object,
     item: {
       type: Object,
-      default: () => ({ grants: {}, armor: { locations: [] }, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', unlock: {}, action: '', affinities: [] })
+      default: () => { return defaultGearItem }
     }
   },
   data() {

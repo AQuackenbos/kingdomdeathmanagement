@@ -64,8 +64,8 @@
           <span v-if="(kidx+1) !== item.keywords.length">, </span>
         </span>
       </div>
-      <div class="is-size-7 description" v-if="item.description.length > 0" v-html="parsedDescription" />
-      <div class="is-size-7 action" v-if="item.action.length > 0">
+      <div class="is-size-7 description" v-if="item.description" v-html="parsedDescription" />
+      <div class="is-size-7 action" v-if="item.action">
         <span class="bl-action"></span>: <span v-html="parsedAction" />
       </div>
       <div class="is-size-7 unlock" v-if="item.unlock.requires && item.unlock.requires.length > 0">
@@ -278,23 +278,23 @@
 </style>
 
 <script>
-import { db } from '@/firebase'
+import { mapGetters } from 'vuex'
+import { defaultGearItem } from '@/util'
 
 export default {
   name: 'GearCard',
   props: {
     item: {
       type: Object,
-      default: () => ({ grants: {}, armor: { locations: [] }, weapon: {}, connections: {}, classifications: [], keywords: [], description: '', unlock: {}, action: '', affinities: [] })
+      default: () => { return defaultGearItem }
     },
     campaign: Object
   },
-  data() {
-    return {
-      keywords: []
-    }
-  },
   computed: {
+    ...mapGetters([
+      'keywords'
+    ]),
+  
     parsedDescription() {
       return this.parseBlock(this.item.description)
     },
@@ -328,9 +328,6 @@ export default {
       }
     }
   },
-  created() {
-    this.$bind('keywords', db.collection('keywords'))
-  },
   methods: {
     parseBlock(text) {
       if(!text) return ''
@@ -345,7 +342,7 @@ export default {
     
     keywordTooltip(kw) {
       if(!kw) return false
-      return this.keywords.find(k => kw.startsWith(k.name)) || false
+      return this.keywords.find(k => kw.trim().toLowerCase().startsWith(k.name.toLowerCase())) || false
     }
   }
 }

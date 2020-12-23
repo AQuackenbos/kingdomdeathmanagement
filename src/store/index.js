@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+import { db } from '@/firebase'
 
 Vue.use(Vuex);
 
@@ -26,6 +27,14 @@ export const store = new Vuex.Store({
     
     loading(state) {
       return state.loading
+    },
+    
+    innovations(state) {
+      return state.innovations
+    },
+    
+    keywords(state) {
+      return state.keywords
     }
   },
   mutations: {
@@ -39,12 +48,22 @@ export const store = new Vuex.Store({
     
     SET_LOADING(state, data) {
       state.loading = data
+    },
+    
+    SET_INNOVATIONS(state, data) {
+      state.innovations = data
+    },
+    
+    SET_KEYWORDS(state, data) {
+      state.keywords = data
     }
   },
   actions: {
-    setUser({ commit }, user) {
+    setUser({ commit, dispatch }, user) {
       if(user) {
         commit("SET_USER", user)
+        dispatch('loadInnovations')
+        dispatch('loadKeywords')
       }
     },
     
@@ -63,6 +82,18 @@ export const store = new Vuex.Store({
     clearUser({ commit }) {
       commit("SET_USER", null)
       window.sessionStorage.clear();
+    },
+    
+    loadInnovations({ commit }) {
+      db.collection('innovations').get().then(r => {
+        commit("SET_INNOVATIONS", r.docs.map(d => ({ id: d.id, ...d.data() })))
+      })
+    },
+    
+    loadKeywords({ commit }) {
+      db.collection('keywords').get().then(r => {
+        commit("SET_KEYWORDS", r.docs.map(d => ({ id: d.id, ...d.data() })))
+      })
     }
   }
 });
