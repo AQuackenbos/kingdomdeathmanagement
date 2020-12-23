@@ -49,8 +49,18 @@
       </div>
       <div class="is-size-6 keywords" v-if="item.keywords.length > 0">
         <span v-for="(k,kidx) in item.keywords" :key="kidx">
-          <!-- Add Tooltip -->
-          <strong>{{ k }}</strong>
+          <b-tooltip v-if="keywordTooltip(k)"
+            type="is-dark"
+            multilined>
+            <strong>{{ k }}</strong>
+            <template #content>
+              <div class="is-size-7">
+                <strong>{{ keywordTooltip(k).name }}</strong><br />
+                {{ keywordTooltip(k).description }}
+              </div>
+            </template>
+          </b-tooltip>
+          <strong v-else>{{ k }}</strong>
           <span v-if="(kidx+1) !== item.keywords.length">, </span>
         </span>
       </div>
@@ -59,21 +69,23 @@
         <span class="bl-action"></span>: <span v-html="parsedAction" />
       </div>
       <div class="is-size-7 unlock" v-if="item.unlock.requires && item.unlock.requires.length > 0">
-        <section class="field is-grouped" style="width:100%">
-          <p class="left">
-            <b-icon 
+        <section class="field" :class="{ 'is-grouped': item.unlock.sizing !== 2 }" style="width:100%">
+          <p class="left" :class="{ 'sm': item.unlock.sizing === 0, 'lg': item.unlock.sizing === 1, 'fl': item.unlock.sizing === 2 }">
+            <b-icon
               v-for="(r,ridx) in item.unlock.requires.map(r => r.toLowerCase())" :key="ridx"
               :icon="r.includes('connection') ? 'puzzle-piece' : 'square-full'"
               size="is-small"
               :type="r.includes('red') ? 'is-danger' : r.includes('blue') ? 'is-info' : 'is-success'"
             />
           </p>
-          <p class="right" v-html="parsedUnlock" />
+          <p class="right" :class="{ 'sm': item.unlock.sizing === 1, 'lg': item.unlock.sizing === 0, 'fl': item.unlock.sizing === 2 }" v-html="parsedUnlock" />
         </section>
       </div>
     </div>
-    <div class="connection" :class="p" v-for="p in ['top','bottom','left','right']" :key="p">
-      <span class="bl-milestone" v-if="item.connections[p]" :style="{ color: item.connections[p] }"></span>
+    <div class="connection-container" :class="p" v-for="p in ['top','bottom','left','right']" :key="p">
+      <div class="connection" :class="p">
+        <span class="bl-milestone" v-if="item.connections[p]" :style="{ color: item.connections[p] }"></span>
+      </div>
     </div>
   </div>
 </template>
@@ -82,7 +94,13 @@
 .gear-card {
     border: 1px solid black;
     position: relative;
-    overflow: hidden;
+    background: #f8f8f8;
+    
+    .tooltip-content {
+      strong {
+        color: white;
+      }
+    }
     
     .affinity {
       display: inline-block;
@@ -95,21 +113,49 @@
     
     .unlock {
       .left,.right {
-        padding: .5em;
+        padding: .25em;
       }
     
       .left {
-        background: #eee;
+        background: #fff;
         border-radius: .5em 0 0 .5em;
-        text-align: center;
-        width: 30%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        
+        &.sm {
+          width: 20%;
+        }
+        
+        &.lg {
+          width: 35%;
+        }
+        
+        &.fl {
+          width: 100%;
+          border-radius: .5em .5em 0 0;
+        }
       }
       
       .right {
         border-radius: 0 .5em .5em 0;
         text-align: left;
-        background: #ddd;
-        width: 70%;
+        background: #eee;
+        padding: .25em .75em;
+        
+        &.sm {
+          width: 65%;
+        }
+        
+        &.lg {
+          width: 80%;
+        }
+        
+        &.fl {
+          width: 100%;
+          border-radius: 0 0 .5em .5em;
+        }
       }
     }
     
@@ -171,28 +217,61 @@
       margin: 0 auto;
     }
     
-    .connection {
+    .connection-container {
       position: absolute;
-      font-size: 3em;
+      overflow: hidden;
+      
+      &.left, &.right {
+        height: 100%;
+        width: 1.5rem;
+        top: 0;
+      }
+      
+      &.top, &.bottom {
+        width: 100%;
+        height: 1.5rem;
+        left: 0;
+      }
       
       &.left {
-        top: calc(50% - .5em);
-        left: -.45em;
+        left: 0;
       }
       
       &.right {
-        top: calc(50% - .5em);
-        right: -.45em;
+        right: 0;
       }
       
       &.top {
-        top: -.75em;
-        left: calc(50% - .5em);
+        top: 0;
       }
       
       &.bottom {
-        bottom: -.9em;
-        left: calc(50% - .5em);
+        bottom: 0;
+      }
+      
+      .connection {
+        position: absolute;
+        font-size: 3em;
+        
+        &.left {
+          top: calc(50% - .75em);
+          left: -.45em;
+        }
+        
+        &.right {
+          top: calc(50% - .75em);
+          right: -.45em;
+        }
+        
+        &.top {
+          top: -.8em;
+          left: calc(50% - .5em);
+        }
+        
+        &.bottom {
+          bottom: -.75em;
+          left: calc(50% - .5em);
+        }
       }
     }
 }
@@ -254,11 +333,19 @@ export default {
   },
   methods: {
     parseBlock(text) {
+      if(!text) return ''
+      
       return text
         .replaceAll('[A]', '<span class="bl-action"></span>')
         .replaceAll('[M]', '<span class="bl-movement"></span>')
         .replaceAll('[E]', '<span class="bl-endeavor"></span>')
         .replaceAll('[S]', '<span class="bl-story-event"></span>')
+        .replaceAll("\n" , '<br />')
+    },
+    
+    keywordTooltip(kw) {
+      if(!kw) return false
+      return this.keywords.find(k => kw.startsWith(k.name)) || false
     }
   }
 }

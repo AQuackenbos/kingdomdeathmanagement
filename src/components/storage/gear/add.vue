@@ -61,7 +61,7 @@
           <b-field label="Name" label-position="on-border">
             <b-input v-model="item.name" size="is-small" />
           </b-field>
-          <b-select placeholder="Connection" v-model="item.connections.top" size="is-small">
+          <b-select placeholder="Connection (Top)" v-model="item.connections.top" size="is-small">
             <option>None</option>
             <option value="red">Red</option>
             <option value="blue">Blue</option>
@@ -99,26 +99,15 @@
             </b-field>
           </b-field>
         </div>
-        <div class="column is-4">
-          <b-select placeholder="Connection" v-model="item.connections.left" size="is-small">
-            <option>None</option>
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-            <option value="green">Green</option>
-          </b-select>
-        </div>
-        <div class="column is-4">
-          <GearCard :item="item" :campaign="campaign" />
-        </div>
-        <div class="column is-4">
-          <b-select placeholder="Connection" v-model="item.connections.right" size="is-small">
-            <option>None</option>
-            <option value="red">Red</option>
-            <option value="blue">Blue</option>
-            <option value="green">Green</option>
-          </b-select>
-        </div>
-        <div class="column is-4">
+        <div class="column is-4 side-conn">
+          <b-field>
+            <b-select placeholder="Connection (Left)" v-model="item.connections.left" size="is-small">
+              <option>None</option>
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+            </b-select>
+          </b-field>
           <b-field label="Keywords" label-position="on-border" style="margin-top:.5em">
             <b-taginput
               v-model="item.keywords"
@@ -141,7 +130,57 @@
           </b-field>
         </div>
         <div class="column is-4">
-          <b-select placeholder="Connection" v-model="item.connections.bottom" size="is-small">
+          <GearCard :item="item" :campaign="campaign" />
+        </div>
+        <div class="column is-4 side-conn">
+          <b-field>
+            <b-select placeholder="Connection (Right)" v-model="item.connections.right" size="is-small">
+              <option>None</option>
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+            </b-select>
+          </b-field>
+          <b-field label="Description" label-position="on-border">
+            <b-input type="textarea" v-model="item.description" size="is-small" />
+          </b-field>
+        </div>
+        <div class="column is-4">
+          <b-field label="Unlock Description" label-position="on-border">
+            <b-input type="textarea" v-model="item.unlock.description" size="is-small"/>
+          </b-field>
+          <b-field label="Requirements" label-position="on-border">
+            <b-taginput
+              v-model="item.unlock.requires"
+              icon="puzzle-piece"
+              placeholder="Add Requirement"
+              aria-close-label="Remove"
+              size="is-small"
+              :allow-duplicates="true"
+              :open-on-focus="true"
+              :data="filteredRequirements"
+              @typing="getRequirements"
+              autocomplete
+            />
+          </b-field>
+          <b-field label="Sizing" label-position="on-border">
+            <b-slider
+              v-model="item.unlock.sizing"
+              type="is-info"
+              aria-label="Sizing"
+              :min="0"
+              :max="2"
+              :tooltip="false"
+              size="is-small"
+            >
+              <b-slider-tick :value="0">Small Req</b-slider-tick>
+              <b-slider-tick :value="1">Large Req</b-slider-tick>
+              <b-slider-tick :value="2">Separate Lines</b-slider-tick>
+            </b-slider>
+          </b-field>
+        </div>
+        <div class="column is-4">
+          <b-select placeholder="Connection (Bottom)" v-model="item.connections.bottom" size="is-small">
             <option>None</option>
             <option value="red">Red</option>
             <option value="blue">Blue</option>
@@ -178,33 +217,6 @@
           </p>
         </div>
         <div class="column is-4">
-          <b-field label="Description" label-position="on-border">
-            <b-input type="textarea" v-model="item.description" size="is-small" />
-          </b-field>
-        </div>
-        <div class="column is-6">
-          <b-field label="Unlock Description" label-position="on-border">
-            <b-input type="textarea" v-model="item.unlock.description" size="is-small"/>
-          </b-field>
-          <b-field label="Requirements" label-position="on-border">
-            <b-taginput
-              v-model="item.unlock.requires"
-              icon="puzzle-piece"
-              placeholder="Add Requirement"
-              aria-close-label="Remove"
-              size="is-small"
-              :allow-duplicates="true"
-              :open-on-focus="true"
-              :data="filteredRequirements"
-              @typing="getRequirements"
-              autocomplete
-            />
-          </b-field>
-          <b-field label="Sizing" label-position="on-border">
-            <b-slider v-model="item.unlock.sizing" type="is-info" size="is-small" indicator format="percent" />
-          </b-field>
-        </div>
-        <div class="column is-6">
           <b-field label="Action Description" label-position="on-border">
             <b-input type="textarea" v-model="item.action" size="is-small"/>
           </b-field>
@@ -223,6 +235,7 @@
 .input.is-info.is-small.is-rounded {
   padding-right: 0
 }
+
 
 .field {
   &::v-deep {
