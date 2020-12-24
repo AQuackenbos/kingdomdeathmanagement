@@ -5,13 +5,14 @@
       v-model="showAddGear"
       has-modal-card
       trap-focus
-      :destroy-on-hide="false"
+      :destroy-on-hide="true"
       aria-role="dialog"
       aria-modal>
       <template #default="props">
-        <GearAdd 
+        <GearAdd
           :gear="gear"
           :campaign="campaign"
+          :new="true"
           @close="props.close"
           @add="addGear"
         />
@@ -56,10 +57,10 @@ export default {
     this.$bind('gear', db.collection(`campaign/${this.currentCampaign}/gear`))
   },
   computed: {
-    ...mapGetters({
-      loading: 'loading',
-      currentCampaign: 'currentCampaign'
-    }),
+    ...mapGetters([
+      'loading',
+      'currentCampaign'
+    ]),
     
     categoryNames() {
       return this.gear
@@ -96,8 +97,8 @@ export default {
     ]),
     
     addGear(g) {
-      return g
-    }
+      db.collection(`campaign/${this.currentCampaign}/gear`).doc().set(g)
+    },
   }
 }
 </script>

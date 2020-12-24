@@ -68,7 +68,7 @@
       <div class="is-size-7 action" v-if="item.action">
         <span class="bl-action"></span>: <span v-html="parsedAction" />
       </div>
-      <div class="is-size-7 unlock" v-if="item.unlock.requires && item.unlock.requires.length > 0">
+      <div class="is-size-7 unlock" v-if="(item.unlock.requires && item.unlock.requires.length > 0) || item.unlock.description">
         <section class="field" :class="{ 'is-grouped': item.unlock.sizing !== 2 }" style="width:100%">
           <p class="left" :class="{ 'sm': item.unlock.sizing === 0, 'lg': item.unlock.sizing === 1, 'fl': item.unlock.sizing === 2 }">
             <b-icon
@@ -286,7 +286,7 @@ export default {
   props: {
     item: {
       type: Object,
-      default: () => { return defaultGearItem }
+      default: () => Object.assign({}, defaultGearItem)
     },
     campaign: Object
   },
@@ -338,6 +338,10 @@ export default {
         .replaceAll('[E]', '<span class="bl-endeavor"></span>')
         .replaceAll('[S]', '<span class="bl-story-event"></span>')
         .replaceAll("\n" , '<br />')
+        .replaceAll(/\{[0-9]+\}/g, m => {
+          let am = parseInt(m.replaceAll('{','').replaceAll('}',''))
+          return `<span class="armor-block"><span class="bl-armor"></span><span class="amount">${am}</span></span>`
+        })
     },
     
     keywordTooltip(kw) {

@@ -1,6 +1,7 @@
-const defaultGearItem = { 
+const defaultGearItem = {
   type: null,
   name: null,
+  category: null,
   action: null,
   description: null,
   classifications: [],
@@ -29,7 +30,8 @@ const defaultGearItem = {
     sizing: 0,
     requires: [],
     description: null
-  }
+  },
+  qty: 0
 }
 
 export {

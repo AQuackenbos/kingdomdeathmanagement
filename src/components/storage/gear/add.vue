@@ -1,7 +1,7 @@
 <template>
   <div class="modal-card" style="width: auto">
     <header class="modal-card-head">
-      <p class="modal-card-title">Add New Piece of Gear</p>
+      <p class="modal-card-title">{{ mode }} Piece of Gear</p>
     </header>
     <section class="modal-card-body">
       <div class="columns is-multiline">
@@ -59,7 +59,10 @@
         </div>
         <div class="column is-4">
           <b-field label="Name" label-position="on-border">
-            <b-input v-model="item.name" size="is-small" />
+            <b-input v-model="item.name" size="is-small" placeholder="Item Name"/>
+          </b-field>
+          <b-field label="Category" label-position="on-border">
+            <b-input v-model="item.category" size="is-small" placeholder="Category i.e. Rare Gear, White Lion, Blacksmith, etc." />
           </b-field>
           <b-select placeholder="Connection (Top)" v-model="item.connections.top" size="is-small">
             <option :value="null">None</option>
@@ -186,7 +189,7 @@
             <option value="blue">Blue</option>
             <option value="green">Green</option>
           </b-select>
-          <p class="content is-size-7">
+          <p class="content is-size-7 key">
             Description box replacement key:
             <b-field grouped>
               <div class="control">
@@ -213,6 +216,12 @@
                   <b-tag type="is-dark"><span class="bl-story-event"></span></b-tag>
                 </b-taglist>
               </div>
+              <div class="control">
+                <b-taglist attached>
+                  <b-tag type="is-light">{0}</b-tag>
+                  <b-tag type="is-white"><span class="armor-block"><span class="bl-armor"></span><span class="amount">0</span></span></b-tag>
+                </b-taglist>
+              </div>
             </b-field>
           </p>
         </div>
@@ -224,9 +233,12 @@
       </div>
     </section>
     <footer class="modal-card-foot">
-      <button class="button" type="button" @click="close">Cancel</button>
-      <button class="button is-success" v-if="valid" @click="select">Add Item</button>
-      <b-button type="is-danger" disabled v-else>Item Has Errors</b-button>
+      <div class="buttons">
+        <button class="button" type="button" @click="close">Cancel</button>
+        <button class="button is-success" v-if="valid" @click="select">Add Item</button>
+        <b-button type="is-danger" disabled v-else>Item Has Errors</b-button>
+        <button class="button is-warning is-pulled-right" @click="resetItem" icon="exclamation-triangle">Reset Item</button>
+      </div>
     </footer>
   </div>
 </template>
@@ -234,6 +246,15 @@
 <style lang="scss" scoped>
 .input.is-info.is-small.is-rounded {
   padding-right: 0
+}
+
+.key {
+  &::v-deep {
+    .field.is-grouped {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
 }
 
 .field {
@@ -260,6 +281,7 @@
 <script>
 import GearCard from '@/components/storage/gear/card'
 import { defaultGearItem } from '@/util'
+import merge from 'deepmerge'
 
 export default {
   name: 'GearAdd',
@@ -267,16 +289,23 @@ export default {
     GearCard
   },
   props: {
+    mode: {
+      type: String,
+      default: 'Add New'
+    },
+    new: {
+      type: Boolean,
+      default: false
+    },
     gear: Array,
     campaign: Object,
     item: {
       type: Object,
-      default: () => { return defaultGearItem }
+      default: () => merge({}, defaultGearItem)
     }
   },
   data() {
     return {
-      nameInUse: false,
       filteredRequirements: [
         'Red Affinity', 'Red Connection',
         'Blue Affinity', 'Blue Connection',
@@ -284,13 +313,21 @@ export default {
       ]
     }
   },
+  created() {
+    if(this.new) this.performItemReset()
+  },
   computed: {
+    nameInUse() {
+      if(!this.item.name || this.item.name === '') return true
+      
+      return this.gear.map(g => g.name.trim().toLowerCase()).includes(this.item.name.trim().toLowerCase())
+    },
+    
     valid() {
       return (
         !this.nameInUse &&
-        (this.item.category !== null || this.item.category !== '') &&
-        (this.item.name !== null || this.item.name !== '') &&
-        (this.item.types && this.item.types.length > 0)
+        (this.item.type !== null && this.item.type !== '') &&
+        (this.item.category !== null && this.item.category.trim() !== '')
       )
     },
     
@@ -312,13 +349,11 @@ export default {
     select() {
       if(!this.item || !this.valid) return
       let r = this.item
-      this.item = {}
       this.$emit('add', r)
       this.$emit('close')
     },
     
     close() {
-      this.item = {}
       this.$emit('close')
     },
     
@@ -336,6 +371,17 @@ export default {
         'Blue Affinity', 'Blue Connection',
         'Green Affinity', 'Green Connection'
       ].filter(o => o.toLowerCase().includes(t.trim().toLowerCase()))
+    },
+    
+    resetItem() {
+      this.$buefy.dialog.confirm({
+        message: "Reset all item fields on this item?",
+        onConfirm: this.performItemReset
+      })
+    },
+    
+    performItemReset() {
+      this.item = merge({}, defaultGearItem)
     }
   }
 }
