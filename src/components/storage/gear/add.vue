@@ -235,7 +235,8 @@
     <footer class="modal-card-foot">
       <div class="buttons">
         <button class="button" type="button" @click="close">Cancel</button>
-        <button class="button is-success" v-if="valid" @click="select">Add Item</button>
+        <button class="button is-success" v-if="newItem && valid" @click="add">Add Item</button>
+        <button class="button is-info" v-else-if="!newItem && valid" @click="save">Save Edited Item</button>
         <b-button type="is-danger" disabled v-else>Item Has Errors</b-button>
         <button class="button is-warning is-pulled-right" @click="resetItem" icon="exclamation-triangle">Reset Item</button>
       </div>
@@ -293,7 +294,7 @@ export default {
       type: String,
       default: 'Add New'
     },
-    new: {
+    newItem: {
       type: Boolean,
       default: false
     },
@@ -314,7 +315,7 @@ export default {
     }
   },
   created() {
-    if(this.new) this.performItemReset()
+    if(this.newItem) this.performItemReset()
   },
   computed: {
     nameInUse() {
@@ -325,7 +326,7 @@ export default {
     
     valid() {
       return (
-        !this.nameInUse &&
+        (!this.newItem || (this.newItem && !this.nameInUse)) &&
         (this.item.type !== null && this.item.type !== '') &&
         (this.item.category !== null && this.item.category.trim() !== '')
       )
@@ -346,11 +347,19 @@ export default {
     }
   },
   methods: {
-    select() {
+    _successClose(mode) {
       if(!this.item || !this.valid) return
       let r = this.item
-      this.$emit('add', r)
+      this.$emit(mode, r)
       this.$emit('close')
+    },
+  
+    add() {
+      this._successClose('add')
+    },
+    
+    save() {
+      this._successClose('save')
     },
     
     close() {

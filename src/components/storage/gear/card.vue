@@ -96,6 +96,8 @@
     position: relative;
     background: #f8f8f8;
     
+    word-break: break-word; 
+    
     .tooltip-content {
       strong {
         color: white;
@@ -163,6 +165,7 @@
       position: absolute;
       top: .5em;
       left: .5em;
+      z-index: 10;
       
       .armor-loc {
         vertical-align: text-top;
@@ -212,7 +215,7 @@
     }
     
     .top-text, .bottom-text {
-      width: 90%;
+      width: 100%;
       text-align: center;
       margin: 0 auto;
     }
@@ -220,6 +223,7 @@
     .connection-container {
       position: absolute;
       overflow: hidden;
+      z-index: 5;
       
       &.left, &.right {
         height: 100%;

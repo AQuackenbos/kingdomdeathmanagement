@@ -7,20 +7,45 @@
       trap-focus
       :destroy-on-hide="true"
       aria-role="dialog"
-      aria-modal>
+      aria-modal
+    >
       <template #default="props">
         <GearAdd
           :gear="gear"
           :campaign="campaign"
-          :new="true"
+          :newItem="true"
           @close="props.close"
           @add="addGear"
         />
       </template>
     </b-modal>
+    <b-modal
+      v-model="showEditGear"
+      has-modal-card
+      trap-focus
+      :destroy-on-hide="true"
+      aria-role="dialog"
+      aria-modal
+    >
+      <template #default="props">
+        <GearAdd
+          v-bind="editGear"
+          @close="props.close"
+          @save="saveGearEdit"
+        />
+      </template>
+    </b-modal>
     <div class="tile is-vertical" v-for="(cg,idx) in [categoriesLeft,categoriesRight]" :key="idx">
-      <div class="tile is-parent" v-for="c in cg" :key="c.name" :ref="c.name" style="position:relative">
-        <div class="tile is-child box"> {{ c.name }} </div>
+      <div class="tile is-parent" v-for="c in cg" :key="c.name" :ref="c.name">
+        <div class="tile is-child box"> 
+          <h1 class="subtitle">{{ c.name }}</h1>
+          <hr />
+          <div class="tile is-parent">
+            <div class="tile is-child is-4" v-for="g in c.gear" :key="g.id" style="padding:.5em" @click="openGearEdit(g)">
+              <GearCard :item="g" :campaign="campaign" class="is-scaled" style="font-size:12px" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -32,6 +57,14 @@
     position: fixed;
     bottom: 2em;
     right: 2em;
+    z-index: 10;
+  }
+}
+
+.tile {
+  &.is-parent {
+    flex-wrap: wrap;
+    position: relative;
   }
 }
 </style>
@@ -40,6 +73,8 @@
 import { mapGetters, mapActions } from 'vuex'
 import { db } from '@/firebase'
 import GearAdd from '@/components/storage/gear/add'
+import GearCard from '@/components/storage/gear/card'
+import merge from 'deepmerge'
 
 export default {
   name: 'Gear',
@@ -47,11 +82,20 @@ export default {
   data() {
     return {
       gear: [],
-      showAddGear: false
+      showAddGear: false,
+      showEditGear: false,
+      editGear: {
+        item: null,
+        campaign: null,
+        gear: [],
+        newItem: false,
+        mode: 'Edit'
+      }
     }
   },
   components: {
-    GearAdd
+    GearAdd,
+    GearCard
   },
   created() {
     this.$bind('gear', db.collection(`campaign/${this.currentCampaign}/gear`))
@@ -96,9 +140,24 @@ export default {
       'setLoading'
     ]),
     
+    openGearEdit(g) {
+      this.editGear = Object.assign(this.editGear, {
+        item: merge({ id: g.id }, g),
+        gear: this.gear,
+        campaign: this.campaign
+      })
+      this.showEditGear = true
+    },
+    
     addGear(g) {
       db.collection(`campaign/${this.currentCampaign}/gear`).doc().set(g)
     },
+    
+    saveGearEdit(g) {
+      let docId = g.id
+      delete(g.id)
+      db.collection(`campaign/${this.currentCampaign}/gear`).doc(docId).update(g)
+    }
   }
 }
 </script>

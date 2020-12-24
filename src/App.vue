@@ -1,7 +1,7 @@
 <template>
   <main id="app" class="">
     <b-message type="is-danger" title="TODO LIST" size="is-small">
-      Move default Gear Item to export.  Change Logout button to Account menu.  Add Display Name changing.
+      Change Logout button to Account menu.  Add Display Name changing.
     </b-message>
     <b-loading :is-full-page="true" :can-cancel="false" v-model="loading"/>
     <Navigation/>
@@ -136,6 +136,30 @@
     left: 0.35em;
     color: white;
     z-index: 5;
+  }
+}
+
+.is-scaled {
+  .is-size-1, &.is-size-1 {
+    font-size: 3em !important;
+  }
+  .is-size-2, &.is-size-2 {
+    font-size: 2.5em !important;
+  }
+  .is-size-3, &.is-size-3 {
+    font-size: 2em !important;
+  }
+  .is-size-4, &.is-size-4 {
+    font-size: 1.5em !important;
+  }
+  .is-size-5, &.is-size-5 {
+    font-size: 1.25em !important;
+  }
+  .is-size-6, &.is-size-6 {
+    font-size: 1em !important;
+  }
+  .is-size-7, &.is-size-7 {
+    font-size: .75em !important;
   }
 }
 
