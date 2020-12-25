@@ -101,6 +101,9 @@
               <b-switch size="is-small" v-model="item.grants.armor">Armor</b-switch>
             </b-field>
           </b-field>
+          <b-field label="Total Qty" label-position="on-border" message="Includes all copies in Storage and Gear Grids">
+            <b-input v-model="item.qty" size="is-small" placeholder="Qty" type="number" min="0" />
+          </b-field>
         </div>
         <div class="column is-4 side-conn">
           <b-field>

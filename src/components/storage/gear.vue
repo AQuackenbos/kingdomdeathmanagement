@@ -37,12 +37,22 @@
     </b-modal>
     <div class="tile is-vertical" v-for="(cg,idx) in [categoriesLeft,categoriesRight]" :key="idx">
       <div class="tile is-parent" v-for="c in cg" :key="c.name" :ref="c.name">
-        <div class="tile is-child box"> 
+        <div class="tile is-child box">
           <h1 class="subtitle">{{ c.name }}</h1>
           <hr />
           <div class="tile is-parent">
-            <div class="tile is-child is-4" v-for="g in c.gear" :key="g.id" style="padding:.5em" @click="openGearEdit(g)">
-              <GearCard :item="g" :campaign="campaign" class="is-scaled" style="font-size:12px" />
+            <div class="tile is-child is-4" v-for="g in c.gear" :key="g.id" style="padding:.5em">
+              <div class="is-size-7 gear-qty">
+                <span class="tags has-addons is-pulled-left">
+                  <span class="tag is-info">Storage</span>
+                  <span class="tag is-dark">{{ g.qty - (gridQty[g.id]||0) }}</span>
+                </span>
+                <span class="tags has-addons is-pulled-right">
+                  <span class="tag is-primary">Grids</span>
+                  <span class="tag is-dark">{{ gridQty[g.id]||0 }}</span>
+                </span>
+              </div>
+              <GearCard :item="g" :campaign="campaign" class="is-scaled" style="font-size:12px;clear:both" @click.native="openGearEdit(g)"/>
             </div>
           </div>
         </div>
@@ -58,6 +68,19 @@
     bottom: 2em;
     right: 2em;
     z-index: 10;
+  }
+  
+  .gear-qty {
+    .tags {
+      margin-bottom: -1.1em;
+    }
+  }
+}
+
+.gear-card {
+  &:hover {
+    box-shadow: 2px 2px gray;
+    border: 1px solid gray;
   }
 }
 
@@ -106,6 +129,10 @@ export default {
       'currentCampaign'
     ]),
     
+    gridQty() {
+      return {}
+    },
+    
     categoryNames() {
       return this.gear
         .map(r => r.category.trim().toLowerCase())
@@ -150,12 +177,14 @@ export default {
     },
     
     addGear(g) {
+      if(!g.qty) g.qty = 0
       db.collection(`campaign/${this.currentCampaign}/gear`).doc().set(g)
     },
     
     saveGearEdit(g) {
       let docId = g.id
       delete(g.id)
+      if(!g.qty) g.qty = 0
       db.collection(`campaign/${this.currentCampaign}/gear`).doc(docId).update(g)
     }
   }
