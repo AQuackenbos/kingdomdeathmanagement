@@ -2,6 +2,7 @@
   <div class="tile is-ancestor resource-sheet">
     <div class="field corner-control">
       <b-switch v-model="showTrackers">Show Trackers</b-switch>
+      <b-switch v-model="hideOos">Hide Out of Stock</b-switch>
     </div>
     <b-button type="is-info" icon-left="plus-square" class="corner-button" rounded @click.prevent="showAddResource = true">Add New Resource</b-button>
     <b-modal
@@ -50,22 +51,23 @@
             <tbody>
               <tr v-for="r in c.resources" :key="r.id">
                 <td width="25%">
-                  <b-field type="is-info" label="Qty" label-position="on-border">
+                  <b-field :type="r.qty > 0 ? 'is-info' : 'is-danger'" label="Qty" label-position="on-border">
                     <b-input
                       v-model="r.qty"
                       size="is-small"
                       type="number"
-                      class="is-info"
+                      min="0"
+                      class="is-info is-danger"
                       rounded
                       :lazy="true"
                       @blur="saveResource(r)"
                     />
                   </b-field>
                 </td>
-                <td style="text-align:left">
+                <td style="text-align:left" :class="{ 'is-faded': r.qty <= 0 }">
                   <span>{{ r.name }}</span>
                 </td>
-                <td width="25%">
+                <td width="25%" :class="{ 'is-faded': r.qty <= 0 }">
                   <div class="control" style="width:100%">
                     <div class="tags">
                       <span class="tag is-rounded" v-for="t in r.types" :key="t" style="width:100%">{{ t }}</span>
@@ -95,6 +97,10 @@
     z-index: 10;
     bottom: 2em;
     left: 2em;
+    
+    .switch {
+      display: flex;
+    }
   }
 
   .tags .tag:not(:last-child) {
@@ -103,6 +109,10 @@
 
   .input.is-info.is-small.is-rounded {
     padding-right: 0
+  }
+  
+  .is-faded {
+    opacity: 0.5;
   }
 }
 </style>
@@ -118,6 +128,7 @@ export default {
   data() {
     return {
       resources: [],
+      hideOos: false,
       showAddResource: false,
       showTrackers: false
     }
@@ -148,8 +159,11 @@ export default {
     categories() {
       let categories = []
       let names = this.categoryNames
-      names.forEach(n => categories.push({ name: n, resources: this.resources.filter(r => r.category.trim().toLowerCase() === n.trim().toLowerCase()) }))
-      return categories
+      names.forEach(n => categories.push({
+        name: n,
+        resources: this.resources.filter(r => r.category.trim().toLowerCase() === n.trim().toLowerCase() && (this.hideOos ? r.qty > 0 : true))
+      }))
+      return categories.filter(c => c.resources.length > 0)
     },
     
     categoriesLeft() {

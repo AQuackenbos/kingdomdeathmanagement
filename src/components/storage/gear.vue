@@ -1,5 +1,8 @@
 <template>
   <div class="tile is-ancestor gear-sheet">
+    <div class="field corner-control">
+      <b-switch v-model="hideOos">Hide Out of Stock</b-switch>
+    </div>
     <b-button type="is-info" icon-left="plus-square" class="corner-button" rounded @click.prevent="showAddGear = true">Add New Gear</b-button>
     <b-modal
       v-model="showAddGear"
@@ -44,15 +47,15 @@
             <div class="tile is-child is-4" v-for="g in c.gear" :key="g.id" style="padding:.5em">
               <div class="is-size-7 gear-qty">
                 <span class="tags has-addons is-pulled-left">
-                  <span class="tag is-info">Storage</span>
+                  <span class="tag" :class="{ 'is-info': g.qty > 0, 'is-danger': g.qty <= 0 }">Storage</span>
                   <span class="tag is-dark">{{ g.qty - (gridQty[g.id]||0) }}</span>
                 </span>
-                <span class="tags has-addons is-pulled-right">
+                <span class="tags has-addons is-pulled-right" :class="{ 'is-faded': g.qty <= 0 }">
                   <span class="tag is-primary">Grids</span>
                   <span class="tag is-dark">{{ gridQty[g.id]||0 }}</span>
                 </span>
               </div>
-              <GearCard :item="g" :campaign="campaign" class="is-scaled" style="font-size:12px;clear:both" @click.native="openGearEdit(g)"/>
+              <GearCard :item="g" :campaign="campaign" class="is-scaled is-clickable" :class="{ 'is-faded': g.qty <= 0 }" style="font-size:12px;clear:both" @click.native="openGearEdit(g)"/>
             </div>
           </div>
         </div>
@@ -62,6 +65,13 @@
 </template>
 
 <style lang="scss" scoped>
+.corner-control {
+  position: fixed;
+  z-index: 10;
+  bottom: 2em;
+  left: 2em;
+}
+
 .gear-sheet {
   .corner-button {
     position: fixed;
@@ -75,6 +85,10 @@
       margin-bottom: -1.1em;
     }
   }
+}
+
+.is-faded {
+  opacity: 0.3;
 }
 
 .gear-card {
@@ -105,6 +119,7 @@ export default {
   data() {
     return {
       gear: [],
+      hideOos: false,
       showAddGear: false,
       showEditGear: false,
       editGear: {
@@ -144,8 +159,11 @@ export default {
     categories() {
       let categories = []
       let names = this.categoryNames
-      names.forEach(n => categories.push({ name: n, gear: this.gear.filter(r => r.category.trim().toLowerCase() === n.trim().toLowerCase()) }))
-      return categories
+      names.forEach(n => categories.push({
+          name: n,
+          gear: this.gear.filter(r => r.category.trim().toLowerCase() === n.trim().toLowerCase() && (this.hideOos ? r.qty > 0 : true))
+      }))
+      return categories.filter(c => c.gear.length > 0)
     },
     
     categoriesLeft() {
