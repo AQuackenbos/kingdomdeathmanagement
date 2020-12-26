@@ -1,6 +1,11 @@
 <template>
     <div class="column" v-if="!loading && user && campaign">
-        <h1 class="title can-update" @click="updateTitle">{{ campaign.name }}</h1>
+        <h1 class="title can-update" @mouseover="showTitleEdit=true" @mouseleave="showTitleEdit=false">
+          {{ campaign.name }}
+          <span class="is-size-6" @click="updateTitle" v-if="showTitleEdit">
+            <b-icon class="is-clickable ml-2" size="is-small" icon="edit"/>
+          </span>
+        </h1>
         <h2 class="subtitle">Lantern Year {{ campaign.year }}</h2>
         <div class="columns is-multiline">
           <div class="column is-3">
@@ -53,7 +58,7 @@
                     aria-role="dialog"
                     aria-modal>
                     <template #default="props">
-                      <QuarryAdd 
+                      <QuarryAdd
                         :quarries="quarries"
                         :campaign="campaign"
                         @close="props.close"
@@ -84,7 +89,7 @@
                     aria-role="dialog"
                     aria-modal>
                     <template #default="props">
-                      <LocationAdd 
+                      <LocationAdd
                         :locations="locations"
                         :campaign="campaign"
                         @close="props.close"
@@ -242,7 +247,8 @@ export default {
         innovations: [],
         showAddQuarry: false,
         showAddLocation: false,
-        quarry: null
+        quarry: null,
+        showTitleEdit: false
       }
     },
     computed: {

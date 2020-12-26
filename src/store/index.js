@@ -8,11 +8,12 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
   plugins: [
     createPersistedState({
-      storage: window.sessionStorage  
+      storage: window.sessionStorage
     })
   ],
   state: {
     user: null,
+    pubUser: null,
     currentCampaign: null,
     loading: true
   },
@@ -35,6 +36,10 @@ export const store = new Vuex.Store({
     
     keywords(state) {
       return state.keywords
+    },
+    
+    pubUser(state) {
+      return state.pubUser
     }
   },
   mutations: {
@@ -56,6 +61,10 @@ export const store = new Vuex.Store({
     
     SET_KEYWORDS(state, data) {
       state.keywords = data
+    },
+    
+    SET_PUBUSER(state, data) {
+      state.pubUser = data
     }
   },
   actions: {
@@ -64,6 +73,7 @@ export const store = new Vuex.Store({
         commit("SET_USER", user)
         dispatch('loadInnovations')
         dispatch('loadKeywords')
+        dispatch('loadPubUser')
       }
     },
     
@@ -81,7 +91,7 @@ export const store = new Vuex.Store({
     
     clearUser({ commit }) {
       commit("SET_USER", null)
-      window.sessionStorage.clear();
+      window.sessionStorage.clear()
     },
     
     loadInnovations({ commit }) {
@@ -94,6 +104,16 @@ export const store = new Vuex.Store({
       db.collection('keywords').get().then(r => {
         commit("SET_KEYWORDS", r.docs.map(d => ({ id: d.id, ...d.data() })))
       })
+    },
+    
+    loadPubUser({ commit, state }) {
+      db.collection('users').doc(state.user.uid).get().then(d => {
+        commit("SET_PUBUSER", d.data())
+      })
+    },
+    
+    setPubUser({ commit }, pu) {
+      commit("SET_PUBUSER", pu)
     }
   }
 });

@@ -1,7 +1,7 @@
 <template>
   <main id="app" class="">
-    <b-message type="is-danger" title="TODO LIST" size="is-small">
-      Change Logout button to Account menu.  Add Display Name changing.
+    <b-message type="is-danger" title="TODO LIST" size="is-small" v-if="todos.length > 0">
+      {{ todos }}
     </b-message>
     <b-loading :is-full-page="true" :can-cancel="false" v-model="loading"/>
     <Navigation/>
@@ -268,6 +268,7 @@ import { mapGetters } from 'vuex'
 import Navigation from '@/components/navigation.vue'
 
 export default {
+  data: () => ({ todos: []}),
   computed: {
     ...mapGetters({
       loading: 'loading'

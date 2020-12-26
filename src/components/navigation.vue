@@ -23,50 +23,84 @@
         </b-navbar-item>
     </template>
     <template slot="end">
-        <b-navbar-item tag="div">
-            <div class="buttons">
-                <b-button type="is-danger is-light" @click.prevent="logout">Logout</b-button>
-            </div>
-        </b-navbar-item>
+        <b-dropdown
+          position="is-bottom-left"
+          append-to-body
+          trap-focus
+          aria-role="menu"
+        >
+          <b-button size="is-small" type="is-info" class="is-light navbar-item mr-1 mt-1" slot="trigger" role="button" icon-left="user-circle">
+            {{ user.displayName }}
+          </b-button>
+          <b-dropdown-item custom aria-role="menuitem">
+            Logged in as: <br /> {{ user.email }}
+          </b-dropdown-item>
+          <b-dropdown-item custom aria-role="menuitem">
+            Display Name: <br /> {{ pubUser.displayName }}
+          </b-dropdown-item>
+          <hr class="dropdown-divider" />
+          <b-dropdown-item aria-role="menuitem" @click="promptUpdate">
+            <b-icon icon="edit" />
+            Update Display Name
+          </b-dropdown-item>
+          <b-dropdown-item aria-role="menuitem" @click="logout">
+            <b-icon icon="sign-out-alt" />
+            Logout
+          </b-dropdown-item>
+        </b-dropdown>
     </template>
-    <div id="navbarExampleTransparentExample" class="navbar-menu">
-      <div class="navbar-start">
-      <b-button tag="router-link" class="navbar-item" :to="{name: 'Settlement' }" icon-left="landmark">Settlement</b-button>
-      <b-button tag="router-link" class="navbar-item" :to="{name: 'Timeline' }" icon-left="stream">Timeline</b-button>
-      <b-button tag="router-link" class="navbar-item" :to="{name: 'Survivors' }" icon-left="user-injured">Survivors</b-button>
-      <b-button tag="router-link" class="navbar-item" :to="{name: 'Storage' }" icon-left="box-open">Storage</b-button>
-      <b-button tag="router-link" class="navbar-item" :to="{name: 'Innovations' }" icon-left="book">Innovations</b-button>
-      </div>
-      <div class="navbar-end">
-        <a class="navbar-item" @click.prevent="logout">Logout</a>
-      </div>
-    </div>
   </b-navbar>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { firebase } from '@/firebase'
+import { db, firebase } from '@/firebase'
 
 export default {
   name: 'Navigation',
   computed: {
-    ...mapGetters({
-      user: 'user',
-      loading: 'loading',
-      currentCampaign: 'currentCampaign'
-    })
+    ...mapGetters([
+      'user',
+      'pubUser',
+      'loading',
+      'currentCampaign'
+    ])
   },
   
   methods: {
     ...mapActions([
-      'clearUser'
+      'clearUser',
+      'setPubUser'
     ]),
     
     logout() {
       firebase.auth().signOut().then(() => {
         this.clearUser()
       }).catch(err => console.log(err))
+    },
+    
+    promptUpdate() {
+      this.$buefy.dialog.prompt({
+        message: 'Change your Display Name',
+        inputAttrs: {
+          placeholder: "Your name of choice",
+          required: true
+        },
+        required: true,
+        trapFocus: true,
+        confirmText: 'Update',
+        onConfirm: (val) => this.updateName(val)
+      })
+    },
+    
+    updateName(name) {
+      this.pubUser.displayName = name
+      db.collection('users').doc(this.user.uid).update({
+        displayName: name
+      }).then(d => {
+        console.log(d)
+        this.setPubUser(this.pubUser)
+      })
     }
   }
 }
