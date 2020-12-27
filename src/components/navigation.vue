@@ -1,10 +1,5 @@
 <template>
   <b-navbar transparent v-if="!loading && user && currentCampaign">
-    <template slot="brand">
-        <b-navbar-item tag="router-link" :to="{name: 'Home'}">
-            <img src="/images/lantern.png" alt="Kingdom Death Management"/>
-        </b-navbar-item>
-    </template>
     <template slot="start">
         <b-navbar-item tag="router-link" :to="{name: 'Settlement'}">
             <b-icon icon="landmark" class="mr-2" /> Settlement
@@ -37,6 +32,13 @@
           </b-dropdown-item>
           <b-dropdown-item custom aria-role="menuitem">
             Display Name: <br /> {{ pubUser.displayName }}
+          </b-dropdown-item>
+          <hr class="dropdown-divider" />
+          <b-dropdown-item aria-role="menuitem">
+            <router-link to="/" class="is-info">
+              <span class="bl-lantern is-size-3 mx-1"></span>
+              Change Campaign
+            </router-link>
           </b-dropdown-item>
           <hr class="dropdown-divider" />
           <b-dropdown-item aria-role="menuitem" @click="promptUpdate">

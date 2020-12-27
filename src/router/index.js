@@ -19,7 +19,11 @@ const routes = [
     component: () => import('../views/Survivors.vue'),
     meta: {
       requiresAuth: true
-    }
+    },
+    children: [{
+      path: ':id'
+      // TODO Move this to an actual subcomponent lol
+    }]
   },
   {
     path: '/settlement',
@@ -48,10 +52,24 @@ const routes = [
   {
     path: '/storage',
     name: 'Storage',
+    redirect: '/storage/resources',
     component: () => import('../views/Storage.vue'),
     meta: {
         requiresAuth: true
-    }
+    },
+    children: [{
+        name: 'tab-resources',
+        path: 'resources',
+        component: () => import('../views/Storage.vue')
+      },{
+        name: 'tab-gear',
+        path: 'gear',
+        component: () => import('../views/Storage.vue')
+      },{
+        name: 'tab-grids',
+        path: 'grids',
+        component: () => import('../views/Storage.vue')
+    }]
   }
 ]
 

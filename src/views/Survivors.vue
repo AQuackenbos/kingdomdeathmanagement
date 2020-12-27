@@ -12,7 +12,13 @@
                 </b-field>
                 <b-menu>
                     <b-menu-list label="Survivors">
-                        <b-menu-item :class="{ 'is-primary': s.lifetime.died === null, 'is-danger': s.lifetime.died !== null }" v-for="s in shownSurvivors" :key="s.id" @click.prevent="setSurvivor(s.id)" :active="currentSurvivor && s.id === currentSurvivor.id">
+                        <b-menu-item 
+                            :class="{ 'is-primary': s.lifetime.died === null, 'is-danger': s.lifetime.died !== null }" 
+                            v-for="s in shownSurvivors" 
+                            :key="s.id" 
+                            @click.prevent="setSurvivor(s.id)" 
+                            :active="currentSurvivor !== null && s.id === currentSurvivor.id"
+                        >
                             <template #label>
                                 <span v-if="s.lifetime.gender === 'M'"><b-icon size="is-small" icon="mars" /></span>
                                 <span v-else-if="s.lifetime.gender === 'F'"><b-icon size="is-small" icon="venus" /></span>
@@ -488,6 +494,10 @@ export default {
     created() {
         this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
         this.$bind('survivors', db.collection(`campaigns/${this.currentCampaign}/survivors`))
+        this.loadCurrentSurvivor()
+    },
+    watch: {
+        '$route': 'loadCurrentSurvivor'
     },
     methods: {
         ...mapActions([
@@ -561,12 +571,21 @@ export default {
             })
         },
         
+        loadCurrentSurvivor() {
+            let id = this.$route.params.id
+            
+            if(!id) return
+            
+            return this.setSurvivor(id)
+        },
+        
         setSurvivor(id) {
             if(this.currentSurvivor?.id === id) return
             
             this.setLoading(true)
             this.$bind('currentSurvivor', db.collection(`campaigns/${this.currentCampaign}/survivors`).doc(id))
             this.setLoading(false)
+            history.pushState({}, null, '/survivors/'+id)
         }
     }
 }

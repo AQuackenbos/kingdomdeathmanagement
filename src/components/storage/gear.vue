@@ -45,7 +45,7 @@
           <hr />
           <div class="tile is-parent">
             <div class="tile is-child is-4" v-for="g in c.gear" :key="g.id" style="padding:.5em">
-              <div class="is-size-7 gear-qty">
+              <div class="is-size-7 gear-qty" :class="{ 'is-cutoff': g.qty <= 0 }">
                 <span class="tags has-addons is-pulled-left">
                   <span class="tag" :class="{ 'is-info': g.qty > 0, 'is-danger': g.qty <= 0 }">Storage</span>
                   <span class="tag is-dark">{{ g.qty - (gridQty[g.id]||0) }}</span>
@@ -89,6 +89,10 @@
 
 .is-faded {
   opacity: 0.3;
+}
+
+.is-cutoff {
+  overflow-y: hidden;
 }
 
 .gear-card {
