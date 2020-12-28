@@ -68,7 +68,6 @@ export default {
   methods: {
     setRouterTab() {
       let t = this.$route.name;
-      console.log(t)
       for(const o in this.tabs) {
         if(this.tabs[o].route === t) this.activeTab = parseInt(o)
       }

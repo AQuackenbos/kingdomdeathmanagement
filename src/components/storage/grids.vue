@@ -1,7 +1,14 @@
 <template>
   <div class="tile is-ancestor grid-sheet">
-    (Grid of Grids)
-    <b-button type="is-info" icon-left="plus-square" class="corner-button" rounded @click.prevent="showGridBuilder = true">Create Grid</b-button>
+    <div class="tile is-child">
+    <h1 class="title">TEMP SHIT LUL</h1><br />
+    <ul>
+      <li v-for="g in grids" :key="g.id">
+        <router-link :to="'/grids/edit/' + g.id">{{ g.name }}</router-link>
+      </li>
+    </ul>
+    </div>
+    <b-button type="is-info" icon-left="plus-square" class="corner-button" rounded @click.prevent="createGridPrompt">Create Grid</b-button>
     <b-modal
       v-model="showGridBuilder"
       has-modal-card
@@ -14,6 +21,7 @@
         <GridEdit
           :gear="gear"
           :campaign="campaign"
+          :grid="currentlyEditing"
           @close="props.close"
         />
       </template>
@@ -32,19 +40,20 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import merge from 'deepmerge'
 import { db } from '@/firebase'
-import GridEdit from '@/components/storage/grid/edit'
+import { emptyGearGrid } from '@/util'
 
 export default {
   name: 'GearGrids',
   props: ['campaign'],
-  components: {
-    GridEdit
+  data() {
+    return {
+      showGridBuilder: false,
+      gear: [],
+      grids: []
+    }
   },
-  data: () => ({
-    showGridBuilder: false,
-    gear: []
-  }),
   computed: {
     ...mapGetters([
       'currentCampaign',
@@ -52,12 +61,33 @@ export default {
     ])
   },
   created() {
-    this.$bind('gear', db.collection(`campaign/${this.currentCampaign}/gear`))
+    this.$bind('gear', db.collection(`campaigns/${this.currentCampaign}/gear`))
+    this.$bind('grids', db.collection(`campaigns/${this.currentCampaign}/grids`))
   },
   methods: {
     ...mapActions([
       'setLoading'
-    ])
+    ]),
+    
+    createGridPrompt() {
+      this.$buefy.dialog.prompt({
+        message: 'Name Gear Grid: ',
+        inputAttrs: {
+          placeholder: "Your name of choice",
+          required: true
+        },
+        required: true,
+        trapFocus: true,
+        confirmText: 'Name and Edit',
+        onConfirm: (val) => {
+          let newGrid = merge(emptyGearGrid, { name: val })
+          db.collection(`campaigns/${this.currentCampaign}/grids`).add(newGrid)
+            .then(g => {
+              this.$router.push({ path: '/grids/edit' + g.id })
+            })
+        }
+      })
+    },
   }
 }
 </script>

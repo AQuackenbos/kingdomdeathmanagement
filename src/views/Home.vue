@@ -41,7 +41,6 @@ export default {
       const provider = new firebase.auth.GoogleAuthProvider()
       this.setLoading(true)
       firebase.auth().signInWithRedirect(provider).then((result) => {
-        console.log('calling setter -- ', result)
         this.setUser(result.user)
         this.setLoading(false)
       }).catch(err => console.log(err))

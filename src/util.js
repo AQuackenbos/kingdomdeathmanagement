@@ -34,6 +34,22 @@ const defaultGearItem = {
   qty: 0
 }
 
+const emptyGearGrid = {
+  name: null,
+  items: [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ]
+}
+
 export {
-  defaultGearItem
+  defaultGearItem,
+  emptyGearGrid
 }

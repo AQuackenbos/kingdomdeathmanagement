@@ -140,7 +140,7 @@ export default {
     GearCard
   },
   created() {
-    this.$bind('gear', db.collection(`campaign/${this.currentCampaign}/gear`))
+    this.$bind('gear', db.collection(`campaigns/${this.currentCampaign}/gear`))
   },
   computed: {
     ...mapGetters([
@@ -190,7 +190,7 @@ export default {
     ]),
     
     openGearEdit(g) {
-      this.editGear = Object.assign(this.editGear, {
+      this.editGear = merge(this.editGear, {
         item: merge({ id: g.id }, g),
         gear: this.gear,
         campaign: this.campaign
@@ -200,14 +200,14 @@ export default {
     
     addGear(g) {
       if(!g.qty) g.qty = 0
-      db.collection(`campaign/${this.currentCampaign}/gear`).doc().set(g)
+      db.collection(`campaigns/${this.currentCampaign}/gear`).doc().set(g)
     },
     
     saveGearEdit(g) {
       let docId = g.id
       delete(g.id)
       if(!g.qty) g.qty = 0
-      db.collection(`campaign/${this.currentCampaign}/gear`).doc(docId).update(g)
+      db.collection(`campaigns/${this.currentCampaign}/gear`).doc(docId).update(g)
     }
   }
 }

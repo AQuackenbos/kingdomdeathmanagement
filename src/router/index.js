@@ -70,6 +70,11 @@ const routes = [
         path: 'grids',
         component: () => import('../views/Storage.vue')
     }]
+  },
+  {
+    path: '/grids/edit/:id',
+    name: 'Grid Edit',
+    component: () => import('../views/GearGrid.vue')
   }
 ]
 
