@@ -55,7 +55,7 @@
       </div>
       <div class="is-size-7 unlock" v-if="(item.unlock.requires && item.unlock.requires.length > 0)">
         <section class="field" :class="{ 'is-grouped': item.unlock.sizing !== 2 }" style="width:100%">
-          <p :class="{ 'sm': item.unlock.sizing === 0, 'lg': item.unlock.sizing === 1, 'fl': item.unlock.sizing === 2 }">
+          <p style="margin: 0 auto; background: white">
             <b-icon
               v-for="(r,ridx) in item.unlock.requires.map(r => r.toLowerCase())" :key="ridx"
               :icon="r.includes('connection') ? 'puzzle-piece' : 'square-full'"
@@ -70,6 +70,11 @@
       <div class="connection" :class="p">
         <span class="bl-milestone" v-if="item.connections[p]" :style="{ color: item.connections[p] }"></span>
       </div>
+    </div>
+    <div class="remove-container" v-if="showRemove" @click.prevent="remove">
+      <b-button type="is-dark" size="is-small">
+        <b-icon icon="times" type="is-danger" />
+      </b-button>
     </div>
   </div>
 </template>

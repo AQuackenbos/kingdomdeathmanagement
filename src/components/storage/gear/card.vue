@@ -87,6 +87,11 @@
         <span class="bl-milestone" v-if="item.connections[p]" :style="{ color: item.connections[p] }"></span>
       </div>
     </div>
+    <div class="remove-container" v-if="showRemove" @click.prevent="remove">
+      <b-button type="is-dark" size="is-small">
+        <b-icon icon="times" type="is-danger" />
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -102,6 +107,13 @@
       strong {
         color: white;
       }
+    }
+    
+    .remove-container {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 15;
     }
     
     .affinity {
@@ -292,7 +304,11 @@ export default {
       type: Object,
       default: () => Object.assign({}, defaultGearItem)
     },
-    campaign: Object
+    campaign: Object,
+    showRemove: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     ...mapGetters([
@@ -351,6 +367,10 @@ export default {
     keywordTooltip(kw) {
       if(!kw) return false
       return this.keywords.find(k => kw.trim().toLowerCase().startsWith(k.name.toLowerCase())) || false
+    },
+    
+    remove() {
+      this.$emit('remove')
     }
   }
 }

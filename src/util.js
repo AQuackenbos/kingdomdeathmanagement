@@ -37,15 +37,15 @@ const defaultGearItem = {
 const emptyGearGrid = {
   name: null,
   items: [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
   ]
 }
 
