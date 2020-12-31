@@ -191,21 +191,6 @@
 </template>
 
 <style lang="scss" scoped>
-@import "~bulma/sass/utilities/_all";
-@import "~@creativebulma/bulma-divider";
-
-.divider {
-  &.is-vertical {
-    &::before {
-      margin-bottom: 0
-    }
-    
-    &::after {
-      margin-top: 0
-    }
-  }
-}
-
 .can-update {
   cursor: pointer;
 }

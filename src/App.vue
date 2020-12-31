@@ -16,6 +16,21 @@
 </template>
 
 <style lang="scss">
+@import "~bulma/sass/utilities/_all";
+@import "~@creativebulma/bulma-divider";
+
+.divider {
+  &.is-vertical {
+    &::before {
+      margin-bottom: 0
+    }
+    
+    &::after {
+      margin-top: 0
+    }
+  }
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

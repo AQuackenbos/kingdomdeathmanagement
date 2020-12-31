@@ -3,20 +3,113 @@
     <h1 class="title">Grid Builder</h1>
     <hr />
     <section class="section">
-      <h1 class="subtitle is-clickable" @click.prevent="promptName">{{ grid.name }}</h1>
-      <div class="tile is-ancestor">
+      <h1 class="title is-size-4 is-clickable" @click.prevent="promptName">{{ grid.name }}</h1>
+      <div class="tile is-ancestor is-flex-wrap-wrap">
         <div class="tile is-vertical is-3 is-align-items-center">
+          <b-switch v-model="showMinis" class="my-1">Use Compact Cards</b-switch>
+          <hr />
           <div class="tile is-child">
-            <b-button type="is-success" @click.prevent="saveGrid" expanded v-if="requireSave">Save Grid</b-button>
-            <b-switch v-model="showMinis" class="my-1">Use Compact Cards</b-switch>
-          </div>
-          <div class="tile is-child">
-            <div class="subtitle">Stats and Unlocks</div>
-            <hr />
-          </div>
-          <div class="tile is-child">
-            <div class="subtitle">Set Bonuses</div>
-            <hr />
+            <div class="subtitle">Calculated Stats</div>
+            <div class="divider">ARMOR</div>
+            <div class="armor-description level">
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">
+                    <span class="bl-head"></span>
+                  </p>
+                  <p class="contet armor-block">
+                    <span class="bl-armor"></span>
+                    <span class="amount">{{ armors().head }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">
+                    <span class="bl-arms"></span>
+                  </p>
+                  <p class="contet armor-block">
+                    <span class="bl-armor"></span>
+                    <span class="amount">{{ armors().arms }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">
+                    <span class="bl-body"></span>
+                  </p>
+                  <p class="contet armor-block">
+                    <span class="bl-armor"></span>
+                    <span class="amount">{{ armors().body }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">
+                    <span class="bl-waist"></span>
+                  </p>
+                  <p class="contet armor-block">
+                    <span class="bl-armor"></span>
+                    <span class="amount">{{ armors().waist }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">
+                    <span class="bl-legs"></span>
+                  </p>
+                  <p class="contet armor-block">
+                    <span class="bl-armor"></span>
+                    <span class="amount">{{ armors().legs }}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="divider">BONUSES</div>
+            <div class="level">
+              <b-field v-for="s in Object.keys(bonuses().stats)" :key="s" :label="shortname[s]" label-position="on-border" class="level-item">
+                <b-input size="is-small" class="stat-box" :value="bonuses().stats[s]" disabled />
+              </b-field>
+            </div>
+            <ul>
+              <li v-for="(t,tidx) in bonuses().text" :key="tidx" v-html="t" class="is-size-7" />
+            </ul>
+            <div class="divider">AFFINITIES</div>
+            <span v-for="c in ['red','blue','green']" :key="c">
+              <b-icon icon="square-full" :style="{ color: c }" v-for="n in affinities()[c]" :key="n" />
+            </span>
+            <div class="divider">SET BONUSES</div>
+              <ul>
+                <li v-for="asp in armorSetProgress().filter(a => a.progress >= a.piecesRequired)" :key="asp.id" class="is-size-7">
+                  <p class="header"><strong>{{ asp.name }}</strong></p>
+                  <hr style="width:75%;text-align:center;margin:.5em auto"/>
+                  <div class="content">
+                    <p v-for="(b,bidx) in asp.bonuses" :key="bidx">
+                      <span v-if="b.type === 'armor'">
+                        Add +<span class="armor-block"><span class="bl-armor"></span><span class="amount">{{ b.amount }}</span></span> to all hit locations.
+                      </span>
+                      <span v-else-if="b.type === 'ability'">
+                        <strong>{{ b.name }}</strong>: <span v-html="parseBlock(b.description)" />
+                      </span>
+                      <span v-else v-html="b.description" />
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            <b-collapse :open="false" position="is-top" aria-id="incomplete-sets">
+              <a slot="trigger" slot-scope="props" aria-controls="incomplete-sets" class="is-size-7">
+                <b-icon :icon="!props.open ? 'caret-down' : 'caret-up'" size="is-small"></b-icon>
+                Show Incomplete Sets
+              </a>
+              <ul>
+                <li v-for="asp in armorSetProgress().filter(a => a.progress < a.piecesRequired)" :key="asp.id" class="is-size-7">
+                  {{ asp.progress }} / {{ asp.piecesRequired }} {{ asp.name }}
+                </li>
+              </ul>
+            </b-collapse>
           </div>
         </div>
         <draggable 
@@ -34,6 +127,9 @@
             <GearCard :item="gi" :campaign="campaign" :showRemove="true" @remove="removeItem(gidx)" v-else />
           </div>
         </draggable>
+        <div class="tile is-parent is-12">
+          <b-button type="is-success" @click.prevent="saveGrid" expanded v-if="requireSave">Save Grid</b-button>
+        </div>
       </div>
     </section>
     <b-modal
@@ -74,6 +170,28 @@
     }
   }
 }
+
+.field.is-floating-label {
+  &.level-item {
+    margin-bottom: 0;
+  }
+
+  &::v-deep {
+    .label {
+      overflow: visible;
+    }
+  }
+}
+
+.stat-box {
+  width: 2.5em;
+  &::v-deep {
+    input {
+      text-align: center;
+      font-weight: bold;
+    }
+  }
+}
 </style>
 
 <script>
@@ -82,10 +200,12 @@ import { db } from '@/firebase'
 import GearMini from '@/components/storage/gear/mini'
 import GearCard from '@/components/storage/gear/card'
 import GearPicker from '@/components/storage/gear/picker'
+import GridsMixin from '@/mixins/grids'
 import draggable from 'vuedraggable'
 
 export default {
   name: 'GearGrid',
+  mixins: [GridsMixin],
   data() {
     return {
       campaign: null,
@@ -111,103 +231,31 @@ export default {
       'currentCampaign'
     ]),
     
-    gridItems: {
-      get() {
-        return this.grid.items.map(i => {
-          if(
-            i === null ||
-            (typeof i === 'object' && !i.id) 
-          ) return {}
-          
-          return this.gear.find(g => g.id === i)
-        })
-      },
-      set(v) {
-        this.grid.items = v.map(i => {
-          if(
-            i === null ||
-            (typeof i === 'object' && !i.id)
-          ) return {}
-          
-          if(typeof i === 'string') return i
-          return i.id
-        })
-      }
-    },
-    
     requireSave() {
       return !((this.grid.items.length == this.originalItems.length) && this.grid.items.every((element, index) => {
         return element === this.originalItems[index]; 
       }))
     },
+    
+    shortname() {
+      return {
+        'movement': 'MOV',
+        'accuracy': 'ACC',
+        'strength': 'STR',
+        'evasion': 'EVA',
+        'luck': 'LCK',
+        'speed': 'SPE'
+      }
+    }
   },
   created() {
     this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
-    this.$bind('armorSets', db.collection('armor_sets'))
     this.$bind('gear', db.collection(`campaigns/${this.currentCampaign}/gear`))
     this.$bind('grid', db.collection(`campaigns/${this.currentCampaign}/grids`).doc(this.$route.params.id)).then(g => {
       this.originalItems = g.items
     })
   },
   methods: {
-    attachGridValues(item, slot) {
-      if(!item.id) return item
-      item.calculated = {
-        connections: {
-          red: 0,
-          blue: 0,
-          green: 0
-        }
-      }
-      
-      let neighbors = { top: {}, left: {}, right: {}, bottom: {} }
-      
-      const dir = ['top', 'left', 'right', 'bottom']
-      const revDir = Object.assign([],dir).reverse()
-      const slotOffset = [-3, -1, 1, 3]
-      
-      //console.log('slot '+slot)
-      for(const d in [...Array(4).keys()]) {
-        neighbors[dir[d]] = this.gridItems[slot + slotOffset[d]]
-        if(!neighbors[dir[d]]) continue
-        
-        //console.log(dir[d]+' neighbor '+neighbors[dir[d]].name)
-        
-        if(item.connections.[dir[d]] === neighbors[dir[d]]?.connections?.[revDir[d]]) {
-          if(item.connections[dir[d]] === null) continue
-          item.calculated.connections[item.connections[dir[d]]]++
-          
-          
-          let identifier = Math.min(slot, (slot + slotOffset[d])) + '_' + Math.max(slot, (slot + slotOffset[d]))
-          this.grid.boxes[item.connections[dir[d]]].push(identifier)
-          
-          //console.log('slot '+slot+' added '+item.connections[dir[d]]+' from '+dir[d]+' ident ' + identifier)
-        }
-      }
-      
-      return item
-    },
-    
-    affinities() {
-      
-      let retObj = { red: 0, blue: 0, green: 0 }
-      if(!this.grid.boxes) {
-        this.grid.boxes = {
-          red: [],
-          blue: [],
-          green: []
-        }
-      }
-      let items = this.extendedGridItems();
-      ['red','blue','green'].forEach(c => {
-        retObj[c] = this.grid.boxes[c].filter((v,i,s) => s.indexOf(v) === i && v !== null).length
-        retObj[c] += items.map(gi => gi?.affinities?.filter(a => a.trim().toLowerCase() === c) || []).map(f => f.length).reduce((a,b) => a + b, 0)
-      })
-      
-      
-      return retObj
-    },
-  
     pickGear(slot) {
       this.targetSlot = slot
       this.showGearPicker = true
@@ -218,10 +266,29 @@ export default {
       this.gridItems = this.grid.items
     },
     
+    updatePreviews() {
+      this.grid.previews = this.gridItems.map(i => {
+        if(
+          i === null ||
+          (typeof i === 'object' && !i.id)
+        ) return ''
+        
+        if(typeof i === 'string') return i
+        
+        if(i.type === 'armor') {
+          return i.armor.locations[0]
+        }
+        
+        return i.type
+      })
+    },
+  
     saveGrid() {
+      this.updatePreviews()
       db.collection(`campaigns/${this.currentCampaign}/grids`).doc(this.grid.id).update({
         name: this.grid.name,
-        items: this.grid.items
+        items: this.grid.items,
+        previews: this.grid.previews
       }).then(() => {
         this.originalItems = this.grid.items
       })
@@ -271,69 +338,6 @@ export default {
         }
       })
     },
-    
-    extendedGridItems() {
-      this.grid.boxes = {
-        red: [],
-        blue: [],
-        green: []
-      }
-      
-      return this.gridItems.map((i,idx) => this.attachGridValues(i,idx)) 
-    },
-    
-    bonusTexts() {
-      let text = []
-      let affinities = this.affinities()
-      
-      let items = this.extendedGridItems()
-      items.forEach(i => {
-        if(i.description?.length) text.push(...i.description.split("\n"))
-        if(i.action?.length) text.push('[A]:' + i.action)
-        
-        console.log(i.unlock)
-        if(i.unlock?.requires?.length) {
-          let requirements = {
-            connection: { red: 0, blue: 0, green: 0 },
-            affinity: { red: 0, blue: 0, green: 0 }
-          }
-          
-          i.unlock.requires.map(r => r.toLowerCase().trim()).forEach(r => {
-            let [color, type] = r.split(' ')
-            requirements[type][color]++
-          })
-          
-          console.log('Testing -- ', affinities, i.calculated.connections, requirements)
-          if(
-            affinities.red >= requirements.affinity.red &&
-            affinities.blue >= requirements.affinity.blue &&
-            affinities.green >= requirements.affinity.green &&
-            i.calculated.connections.red >= requirements.connection.red &&
-            i.calculated.connections.blue >= requirements.connection.blue &&
-            i.calculated.connections.green >= requirements.connection.green
-          ) text.push(i.unlock.description)
-        }
-      })
-      
-      return text.map(this.parseBlock)
-    },
-    
-    
-    parseBlock(text) {
-      if(!text) return ''
-      
-      return text
-        .replaceAll('[A]', '<span class="bl-action"></span>')
-        .replaceAll('[M]', '<span class="bl-movement"></span>')
-        .replaceAll('[E]', '<span class="bl-endeavor"></span>')
-        .replaceAll('[S]', '<span class="bl-story-event"></span>')
-        .replaceAll("\n" , '<br />')
-        .replaceAll(/\{[0-9]+\}/g, m => {
-          let am = parseInt(m.replaceAll('{','').replaceAll('}',''))
-          return `<span class="armor-block"><span class="bl-armor"></span><span class="amount">${am}</span></span>`
-        })
-    }
-    /** ----------------------------------------------------------------------  **/
   }
 }
 </script>

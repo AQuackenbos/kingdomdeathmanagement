@@ -92,6 +92,9 @@
         <b-icon icon="times" type="is-danger" />
       </b-button>
     </div>
+    <div class="qty-container" v-if="showQty">
+      <span class="tag is-dark">x{{ item.qty }}</span>
+    </div>
   </div>
 </template>
 
@@ -112,6 +115,13 @@
     .remove-container {
       position: absolute;
       top: 0;
+      right: 0;
+      z-index: 15;
+    }
+    
+    .qty-container {
+      position: absolute;
+      bottom: 0;
       right: 0;
       z-index: 15;
     }
@@ -306,6 +316,10 @@ export default {
     },
     campaign: Object,
     showRemove: {
+      type: Boolean,
+      default: false
+    },
+    showQty: {
       type: Boolean,
       default: false
     }

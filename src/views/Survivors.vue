@@ -225,7 +225,7 @@
                             </b-tooltip>
                         </div>
                     </div>
-                    <div class="column is-6 cu">
+                    <div class="column is-6 cu" ref="understanding">
                         <b-field grouped label="Understanding">
                             <p class="control" v-for="n in createRange(9)" :key="n">
                                 <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small" multilined>

@@ -5,7 +5,7 @@
     </header>
     <section class="modal-card-body">
       <div class="is-clickable gear-selector my-1" v-for="item in filteredGear" :key="item.key"  :class="{ 'is-selected': selected.id === item.id }" @click="selectItem(item)">
-        <GearCard :campaign="campaign" :item="item"/>
+        <GearCard :campaign="campaign" :item="item" :showQty="true"/>
       </div>
     </section>
     <footer class="modal-card-foot">

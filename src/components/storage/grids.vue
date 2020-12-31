@@ -1,31 +1,20 @@
 <template>
   <div class="tile is-ancestor grid-sheet">
-    <div class="tile is-child">
-    <h1 class="title">TEMP SHIT LUL</h1><br />
-    <ul>
-      <li v-for="g in grids" :key="g.id">
-        <router-link :to="'/grids/edit/' + g.id">{{ g.name }}</router-link>
-      </li>
-    </ul>
+    <div class="tile is-parent is-flex-wrap-wrap">
+      <router-link v-for="g in grids" :key="g.id" :to="'/grids/edit/' + g.id" tag="div" class="tile is-child is-3 is-clickable">
+        <div class="content">
+          <div class="tile is-parent is-flex-wrap-wrap is-justify-content-center">
+            <div class="tile is-4 is-justify-content-center" v-for="(p,pidx) in g.previews" :key="pidx">
+              <div class="box preview-card">
+                <span :class="'bl-' + translate[p]"></span>
+              </div>
+            </div>
+          </div>
+          <p>{{ g.name }}</p>
+        </div>
+      </router-link>
     </div>
     <b-button type="is-info" icon-left="plus-square" class="corner-button" rounded @click.prevent="createGridPrompt">Create Grid</b-button>
-    <b-modal
-      v-model="showGridBuilder"
-      has-modal-card
-      trap-focus
-      :destroy-on-hide="true"
-      aria-role="dialog"
-      aria-modal
-    >
-      <template #default="props">
-        <GridEdit
-          :gear="gear"
-          :campaign="campaign"
-          :grid="currentlyEditing"
-          @close="props.close"
-        />
-      </template>
-    </b-modal>
   </div>
 </template>
 
@@ -35,6 +24,15 @@
   bottom: 2em;
   right: 2em;
   z-index: 10;
+}
+
+.preview-card {
+  height: 5em;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #999;
 }
 </style>
 
@@ -49,7 +47,6 @@ export default {
   props: ['campaign'],
   data() {
     return {
-      showGridBuilder: false,
       gear: [],
       grids: []
     }
@@ -58,7 +55,20 @@ export default {
     ...mapGetters([
       'currentCampaign',
       'loading'
-    ])
+    ]),
+    
+    translate() {
+      return {
+        'weapon': 'nemesis-event',
+        'shield': 'armor',
+        'body': 'body',
+        'waist': 'waist',
+        'head': 'head',
+        'arms': 'arms',
+        'legs': 'legs',
+        'item': 'lantern'
+      }
+    }
   },
   created() {
     this.$bind('gear', db.collection(`campaigns/${this.currentCampaign}/gear`))

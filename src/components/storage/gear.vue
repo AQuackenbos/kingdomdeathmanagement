@@ -52,7 +52,7 @@
                 </span>
                 <span class="tags has-addons is-pulled-right" :class="{ 'is-faded': g.qty <= 0 }">
                   <span class="tag is-primary">Grids</span>
-                  <span class="tag is-dark">{{ gridQty[g.id]||0 }}</span>
+                  <span class="tag is-dark">?</span>
                 </span>
               </div>
               <GearCard :item="g" :campaign="campaign" class="is-scaled is-clickable" :class="{ 'is-faded': g.qty <= 0 }" style="font-size:12px;clear:both" @click.native="openGearEdit(g)"/>
