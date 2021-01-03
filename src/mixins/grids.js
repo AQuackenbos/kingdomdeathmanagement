@@ -1,19 +1,18 @@
-import Vue from 'vue'
-import { db } from '@/firebase'
+import { mapGetters } from 'vuex'
 
-export default Vue.mixin({
+export default {
   data() {
     return {
       grid: {
         items: []
-      },
-      armorSets: []
+      }
     }
   },
-  created() {
-    this.$bind('armorSets', db.collection('armor_sets'))  
-  },
   computed: {
+    ...mapGetters([
+      'armorSets'
+    ]),
+    
     gridItems: {
       get() {
         return this.grid.items.map(i => {
@@ -253,4 +252,4 @@ export default Vue.mixin({
         })
     }
   }
-})
+}

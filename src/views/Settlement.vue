@@ -1,5 +1,5 @@
 <template>
-    <div class="column" v-if="!loading && user && campaign">
+    <div class="column" v-if="!showLoading && user && campaign">
         <h1 class="title can-update" @mouseover="showTitleEdit=true" @mouseleave="showTitleEdit=false">
           {{ campaign.name }}
           <span class="is-size-6" @click="updateTitle" v-if="showTitleEdit">
@@ -224,12 +224,6 @@ export default {
     },
     data() {
       return {
-        campaign: null,
-        survivors: [],
-        quarries: [],
-        locations: [],
-        users: [],
-        innovations: [],
         showAddQuarry: false,
         showAddLocation: false,
         quarry: null,
@@ -237,12 +231,14 @@ export default {
       }
     },
     computed: {
-      ...mapGetters({
-        loading: 'loading',
-        user: 'user',
-        currentCampaign: 'currentCampaign',
-        allInnovations: 'innovations'
-      }),
+      ...mapGetters([
+        'user',
+        'innovations',
+        'innovated',
+        'users',
+        'quarries',
+        'locations'
+      ]),
       
       leftMilestones() {
         return this.campaign.milestones.filter((k,i) => {
@@ -279,20 +275,13 @@ export default {
       },
       
       researchedInnovations() {
-        return this.allInnovations.filter(i => this.innovations.find(inno => inno.id === i.id && inno.innovated))
+        return this.innovations.filter(i => this.innovated.find(inno => inno.id === i.id && inno.innovated))
       }
-    },
-    created() {
-      this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
-      this.$bind('survivors', db.collection(`campaigns/${this.currentCampaign}/survivors`))
-      this.$bind('quarries', db.collection('quarries'))
-      this.$bind('users', db.collection('users'))
-      this.$bind('locations', db.collection('locations'))
-      this.$bind('innovations', db.collection(`campaigns/${this.currentCampaign}/innovations`))
     },
     methods: {
       ...mapActions([
-        'setLoading'
+        'setLoading',
+        'bindCampaign'
       ]),
     
       updateField(f, v) {

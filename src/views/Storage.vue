@@ -1,10 +1,10 @@
 <template>
-  <div class="column is-12" v-if="!loading && user && campaign">
+  <div class="column is-12" v-if="!showLoading && user && campaign">
     <h1 class="title">Settlement Storage</h1>
     <section class="section">
       <b-tabs position="is-centered" class="block" size="is-medium" type="is-boxed" v-model="activeTab" @input="silentUpdateRoute" expanded>
         <b-tab-item v-for="t in tabs" :key="t.name" :label="t.name" :icon="t.icon">
-          <component :is="t.component" :campaign="campaign" />
+          <component :is="t.component" />
         </b-tab-item>
       </b-tabs>
     </section>
@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { db } from '@/firebase'
 import Resources from '@/components/storage/resources'
 import Gear from '@/components/storage/gear'
 import GearGrids from '@/components/storage/grids'
@@ -22,7 +20,6 @@ export default {
   name: 'Storage',
   data() {
     return {
-      campaign: null,
       activeTab: 0,
       tabs: [
         {
@@ -54,15 +51,7 @@ export default {
     Gear,
     GearGrids
   },
-  computed: {
-    ...mapGetters([
-      'loading',
-      'user',
-      'currentCampaign'
-    ])
-  },
   created() {
-    this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
     this.setRouterTab()
   },
   methods: {

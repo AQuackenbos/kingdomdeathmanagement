@@ -14,8 +14,6 @@
     >
       <template #default="props">
         <GearAdd
-          :gear="gear"
-          :campaign="campaign"
           :newItem="true"
           @close="props.close"
           @add="addGear"
@@ -55,7 +53,7 @@
                   <span class="tag is-dark">?</span>
                 </span>
               </div>
-              <GearCard :item="g" :campaign="campaign" class="is-scaled is-clickable" :class="{ 'is-faded': g.qty <= 0 }" style="font-size:12px;clear:both" @click.native="openGearEdit(g)"/>
+              <GearCard :item="g" class="is-scaled is-clickable" :class="{ 'is-faded': g.qty <= 0 }" style="font-size:12px;clear:both" @click.native="openGearEdit(g)"/>
             </div>
           </div>
         </div>
@@ -111,7 +109,7 @@
 </style>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import { db } from '@/firebase'
 import GearAdd from '@/components/storage/gear/add'
 import GearCard from '@/components/storage/gear/card'
@@ -119,10 +117,8 @@ import merge from 'deepmerge'
 
 export default {
   name: 'Gear',
-  props: ['campaign'],
   data() {
     return {
-      gear: [],
       hideOos: false,
       showAddGear: false,
       showEditGear: false,
@@ -139,13 +135,9 @@ export default {
     GearAdd,
     GearCard
   },
-  created() {
-    this.$bind('gear', db.collection(`campaigns/${this.currentCampaign}/gear`))
-  },
   computed: {
     ...mapGetters([
-      'loading',
-      'currentCampaign'
+      'gear'
     ]),
     
     gridQty() {
@@ -185,10 +177,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'setLoading'
-    ]),
-    
     openGearEdit(g) {
       this.editGear = merge(this.editGear, {
         item: merge({ id: g.id }, g),

@@ -1,20 +1,23 @@
 <template>
-  <b-navbar transparent v-if="!loading && user && currentCampaign">
+  <b-navbar transparent v-if="!showLoading && user && campaign">
     <template slot="start">
         <b-navbar-item tag="router-link" :to="{name: 'Settlement'}">
-            <b-icon icon="landmark" class="mr-2" /> Settlement
+          <b-icon icon="landmark" class="mr-2" /> Settlement
         </b-navbar-item>
         <b-navbar-item tag="router-link" :to="{name: 'Timeline'}">
-            <b-icon icon="stream" class="mr-2" /> Timeline
+          <b-icon icon="stream" class="mr-2" /> Timeline
         </b-navbar-item>
         <b-navbar-item tag="router-link" :to="{name: 'Survivors'}">
-            <b-icon icon="user-injured" class="mr-2" /> Survivors
+          <b-icon icon="user-injured" class="mr-2" /> Survivors
         </b-navbar-item>
         <b-navbar-item tag="router-link" :to="{name: 'Storage'}">
-            <b-icon icon="box-open" class="mr-2" /> Storage
+          <b-icon icon="box-open" class="mr-2" /> Storage
         </b-navbar-item>
         <b-navbar-item tag="router-link" :to="{name: 'Innovations'}">
-            <b-icon icon="book" class="mr-2" /> Innovations
+          <b-icon icon="book" class="mr-2" /> Innovations
+        </b-navbar-item>
+        <b-navbar-item tag="router-link" :to="{name: 'Hunt'}">
+          Hunt
         </b-navbar-item>
     </template>
     <template slot="end">
@@ -23,6 +26,7 @@
           append-to-body
           trap-focus
           aria-role="menu"
+          v-if="user"
         >
           <b-button size="is-small" type="is-info" class="is-light navbar-item mr-1 mt-1" slot="trigger" role="button" icon-left="user-circle">
             {{ user.displayName }}
@@ -63,12 +67,9 @@ export default {
   computed: {
     ...mapGetters([
       'user',
-      'pubUser',
-      'loading',
-      'currentCampaign'
+      'pubUser'
     ])
   },
-  
   methods: {
     ...mapActions([
       'clearUser',

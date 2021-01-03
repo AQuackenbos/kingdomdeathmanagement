@@ -3,7 +3,7 @@
     <b-message type="is-danger" title="TODO LIST" size="is-small" v-if="todos.length > 0">
       {{ todos }}
     </b-message>
-    <b-loading :is-full-page="true" :can-cancel="false" v-model="loading"/>
+    <b-loading :is-full-page="true" :can-cancel="false" v-model="showLoading"/>
     <Navigation/>
     <div class="container">
       <div class="columns">
@@ -278,17 +278,10 @@
 </style>
 
 <script>
-// @ is an alias to /src
-import { mapGetters } from 'vuex'
 import Navigation from '@/components/navigation.vue'
 
 export default {
-  data: () => ({ todos: []}),
-  computed: {
-    ...mapGetters({
-      loading: 'loading'
-    })
-  },
+  data: () => ({ todos: [] }),
   components: {
     Navigation
   }

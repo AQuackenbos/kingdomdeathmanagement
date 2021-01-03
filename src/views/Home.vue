@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { firebase } from '@/firebase'
 import CampaignList from '@/components/campaign/list'
 
@@ -24,17 +24,10 @@ export default {
   components: {
     CampaignList
   },
-  computed: {
-    ...mapGetters({
-      user: 'user',
-      loading: 'loading'
-    })
-  },
   methods: {
     ...mapActions([
       'setUser',
-      'clearUser',
-      'setLoading'
+      'clearUser'
     ]),
     
     login() {

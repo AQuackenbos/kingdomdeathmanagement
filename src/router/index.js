@@ -30,7 +30,7 @@ const routes = [
     name: 'Settlement',
     component: () => import('../views/Settlement.vue'),
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
   },
   {
@@ -38,7 +38,7 @@ const routes = [
     name: 'Timeline',
     component: () => import('../views/Timeline.vue'),
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
   },
   {
@@ -46,7 +46,7 @@ const routes = [
     name: 'Innovations',
     component: () => import('../views/Innovations.vue'),
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     }
   },
   {
@@ -55,26 +55,39 @@ const routes = [
     redirect: '/storage/resources',
     component: () => import('../views/Storage.vue'),
     meta: {
-        requiresAuth: true
+      requiresAuth: true
     },
     children: [{
-        name: 'tab-resources',
-        path: 'resources',
-        component: () => import('../views/Storage.vue')
-      },{
-        name: 'tab-gear',
-        path: 'gear',
-        component: () => import('../views/Storage.vue')
-      },{
-        name: 'tab-grids',
-        path: 'grids',
-        component: () => import('../views/Storage.vue')
+      name: 'tab-resources',
+      path: 'resources',
+      component: () => import('../views/Storage.vue')
+    },{
+      name: 'tab-gear',
+      path: 'gear',
+      component: () => import('../views/Storage.vue')
+    },{
+      name: 'tab-grids',
+      path: 'grids',
+      component: () => import('../views/Storage.vue')
     }]
   },
   {
     path: '/grids/edit/:id',
     name: 'Grid Edit',
     component: () => import('../views/GearGrid.vue')
+  },
+  {
+    path: '/hunt',
+    name: 'Hunt',
+    component: () => import('../views/Hunt.vue'),
+    meta: {
+      requiresAuth: true
+    },
+    children: [{
+      name: 'Hunt Setup',
+      path: 'setup',
+      component: () => import('../components/hunt/setup.vue')
+    }]
   }
 ]
 

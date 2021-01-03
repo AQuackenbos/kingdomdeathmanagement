@@ -304,7 +304,6 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
 import { defaultGearItem } from '@/util'
 
 export default {
@@ -314,7 +313,6 @@ export default {
       type: Object,
       default: () => Object.assign({}, defaultGearItem)
     },
-    campaign: Object,
     showRemove: {
       type: Boolean,
       default: false
@@ -325,10 +323,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'keywords'
-    ]),
-  
     parsedDescription() {
       return this.parseBlock(this.item.description)
     },

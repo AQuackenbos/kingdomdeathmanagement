@@ -1,5 +1,5 @@
 <template>
-  <div class="column is-12" v-if="!loading && user && campaign && grid">
+  <div class="column is-12" v-if="!showLoading && user && campaign && grid">
     <h1 class="title">Grid Builder</h1>
     <hr />
     <section class="section">
@@ -195,7 +195,6 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
 import { db } from '@/firebase'
 import GearMini from '@/components/storage/gear/mini'
 import GearCard from '@/components/storage/gear/card'
@@ -208,9 +207,6 @@ export default {
   mixins: [GridsMixin],
   data() {
     return {
-      campaign: null,
-      armorSets: [],
-      gear: [],
       grid: null,
       originalItems: [],
       showMinis: true,
@@ -225,12 +221,6 @@ export default {
     draggable
   },
   computed: {
-    ...mapGetters([
-      'loading',
-      'user',
-      'currentCampaign'
-    ]),
-    
     requireSave() {
       return !((this.grid.items.length == this.originalItems.length) && this.grid.items.every((element, index) => {
         return element === this.originalItems[index]; 
@@ -249,8 +239,6 @@ export default {
     }
   },
   created() {
-    this.$bind('campaign', db.collection('campaigns').doc(this.currentCampaign))
-    this.$bind('gear', db.collection(`campaigns/${this.currentCampaign}/gear`))
     this.$bind('grid', db.collection(`campaigns/${this.currentCampaign}/grids`).doc(this.$route.params.id)).then(g => {
       this.originalItems = g.items
     })

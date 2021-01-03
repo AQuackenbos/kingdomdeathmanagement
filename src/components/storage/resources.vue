@@ -15,7 +15,6 @@
       <template #default="props">
         <ResourceAdd
           :resources="resources"
-          :campaign="campaign"
           @close="props.close"
           @add="addResource"
         />
@@ -118,16 +117,14 @@
 </style>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import { db, firebase } from '@/firebase'
 import ResourceAdd from '@/components/storage/resource/add'
 
 export default {
   name: 'Resources',
-  props: ['campaign'],
   data() {
     return {
-      resources: [],
       hideOos: false,
       showAddResource: false,
       showTrackers: false
@@ -137,10 +134,9 @@ export default {
     ResourceAdd
   },
   computed: {
-    ...mapGetters({
-      loading: 'loading',
-      currentCampaign: 'currentCampaign'
-    }),
+    ...mapGetters([
+      'resources'
+    ]),
     
     existingNames() {
       return this.resources
@@ -199,11 +195,7 @@ export default {
   created() {
     this.$bind('resources', db.collection(`campaigns/${this.currentCampaign}/resources`))
   },
-  methods: {
-    ...mapActions([
-      'setLoading'
-    ]),
-    
+  methods: {    
     addResource(resource) {
       this.setLoading(true)
       db.collection(`campaigns/${this.currentCampaign}/resources`).doc().set({
