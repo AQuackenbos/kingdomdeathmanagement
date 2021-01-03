@@ -1,5 +1,5 @@
 <template>
-  <div class="column is-12 is-centered" v-if="!loading">
+  <div class="column is-12 is-centered" v-if="!showLoading">
     <div v-if="user">
       <h1 class="title">Select a Campaign</h1>
       <CampaignList />

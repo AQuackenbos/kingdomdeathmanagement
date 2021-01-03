@@ -1,3 +1,74 @@
+const campaign = {
+  //Key data
+  expansions: [],
+  //Some toggles
+  active: true,
+  //Additionals
+  ended: false,
+  ending: {
+    year: null,
+    details: null
+  },
+  //Empty Ref Arrays
+  quarries: [],
+  locations: [],
+  //Tracking data
+  year: 0,
+  survival: {
+    departing: 0,
+    max: 1
+  },
+  bonuses: {
+    departing: '',
+    arriving: '',
+    other: ''
+  },
+  milestones: [
+    {
+      trigger: "First child is born",
+      consequence: "Principle: New Life"
+    },
+    {
+      trigger: "First time death count is updated",
+      consequence: "Principle: Death"
+    },
+    {
+      trigger: "Settlement has 5 innovations",
+      consequence: "Hooded Knight"
+    },
+    {
+      trigger: "Population reaches 15",
+      consequence: "Principle: Society"
+    },
+    {
+      trigger: "Population reaches 0",
+      consequence: "Game Over"
+    }
+  ],
+  principles: {
+    "new_life": {
+      name: "New Life",
+      choices: ["Protect the Young", "Survival of the Fittest"],
+      selected: null
+    },
+    "death": {
+      name: "Death",
+      choices: ["Cannibalize", "Graves"],
+      selected: null
+    },
+    "society": {
+      name: "Society",
+      choices: ["Collective Toil", "Accept Darkness"],
+      selected: null
+    },
+    "conviction": {
+      name: "Conviction",
+      choices: ["Barbaric", "Romantic"],
+      selected: null
+    }
+  }
+}
+
 const quarries = [
   'white_lion'
 ]
@@ -257,5 +328,6 @@ export {
   locations,
   events,
   showdowns,
-  survivor
+  survivor,
+  campaign
 }

@@ -37,24 +37,17 @@
 </style>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import merge from 'deepmerge'
 import { db } from '@/firebase'
 import { emptyGearGrid } from '@/util'
 
 export default {
   name: 'GearGrids',
-  props: ['campaign'],
-  data() {
-    return {
-      gear: [],
-      grids: []
-    }
-  },
   computed: {
     ...mapGetters([
-      'currentCampaign',
-      'loading'
+      'gear',
+      'grids'
     ]),
     
     translate() {
@@ -70,15 +63,7 @@ export default {
       }
     }
   },
-  created() {
-    this.$bind('gear', db.collection(`campaigns/${this.currentCampaign}/gear`))
-    this.$bind('grids', db.collection(`campaigns/${this.currentCampaign}/grids`))
-  },
   methods: {
-    ...mapActions([
-      'setLoading'
-    ]),
-    
     createGridPrompt() {
       this.$buefy.dialog.prompt({
         message: 'Name Gear Grid: ',
@@ -91,7 +76,7 @@ export default {
         confirmText: 'Name and Edit',
         onConfirm: (val) => {
           let newGrid = merge(emptyGearGrid, { name: val })
-          db.collection(`campaigns/${this.currentCampaign}/grids`).add(newGrid)
+          db.collection(`campaigns/${this.campaign.id}/grids`).add(newGrid)
             .then(g => {
               this.$router.push({ path: '/grids/edit' + g.id })
             })

@@ -293,7 +293,7 @@ export default {
         let updatePacket = {}
         updatePacket[f] = v
         
-        db.collection('campaigns').doc(this.currentCampaign).update(updatePacket).then(() => this.setLoading(false))
+        db.collection('campaigns').doc(this.campaign.id).update(updatePacket).then(() => this.setLoading(false))
       },
       
       updateTitle() {
@@ -344,7 +344,7 @@ export default {
         if(!quarryId || quarryId.length === 0) return
         
         this.setLoading(true)
-        db.collection('campaigns').doc(this.currentCampaign).update({
+        db.collection('campaigns').doc(this.campaign.id).update({
             quarries: firebase.firestore.FieldValue.arrayUnion(quarryId)
         }).then(() => {
           this.setLoading(false)
@@ -356,7 +356,7 @@ export default {
         if(!locationId || locationId.length === 0) return
         
         this.setLoading(true)
-        db.collection('campaigns').doc(this.currentCampaign).update({
+        db.collection('campaigns').doc(this.campaign.id).update({
             locations: firebase.firestore.FieldValue.arrayUnion(locationId)
         }).then(() => {
           this.setLoading(false)

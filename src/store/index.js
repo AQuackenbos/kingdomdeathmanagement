@@ -12,6 +12,7 @@ let state = {
   users: [],
   pubUser: null,
   showLoading: true,
+  loadingText: null,
   currentCampaignId: null,
   campaign: null,
   innovations: [],
@@ -48,7 +49,11 @@ export const store = new Vuex.Store({
   getters: getters(),
   mutations: {
     ...vuexfireMutations,
-      
+    
+    CLEAR_BINDING(state) {
+      state.isBinding = false
+    },
+    
     SET_USER(state, data) {
       state.user = data
     },
@@ -63,9 +68,17 @@ export const store = new Vuex.Store({
     
     SET_CAMPAIGN_ID(state, data) {
       state.currentCampaignId = data
+    },
+    
+    SET_LOADING_TEXT(state, data) {
+      state.loadingText = data
     }
   },
   actions: {
+    initFlag({ commit }) {
+      commit("CLEAR_BINDING")  
+    },
+    
     setUser({ commit, dispatch }, user) {
       if(user) {
         commit("SET_USER", user)
@@ -80,10 +93,15 @@ export const store = new Vuex.Store({
       }
     },
     
-    setLoading({ commit }, loading) {
+    setLoading({ commit, state }, loading) {
+      if(state.isBinding) return
       if(loading !== null) {
         commit("SET_LOADING", loading)
       }
+    },
+    
+    setLoadingText({ commit }, text) {
+      commit("SET_LOADING_TEXT", text)  
     },
     
     setCampaignId({ commit }, id) {
@@ -106,23 +124,21 @@ export const store = new Vuex.Store({
     }),
     
     bindCampaign: firestoreAction(async ({ bindFirestoreRef, dispatch, state }, campaignId) => {
-      if(state.isBinding) {
-        //
-        return
-      }
-      state.isBinding = true
+      if(state.isBinding) return
       dispatch('setLoading', true)
+      state.isBinding = true
       dispatch('setCampaignId', campaignId)
-      let c = await bindFirestoreRef('campaign', db.collection('campaigns').doc(campaignId)).then(() => {
-        dispatch('bindSurvivors', campaignId)
-        dispatch('bindInnovated', campaignId)
-        dispatch('bindTimeline', campaignId)
-        dispatch('bindResources', campaignId)
-        dispatch('bindGear', campaignId)
-        dispatch('bindGrids', campaignId)
+      let c = await bindFirestoreRef('campaign', db.collection('campaigns').doc(campaignId)).then(async () => {
+        await dispatch('bindSurvivors', campaignId)
+        await dispatch('bindInnovated', campaignId)
+        await dispatch('bindTimeline', campaignId)
+        await dispatch('bindResources', campaignId)
+        await dispatch('bindGear', campaignId)
+        await dispatch('bindGrids', campaignId)
         state.isBinding = false
+        await dispatch('setLoading', false)
+        
       })
-      dispatch('setLoading', false)
       return c
     }),
     

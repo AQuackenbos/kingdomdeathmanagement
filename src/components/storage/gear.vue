@@ -188,14 +188,14 @@ export default {
     
     addGear(g) {
       if(!g.qty) g.qty = 0
-      db.collection(`campaigns/${this.currentCampaign}/gear`).doc().set(g)
+      db.collection(`campaigns/${this.campaign.id}/gear`).doc().set(g)
     },
     
     saveGearEdit(g) {
       let docId = g.id
       delete(g.id)
       if(!g.qty) g.qty = 0
-      db.collection(`campaigns/${this.currentCampaign}/gear`).doc(docId).update(g)
+      db.collection(`campaigns/${this.campaign.id}/gear`).doc(docId).update(g)
     }
   }
 }

@@ -142,8 +142,6 @@
     >
       <template #default="props">
         <GearPicker
-          :gear="gear"
-          :campaign="campaign"
           :gridSlot="targetSlot"
           @close="props.close"
           @select="selectGear"
@@ -239,7 +237,7 @@ export default {
     }
   },
   created() {
-    this.$bind('grid', db.collection(`campaigns/${this.currentCampaign}/grids`).doc(this.$route.params.id)).then(g => {
+    this.$bind('grid', db.collection(`campaigns/${this.campaign.id}/grids`).doc(this.$route.params.id)).then(g => {
       this.originalItems = g.items
     })
   },
@@ -273,7 +271,7 @@ export default {
   
     saveGrid() {
       this.updatePreviews()
-      db.collection(`campaigns/${this.currentCampaign}/grids`).doc(this.grid.id).update({
+      db.collection(`campaigns/${this.campaign.id}/grids`).doc(this.grid.id).update({
         name: this.grid.name,
         items: this.grid.items,
         previews: this.grid.previews

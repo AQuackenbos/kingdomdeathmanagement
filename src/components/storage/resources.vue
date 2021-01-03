@@ -14,7 +14,6 @@
       aria-modal>
       <template #default="props">
         <ResourceAdd
-          :resources="resources"
           @close="props.close"
           @add="addResource"
         />
@@ -42,7 +41,7 @@
       <b-button type="is-success" icon-left="thumbtack" @click.prevent="addTracker">Add Tracker</b-button>
     </b-message>
     <div class="tile is-vertical" v-for="(cg,idx) in [categoriesLeft,categoriesMiddle,categoriesRight]" :key="idx">
-      <div class="tile is-parent" v-for="c in cg" :key="c.name" :ref="c.name" style="position:relative">
+      <div class="tile is-parent" v-for="c in cg" :key="c.name" :ref="normalize(c.name)" style="position:relative">
         <div class="tile is-child box">
           <h1 class="subtitle">{{ c.name }}</h1>
           <hr />
@@ -140,13 +139,13 @@ export default {
     
     existingNames() {
       return this.resources
-        .map(r => r.name.trim().toLowerCase())
+        .map(r => this.normalize(r.name))
         .filter((v,i,s) => s.indexOf(v) === i && v !== null)
     },
     
     categoryNames() {
       return this.resources
-        .map(r => r.category.trim().toLowerCase())
+        .map(r => this.normalize(r.category))
         .filter((v,i,s) => s.indexOf(v) === i && v !== null)
         .map(r => r.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '))
         .sort()
@@ -157,7 +156,7 @@ export default {
       let names = this.categoryNames
       names.forEach(n => categories.push({
         name: n,
-        resources: this.resources.filter(r => r.category.trim().toLowerCase() === n.trim().toLowerCase() && (this.hideOos ? r.qty > 0 : true))
+        resources: this.resources.filter(r => this.normalize(r.category) === this.normalize(n) && (this.hideOos ? r.qty > 0 : true))
       }))
       return categories.filter(c => c.resources.length > 0)
     },
@@ -192,13 +191,10 @@ export default {
       return trackingData
     }
   },
-  created() {
-    this.$bind('resources', db.collection(`campaigns/${this.currentCampaign}/resources`))
-  },
   methods: {    
     addResource(resource) {
       this.setLoading(true)
-      db.collection(`campaigns/${this.currentCampaign}/resources`).doc().set({
+      db.collection(`campaigns/${this.campaign.id}/resources`).doc().set({
         name: resource.name.trim(),
         category: resource.category.trim(),
         types: resource.types.map(t => t.toLowerCase().trim()),
@@ -209,8 +205,8 @@ export default {
     },
     
     saveResource(resource) {
-      let loading = this.$buefy.loading.open({ container: this.$refs[resource.category].$el })
-      db.collection(`campaigns/${this.currentCampaign}/resources`).doc(resource.id).update({
+      let loading = this.$buefy.loading.open({ container: this.$refs[this.normalize(resource.category)].$el })
+      db.collection(`campaigns/${this.campaign.id}/resources`).doc(resource.id).update({
         qty: resource.qty ? parseInt(resource.qty) : 0
       }).then(() => loading.close())
     },
@@ -220,14 +216,14 @@ export default {
         message: 'Add a new resource tracker:',
         placeholder: 'i.e. bone, scrap, iron',
         trapFocus: true,
-        onConfirm: (t) => db.collection('campaigns').doc(this.currentCampaign).update({
-            trackers: firebase.firestore.FieldValue.arrayUnion(t.trim().toLowerCase())
+        onConfirm: (t) => db.collection('campaigns').doc(this.campaign.id).update({
+            trackers: firebase.firestore.FieldValue.arrayUnion(this.normalize(t))
         })
       })
     },
     
     removeTracker(t) {
-      db.collection('campaigns').doc(this.currentCampaign).update({
+      db.collection('campaigns').doc(this.campaign.id).update({
         trackers: firebase.firestore.FieldValue.arrayRemove(t)
       })
     }

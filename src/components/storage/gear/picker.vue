@@ -32,7 +32,7 @@ import GearCard from '@/components/storage/gear/card'
 
 export default {
   name: 'GearPicker',
-  props: ['campaign','gear','gridSlot'],
+  props: ['gridSlot'],
   data() {
     return {
       selected: { id: null },

@@ -304,6 +304,7 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
 import { defaultGearItem } from '@/util'
 
 export default {
@@ -323,6 +324,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'keywords'
+    ]),
+  
     parsedDescription() {
       return this.parseBlock(this.item.description)
     },
@@ -357,21 +362,6 @@ export default {
     }
   },
   methods: {
-    parseBlock(text) {
-      if(!text) return ''
-      
-      return text
-        .replaceAll('[A]', '<span class="bl-action"></span>')
-        .replaceAll('[M]', '<span class="bl-movement"></span>')
-        .replaceAll('[E]', '<span class="bl-endeavor"></span>')
-        .replaceAll('[S]', '<span class="bl-story-event"></span>')
-        .replaceAll("\n" , '<br />')
-        .replaceAll(/\{[0-9]+\}/g, m => {
-          let am = parseInt(m.replaceAll('{','').replaceAll('}',''))
-          return `<span class="armor-block"><span class="bl-armor"></span><span class="amount">${am}</span></span>`
-        })
-    },
-    
     keywordTooltip(kw) {
       if(!kw) return false
       return this.keywords.find(k => kw.trim().toLowerCase().startsWith(k.name.toLowerCase())) || false

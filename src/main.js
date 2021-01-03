@@ -42,8 +42,10 @@ firebase.auth().onAuthStateChanged(user => {
   store.dispatch('setLoading', false)
 });
 
-new Vue({
+const app = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
+app.$store.dispatch('initFlag')
