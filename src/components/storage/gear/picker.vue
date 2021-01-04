@@ -28,6 +28,7 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
 import GearCard from '@/components/storage/gear/card'
 
 export default {
@@ -43,6 +44,10 @@ export default {
     GearCard
   },
   computed: {
+    ...mapGetters([
+      'gear'
+    ]),
+    
     filteredGear() {
       let f = this.filter?.trim().toLowerCase()
       let available = this.gear.filter(g => g.qty > 0)

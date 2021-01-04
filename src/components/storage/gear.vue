@@ -124,8 +124,6 @@ export default {
       showEditGear: false,
       editGear: {
         item: null,
-        campaign: null,
-        gear: [],
         newItem: false,
         mode: 'Edit'
       }
@@ -178,11 +176,11 @@ export default {
   },
   methods: {
     openGearEdit(g) {
-      this.editGear = merge(this.editGear, {
-        item: merge({ id: g.id }, g),
-        gear: this.gear,
-        campaign: this.campaign
-      })
+      this.editGear = {
+        newItem: false,
+        mode: 'Edit',
+        item: merge({ id: g.id }, g)
+      }
       this.showEditGear = true
     },
     

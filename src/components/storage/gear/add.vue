@@ -136,7 +136,7 @@
           </b-field>
         </div>
         <div class="column is-4">
-          <GearCard :item="item" :campaign="campaign" />
+          <GearCard :item="item" />
         </div>
         <div class="column is-4 side-conn">
           <b-field>
@@ -283,6 +283,7 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
 import GearCard from '@/components/storage/gear/card'
 import { defaultGearItem } from '@/util'
 import merge from 'deepmerge'
@@ -301,8 +302,6 @@ export default {
       type: Boolean,
       default: false
     },
-    gear: Array,
-    campaign: Object,
     item: {
       type: Object,
       default: () => merge({}, defaultGearItem)
@@ -321,10 +320,14 @@ export default {
     if(this.newItem) this.performItemReset()
   },
   computed: {
+    ...mapGetters([
+      'gear',
+    ]),
+    
     nameInUse() {
       if(!this.item.name || this.item.name === '') return true
       
-      return this.gear.map(g => g.name.trim().toLowerCase()).includes(this.item.name.trim().toLowerCase())
+      return this.gear.map(g => this.normalize(g.name).includes(this.normalize(this.item.name)))
     },
     
     valid() {
@@ -370,8 +373,8 @@ export default {
     },
     
     checkName() {
-      let name = this.item.name.trim().toLowerCase()
-      if(this.gear.map(r => r.name.trim().toLowerCase()).includes(name))
+      let name = this.normalize(this.item.name)
+      if(this.gear.map(r => this.normalize(r.name).includes(name)))
         this.nameInUse = true
       else
         this.nameInUse = false
@@ -382,7 +385,7 @@ export default {
         'Red Affinity', 'Red Connection',
         'Blue Affinity', 'Blue Connection',
         'Green Affinity', 'Green Connection'
-      ].filter(o => o.toLowerCase().includes(t.trim().toLowerCase()))
+      ].filter(o => this.normalize(o).includes(this.normalize(t)))
     },
     
     resetItem() {

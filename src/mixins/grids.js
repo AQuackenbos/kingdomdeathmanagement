@@ -10,7 +10,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'armorSets'
+      'armorSets',
+      'gear'
     ]),
     
     gridItems: {
