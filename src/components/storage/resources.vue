@@ -185,7 +185,7 @@ export default {
     trackers() {
       let trackingData = {}
       this.campaign.trackers.forEach(t => {
-        trackingData[t] = this.resources.filter(r => r.types.includes(t.toLowerCase().trim())).map(r => parseInt(r.qty)).reduce((a,b) => a + b, 0)
+        trackingData[t] = this.resources.filter(r => r.types.includes(this.normalize(t))).map(r => parseInt(r.qty)).reduce((a,b) => a + b, 0)
       })
       
       return trackingData
@@ -197,7 +197,7 @@ export default {
       db.collection(`campaigns/${this.campaign.id}/resources`).doc().set({
         name: resource.name.trim(),
         category: resource.category.trim(),
-        types: resource.types.map(t => t.toLowerCase().trim()),
+        types: resource.types.map(t => this.normalize(t)),
         description: (resource.description ? resource.description : null),
         flavor: (resource.flavor ? resource.flavor : null),
         qty: 0

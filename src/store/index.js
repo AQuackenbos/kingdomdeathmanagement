@@ -22,12 +22,12 @@ let state = {
   resources: [],
   gear: [],
   grids: [],
-  hunt: {},
   timeline: [],
   showdowns: [],
   quarries: [],
   armorSets: [],
-  locations: []
+  locations: [],
+  hunts: []
 }
 
 let getters = () => {
@@ -135,6 +135,7 @@ export const store = new Vuex.Store({
         await dispatch('bindResources', campaignId)
         await dispatch('bindGear', campaignId)
         await dispatch('bindGrids', campaignId)
+        await dispatch('bindHunts', campaignId)
         state.isBinding = false
         await dispatch('setLoading', false)
         
@@ -166,6 +167,10 @@ export const store = new Vuex.Store({
       return bindFirestoreRef('grids', db.collection(`campaigns/${campaignId}/grids`))
     }),
     
+    bindHunts: firestoreAction(({ bindFirestoreRef }, campaignId) => {
+      return bindFirestoreRef('hunts', db.collection(`campaigns/${campaignId}/hunts`))
+    }),
+    
     bindInnovations: firestoreAction(({ bindFirestoreRef }) => {
       return bindFirestoreRef('innovations', db.collection('innovations'))
     }),
@@ -188,6 +193,6 @@ export const store = new Vuex.Store({
     
     bindLocations: firestoreAction(({ bindFirestoreRef }) => {
       return bindFirestoreRef('locations', db.collection('locations'))
-    }),
+    })
   }
 });

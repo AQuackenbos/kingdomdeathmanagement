@@ -17,7 +17,7 @@
           <b-icon icon="book" class="mr-2" /> Innovations
         </b-navbar-item>
         <b-navbar-item tag="router-link" :to="{name: 'Hunt'}">
-          Hunt
+          <b-icon icon="mountain" class="mr-2" /> Hunt
         </b-navbar-item>
     </template>
     <template slot="end">

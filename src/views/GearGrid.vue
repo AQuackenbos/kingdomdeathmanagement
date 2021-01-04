@@ -271,7 +271,7 @@ export default {
   
     saveGrid() {
       this.updatePreviews()
-      db.collection(`campaigns/${this.campaign.id}/grids`).doc(this.grid.id).update({
+      db.collection(`campaigns/${this.currentCampaignId}/grids`).doc(this.grid.id).update({
         name: this.grid.name,
         items: this.grid.items,
         previews: this.grid.previews

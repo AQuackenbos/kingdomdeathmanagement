@@ -1,3 +1,10 @@
+const hunt = {
+  active: true,
+  quarry: null,
+  members: [],
+  state: 'setup'
+}
+
 const campaign = {
   //Key data
   expansions: [],
@@ -15,7 +22,6 @@ const campaign = {
   //Tracking data
   year: 0,
   survival: {
-    departing: 0,
     max: 1
   },
   bonuses: {
@@ -329,5 +335,6 @@ export {
   events,
   showdowns,
   survivor,
-  campaign
+  campaign,
+  hunt
 }

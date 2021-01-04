@@ -59,9 +59,9 @@ export default {
             g.description?.toLowerCase().includes(f) ||
             g.action?.toLowerCase().includes(f) ||
             g.unlock?.description.includes(f) ||
-            g.armor.locations.map(l => l.toLowerCase().trim()).filter(l => l.includes(f)).length > 0 ||
-            g.classifications.map(c => c.toLowerCase().trim()).filter(c => c.includes(f)).length > 0 ||
-            g.keywords.map(k => k.toLowerCase().trim()).filter(k => k.includes(f)).length > 0
+            g.armor.locations.map(l => this.normalize(l)).filter(l => l.includes(f)).length > 0 ||
+            g.classifications.map(c => this.noramlize(c)).filter(c => c.includes(f)).length > 0 ||
+            g.keywords.map(k => this.normalize(k)).filter(k => k.includes(f)).length > 0
           )
         })
       }

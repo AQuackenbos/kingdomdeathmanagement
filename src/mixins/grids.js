@@ -123,7 +123,7 @@ export default {
             affinity: { red: 0, blue: 0, green: 0 }
           }
           
-          i.unlock.requires.map(r => r.toLowerCase().trim()).forEach(r => {
+          i.unlock.requires.map(r => this.normalize(r)).forEach(r => {
             let [color, type] = r.split(' ')
             requirements[type][color]++
           })
@@ -205,7 +205,7 @@ export default {
       let items = this.extendedGridItems();
       ['red','blue','green'].forEach(c => {
         retObj[c] = this.grid.boxes[c].filter((v,i,s) => s.indexOf(v) === i && v !== null).length
-        retObj[c] += items.map(gi => gi?.affinities?.filter(a => a.trim().toLowerCase() === c) || []).map(f => f.length).reduce((a,b) => a + b, 0)
+        retObj[c] += items.map(gi => gi?.affinities?.filter(a => this.normalize(a) === c) || []).map(f => f.length).reduce((a,b) => a + b, 0)
       })
       
       

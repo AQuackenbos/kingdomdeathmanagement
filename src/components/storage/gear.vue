@@ -144,7 +144,7 @@ export default {
     
     categoryNames() {
       return this.gear
-        .map(r => r.category.trim().toLowerCase())
+        .map(r => this.normalize(r.category))
         .filter((v,i,s) => s.indexOf(v) === i && v !== null)
         .map(r => r.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' '))
         .sort()
@@ -155,7 +155,7 @@ export default {
       let names = this.categoryNames
       names.forEach(n => categories.push({
           name: n,
-          gear: this.gear.filter(r => r.category.trim().toLowerCase() === n.trim().toLowerCase() && (this.hideOos ? r.qty > 0 : true))
+          gear: this.gear.filter(r => this.normalize(r.category) === this.normalize(n) && (this.hideOos ? r.qty > 0 : true))
       }))
       return categories.filter(c => c.gear.length > 0)
     },

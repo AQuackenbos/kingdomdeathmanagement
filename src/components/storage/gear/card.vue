@@ -72,7 +72,7 @@
         <section class="field" :class="{ 'is-grouped': item.unlock.sizing !== 2 }" style="width:100%">
           <p class="left" :class="{ 'sm': item.unlock.sizing === 0, 'lg': item.unlock.sizing === 1, 'fl': item.unlock.sizing === 2 }">
             <b-icon
-              v-for="(r,ridx) in item.unlock.requires.map(r => r.toLowerCase())" :key="ridx"
+              v-for="(r,ridx) in item.unlock.requires.map(r => normalize(r))" :key="ridx"
               :icon="r.includes('connection') ? 'puzzle-piece' : 'square-full'"
               size="is-small"
               :type="r.includes('red') ? 'is-danger' : r.includes('blue') ? 'is-info' : 'is-success'"
@@ -364,7 +364,7 @@ export default {
   methods: {
     keywordTooltip(kw) {
       if(!kw) return false
-      return this.keywords.find(k => kw.trim().toLowerCase().startsWith(k.name.toLowerCase())) || false
+      return this.keywords.find(k => this.normalize(kw).startsWith(this.normalize(k.name))) || false
     },
     
     remove() {

@@ -5,7 +5,20 @@
 </template>
 
 <script>
+import { db } from '@/firebase'
+
 export default {
-  name: 'Hunt'
+  name: 'Hunt',
+  created: async function() {
+    if(this.currentCampaignId && (this.$route.path === '/hunt' || this.$route.path === '/hunt/')) {
+      db.collection(`campaigns/${this.currentCampaignId}/hunts`).where('active','==',true).get().then(r => {
+        if(r.empty) {
+          this.$router.push('/hunt/setup')
+        } else {
+          this.$router.push(`/hunt/${r.docs[0].state}`)
+        }
+      })
+    }
+  }
 }
 </script>

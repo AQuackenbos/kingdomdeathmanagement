@@ -565,7 +565,7 @@ export default {
       if(this.currentSurvivor?.id === id) return
       
       this.setLoading(true)
-      this.$bind('currentSurvivor', db.collection(`campaigns/${this.campaign.id}/survivors`).doc(id))
+      this.$bind('currentSurvivor', db.collection(`campaigns/${this.currentCampaignId}/survivors`).doc(id))
       this.setLoading(false)
       history.pushState({}, null, '/survivors/'+id)
     }

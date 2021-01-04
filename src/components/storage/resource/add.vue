@@ -108,8 +108,8 @@ export default {
         },
         
         checkName() {
-            let name = this.resource.name.trim().toLowerCase()
-            if(this.resources.map(r => r.name.trim().toLowerCase()).includes(name))
+            let name = this.normalize(this.resource.name)
+            if(this.resources.map(r => this.normalize(r.name)).includes(name))
                 this.nameInUse = true
             else
                 this.nameInUse = false
