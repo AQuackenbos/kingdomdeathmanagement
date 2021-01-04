@@ -281,7 +281,7 @@
 import Navigation from '@/components/navigation.vue'
 
 export default {
-  data: () => ({ todos: [] }),
+  data: () => ({ todos: ['Refactor Survivor Pick method', 'Finish Survivor Severe Injury area'] }),
   components: {
     Navigation
   }

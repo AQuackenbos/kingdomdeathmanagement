@@ -223,21 +223,10 @@ export default {
       return !((this.grid.items.length == this.originalItems.length) && this.grid.items.every((element, index) => {
         return element === this.originalItems[index]; 
       }))
-    },
-    
-    shortname() {
-      return {
-        'movement': 'MOV',
-        'accuracy': 'ACC',
-        'strength': 'STR',
-        'evasion': 'EVA',
-        'luck': 'LCK',
-        'speed': 'SPE'
-      }
     }
   },
   created() {
-    this.$bind('grid', db.collection(`campaigns/${this.campaign.id}/grids`).doc(this.$route.params.id)).then(g => {
+    this.$bind('grid', db.collection(`campaigns/${this.currentCampaignId}/grids`).doc(this.$route.params.id)).then(g => {
       this.originalItems = g.items
     })
   },

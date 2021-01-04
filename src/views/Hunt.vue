@@ -15,7 +15,7 @@ export default {
         if(r.empty) {
           this.$router.push('/hunt/setup')
         } else {
-          this.$router.push(`/hunt/${r.docs[0].state}`)
+          this.$router.push(`/hunt/${r.docs[0].data().state}`)
         }
       })
     }

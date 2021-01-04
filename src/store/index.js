@@ -129,16 +129,18 @@ export const store = new Vuex.Store({
       state.isBinding = true
       dispatch('setCampaignId', campaignId)
       let c = await bindFirestoreRef('campaign', db.collection('campaigns').doc(campaignId)).then(async () => {
-        await dispatch('bindSurvivors', campaignId)
-        await dispatch('bindInnovated', campaignId)
-        await dispatch('bindTimeline', campaignId)
-        await dispatch('bindResources', campaignId)
-        await dispatch('bindGear', campaignId)
-        await dispatch('bindGrids', campaignId)
-        await dispatch('bindHunts', campaignId)
-        state.isBinding = false
-        await dispatch('setLoading', false)
-        
+        Promise.all([
+          dispatch('bindSurvivors', campaignId),
+          dispatch('bindInnovated', campaignId),
+          dispatch('bindTimeline', campaignId),
+          dispatch('bindResources', campaignId),
+          dispatch('bindGear', campaignId),
+          dispatch('bindGrids', campaignId),
+          dispatch('bindHunts', campaignId)
+        ]).finally(() => {
+          state.isBinding = false
+          dispatch('setLoading', false)
+        })
       })
       return c
     }),
