@@ -10,14 +10,99 @@ import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-// internal icons
-import { fas } from "@fortawesome/free-solid-svg-icons";
+//import { fas } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBook,
+  faBookOpen,
+  faBoxOpen,
+  faCaretDown,
+  faCaretUp,
+  faCheck,
+  faCheckSquare,
+  faCross,
+  faDrumstickBite,
+  faEdit,
+  faEllipsisH,
+  faExclamationTriangle,
+  faFlask,
+  faGenderless,
+  faHome,
+  faKhanda,
+  faLandmark,
+  faLocationArrow,
+  faMars,
+  faMountain,
+  faMusic,
+  faPaw,
+  faPuzzlePiece,
+  faSeedling,
+  faShieldAlt,
+  faSignOutAlt,
+  faSkull,
+  faSort,
+  faSquare,
+  faSquareFull,
+  faStar,
+  faStream,
+  faTag,
+  faTimes,
+  faTh,
+  faTheaterMasks,
+  faTransgender,
+  faTrashAlt,
+  faUser,
+  faUserInjured,
+  faVenus
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(fas);
+
+library.add(
+  faBook,
+  faBookOpen,
+  faBoxOpen,
+  faCaretDown,
+  faCaretUp,
+  faCheck,
+  faCheckSquare,
+  faCross,
+  faDrumstickBite,
+  faEdit,
+  faEllipsisH,
+  faExclamationTriangle,
+  faFlask,
+  faGenderless,
+  faHome,
+  faKhanda,
+  faLandmark,
+  faLocationArrow,
+  faMars,
+  faMountain,
+  faMusic,
+  faPaw,
+  faPuzzlePiece,
+  faSeedling,
+  faShieldAlt,
+  faSignOutAlt,
+  faSkull,
+  faSort,
+  faSquare,
+  faSquareFull,
+  faStar,
+  faStream,
+  faTag,
+  faTimes,
+  faTh,
+  faTheaterMasks,
+  faTransgender,
+  faTrashAlt,
+  faUser,
+  faUserInjured,
+  faVenus
+);
 Vue.component('vue-fontawesome', FontAwesomeIcon);
 
-Vue.use(Buefy,{
+Vue.use(Buefy, {
   defaultIconComponent: "vue-fontawesome",
   defaultIconPack: "fas",
   customIconPacks: {

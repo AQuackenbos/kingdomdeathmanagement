@@ -11,12 +11,12 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../views/Home.vue')
+    component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
   },
   {
     path: '/survivors',
     name: 'Survivors',
-    component: () => import('../views/Survivors.vue'),
+    component: () => import(/* webpackChunkName: "survivors" */ '../views/Survivors.vue'),
     meta: {
       requiresAuth: true
     },
@@ -28,7 +28,7 @@ const routes = [
   {
     path: '/settlement',
     name: 'Settlement',
-    component: () => import('../views/Settlement.vue'),
+    component: () => import(/* webpackChunkName: "settlement" */ '../views/Settlement.vue'),
     meta: {
       requiresAuth: true
     }
@@ -36,7 +36,7 @@ const routes = [
   {
     path: '/timeline',
     name: 'Timeline',
-    component: () => import('../views/Timeline.vue'),
+    component: () => import(/* webpackChunkName: "timeline" */ '../views/Timeline.vue'),
     meta: {
       requiresAuth: true
     }
@@ -44,7 +44,7 @@ const routes = [
   {
     path: '/innovations',
     name: 'Innovations',
-    component: () => import('../views/Innovations.vue'),
+    component: () => import(/* webpackChunkName: "innovations" */ '../views/Innovations.vue'),
     meta: {
       requiresAuth: true
     }
@@ -53,40 +53,40 @@ const routes = [
     path: '/storage',
     name: 'Storage',
     redirect: '/storage/resources',
-    component: () => import('../views/Storage.vue'),
+    component: () => import(/* webpackChunkName: "storage" */ '../views/Storage.vue'),
     meta: {
       requiresAuth: true
     },
     children: [{
       name: 'tab-resources',
       path: 'resources',
-      component: () => import('../views/Storage.vue')
+      component: () => import(/* webpackChunkName: "storage" */ '../views/Storage.vue')
     },{
       name: 'tab-gear',
       path: 'gear',
-      component: () => import('../views/Storage.vue')
+      component: () => import(/* webpackChunkName: "storage" */ '../views/Storage.vue')
     },{
       name: 'tab-grids',
       path: 'grids',
-      component: () => import('../views/Storage.vue')
+      component: () => import(/* webpackChunkName: "storage" */ '../views/Storage.vue')
     }]
   },
   {
     path: '/grids/edit/:id',
     name: 'Grid Edit',
-    component: () => import('../views/GearGrid.vue')
+    component: () => import(/* webpackChunkName: "storage" */ '../views/GearGrid.vue')
   },
   {
     path: '/hunt',
     name: 'Hunt',
-    component: () => import('../views/Hunt.vue'),
+    component: () => import(/* webpackChunkName: "hunt" */ '../views/Hunt.vue'),
     meta: {
       requiresAuth: true
     },
     children: [{
       name: 'Hunt Setup',
       path: 'setup',
-      component: () => import('../components/hunt/setup.vue')
+      component: () => import(/* webpackChunkName: "hunt" */ '../components/hunt/setup.vue')
     }]
   }
 ]
