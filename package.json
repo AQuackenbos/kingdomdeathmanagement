@@ -1,17 +1,15 @@
 {
   "name": "kingdomdeathmanagement",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "Kingdom Death Management frontend app",
+  "description": "Kingdom Death Management",
   "author": {
     "name": "Andrew Quackenbos"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "build:dev": "webpack --env dev --progress --profile --colors",
-    "build:prod": "webpack --env prod --progress --profile --colors"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@firebase/analytics": "^0.6.2",
@@ -59,7 +57,6 @@
     "sass-loader": "^10.1.0",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.4.1",
-    "webpack-bundle-analyzer": "^3.9.0",
     "webpack-cli": "^2.0.13"
   },
   "eslintConfig": {
@@ -81,7 +78,7 @@
     "last 2 versions",
     "not dead"
   ],
-  "_id": "kingdomdeathmanagement@0.1.0",
+  "_id": "kingdomdeathmanagement@1.0.0",
   "bugs": {
     "url": "https://github.com/AQuackenbos/kingdomdeathmanagement/issues"
   },
