@@ -59,8 +59,6 @@
                     aria-modal>
                     <template #default="props">
                       <QuarryAdd
-                        :quarries="quarries"
-                        :campaign="campaign"
                         @close="props.close"
                         @add="addQuarry"
                       />
@@ -90,8 +88,6 @@
                     aria-modal>
                     <template #default="props">
                       <LocationAdd
-                        :locations="locations"
-                        :campaign="campaign"
                         @close="props.close"
                         @add="addLocation"
                       />

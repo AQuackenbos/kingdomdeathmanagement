@@ -23,15 +23,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'AddLocation',
-    props: ['locations', 'campaign'],
     data() {
         return {
             location: null
         }
     },
     computed: {
+        ...mapGetters([
+            'locations'
+        ]),
+        
         validLocations() {
             if(!this.campaign || !this.locations) return []
             

@@ -23,15 +23,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'AddQuarry',
-    props: ['quarries', 'campaign'],
     data() {
         return {
             quarry: null
         }
     },
     computed: {
+        ...mapGetters([
+            'quarries'
+        ]),
+        
         validQuarries() {
             if(!this.campaign || !this.quarries) return []
             

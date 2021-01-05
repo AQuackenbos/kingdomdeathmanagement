@@ -131,7 +131,7 @@ export default {
       })
       
       kdm.innovations.forEach(i => {
-        console.log('Adding innovation to deck: '+i.reference)
+        console.log('Adding innovation to deck: '+i.id)
         campaign.collection('innovations').doc(i.id).set({
           deck: i.deck,
           innovated: i.innovated,
