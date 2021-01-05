@@ -115,7 +115,7 @@
             </b-field>
             <b-field grouped label="Experience" ref="xp">
               <p class="control" v-for="n in createRange(16)" :key="n">
-                <b-tooltip type="is-light" position="is-bottom" v-if="n === 1 || n === 5 || n === 9 || n === 14 || n === 15" size="is-small" multilined>
+                <b-tooltip type="is-light" position="is-bottom" v-if="n === 1 || n === 5 || n === 9 || n === 14 || n === 15" size="is-small">
                   <button class="button is-small kdm-box thick-border"
                     :class="{
                       'is-dark': currentSurvivor.lifetime.experience > n ,
@@ -199,7 +199,7 @@
           <div class="column is-6 cu" ref="courage">
             <b-field grouped label="Courage">
               <p class="control" v-for="n in createRange(9)" :key="n">
-                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small" multilined>
+                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small">
                   <button class="button is-large kdm-box thick-border"
                     :class="{
                       'is-dark': currentSurvivor.mentality.courage.level > n
@@ -228,7 +228,7 @@
           <div class="column is-6 cu" ref="understanding">
             <b-field grouped label="Understanding">
               <p class="control" v-for="n in createRange(9)" :key="n">
-                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small" multilined>
+                <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small">
                   <button class="button is-large kdm-box thick-border"
                     :class="{
                       'is-dark': currentSurvivor.mentality.understanding.level > n
@@ -434,10 +434,10 @@ export default {
     tooltips() {
       return {
         xp: {
-          1: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">Age</span>',
-          5: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">Age</span>',
-          9: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">Age</span>',
-          14: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">Age</span>',
+          1: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">Age</span>',
+          5: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">Age</span>',
+          9: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">Age</span>',
+          14: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">Age</span>',
           15: 'Retired'
         },
         
@@ -447,13 +447,13 @@ export default {
         },
         
         courage: {
-          2: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">Bold</span>',
-          8: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">See the Truth</span>'
+          2: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">Bold</span>',
+          8: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">See the Truth</span>'
         },
         
         understanding: {
-          2: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">Insight</span>',
-          8: '<img class="special-icon small icon-story" src="images/story.png"/><span class="has-text-weight-bold">White Secret</span>'
+          2: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">Insight</span>',
+          8: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">White Secret</span>'
         }
       }
     },

@@ -48,7 +48,20 @@ export default {
     ...mapGetters([
       'gear',
       'grids'
-    ])
+    ]),
+    
+    translate() {
+      return {
+        'weapon': 'nemesis-event',
+        'shield': 'armor',
+        'body': 'body',
+        'waist': 'waist',
+        'head': 'head',
+        'arms': 'arms',
+        'legs': 'legs',
+        'item': 'lantern'
+      }
+    }
   },
   methods: {
     createGridPrompt() {

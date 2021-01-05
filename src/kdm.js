@@ -180,31 +180,37 @@ const survivor = {
     movement: {
       base: 5,
       items: 0,
+      other: 0,
       tokens: 0
     },
     accuracy: {
       base: 0,
       items: 0,
+      other: 0,
       tokens: 0
     },
     strength: {
       base: 0,
       items: 0,
+      other: 0,
       tokens: 0
     },
     evasion: {
       base: 0,
       items: 0,
+      other: 0,
       tokens: 0
     },
     luck: {
       base: 0,
       items: 0,
+      other: 0,
       tokens: 0
     },
     speed: {
       base: 0,
       items: 0,
+      other: 0,
       tokens: 0
     }
   },
