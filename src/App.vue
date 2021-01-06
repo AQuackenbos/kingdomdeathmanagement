@@ -3,12 +3,15 @@
     <b-message type="is-danger" title="TODO LIST" size="is-small" v-if="todos.length > 0">
       {{ todos }}
     </b-message>
-    <b-loading :is-full-page="true" :can-cancel="false" v-model="showLoading"/>
+    <b-loading :is-full-page="true" :can-cancel="false" v-model="showLoading">
+      <div class="loading-icon" />
+      <p style="position:absolute;color:#999">{{ loadingText }}</p>
+    </b-loading>
     <Navigation/>
     <div class="container">
       <div class="columns">
         <transition appear name="fade" mode="out-in">
-          <router-view :key="$route.fullPath"></router-view>
+          <router-view :key="$route.name.split(' ')[0]"></router-view>
         </transition>
       </div>
     </div>
@@ -59,18 +62,18 @@
   opacity: 0;
 }
 .slide-enter-active {
-  transition: all .1s ease;
+  transition: all .15s ease;
 }
 .slide-leave-active {
-  transition: all .1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all .15s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
 .slide-enter {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translateX(-10em);
 }
 .slide-leave-to {
   opacity: 0;
-  transform: translateX(1000px);
+  transform: translateX(10em);
 }
 
 /** This is hijacked ENTIRELY from Black Ledger. **/
@@ -281,7 +284,7 @@
 import Navigation from '@/components/navigation.vue'
 
 export default {
-  data: () => ({ todos: ['Refactor Survivor Pick method', 'Finish Survivor Severe Injury area'] }),
+  data: () => ({ todos: ['Finish Survivor Severe Injury area', 'Hunt Thinger'] }),
   components: {
     Navigation
   }

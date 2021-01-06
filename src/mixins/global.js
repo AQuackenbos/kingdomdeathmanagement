@@ -5,6 +5,7 @@ export default Vue.mixin({
   computed: {
     ...mapGetters([
       'showLoading',
+      'loadingText',
       'campaign',
       'currentCampaignId',
       'isBinding',

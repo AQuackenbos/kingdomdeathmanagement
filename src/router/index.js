@@ -21,8 +21,9 @@ const routes = [
       requiresAuth: true
     },
     children: [{
-      path: ':id'
-      // TODO Move this to an actual subcomponent lol
+      path: ':id',
+      name: 'Survivors Panel',
+      component: () => import(/* webpackChunkName: "survivors" */ '../components/survivor/panel.vue')
     }]
   },
   {
@@ -73,7 +74,7 @@ const routes = [
   },
   {
     path: '/grids/edit/:id',
-    name: 'Grid Edit',
+    name: 'GridEdit',
     component: () => import(/* webpackChunkName: "storage" */ '../views/GearGrid.vue')
   },
   {

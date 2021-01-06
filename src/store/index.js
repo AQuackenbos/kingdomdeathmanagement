@@ -127,18 +127,21 @@ export const store = new Vuex.Store({
       if(state.isBinding) return
       dispatch('setLoading', true)
       state.isBinding = true
+      state.loadingText = 'Loading Campaign'
       dispatch('setCampaignId', campaignId)
       let c = await bindFirestoreRef('campaign', db.collection('campaigns').doc(campaignId)).then(async () => {
+        state.loadingText = 'Loading Survivors'
         Promise.all([
-          dispatch('bindSurvivors', campaignId),
-          dispatch('bindInnovated', campaignId),
-          dispatch('bindTimeline', campaignId),
-          dispatch('bindResources', campaignId),
-          dispatch('bindGear', campaignId),
-          dispatch('bindGrids', campaignId),
-          dispatch('bindHunts', campaignId)
+          dispatch('bindSurvivors', campaignId).then(() => state.loadingText = 'Loading Innovations'),
+          dispatch('bindInnovated', campaignId).then(() => state.loadingText = 'Loading Timeline'),
+          dispatch('bindTimeline', campaignId).then(() => state.loadingText = 'Loading Resources'),
+          dispatch('bindResources', campaignId).then(() => state.loadingText = 'Loading Gear'),
+          dispatch('bindGear', campaignId).then(() => state.loadingText = 'Loading Gear Grids'),
+          dispatch('bindGrids', campaignId).then(() => state.loadingText = 'Loading Hunts'),
+          dispatch('bindHunts', campaignId).then(() => state.loadingText = 'Finished!')
         ]).finally(() => {
           state.isBinding = false
+          state.loadingText = ''
           dispatch('setLoading', false)
         })
       })

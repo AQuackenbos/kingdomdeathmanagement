@@ -24,7 +24,7 @@ const db = app.firestore()
 
 export {
   firebase,
-	app,
-	auth,
-	db
+  app,
+  auth,
+  db
 }
