@@ -11,7 +11,7 @@
     <div class="container">
       <div class="columns">
         <transition appear name="fade" mode="out-in">
-          <router-view :key="$route.name.split(' ')[0]"></router-view>
+          <router-view :key="routeId"></router-view>
         </transition>
       </div>
     </div>
@@ -284,7 +284,12 @@
 import Navigation from '@/components/navigation.vue'
 
 export default {
-  data: () => ({ todos: ['Finish Survivor Severe Injury area', 'Hunt Thinger'] }),
+  data: () => ({ todos: ['Finish Survivor Severe Injury area', 'Hunt Thinger','Create User Approval Method'] }),
+  computed: {
+    routeId() {
+      return this.$route?.name?.split(' ')[0]
+    }
+  },
   components: {
     Navigation
   }

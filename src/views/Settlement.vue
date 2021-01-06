@@ -17,8 +17,22 @@
                 <div class="block">
                   <ul>
                     <li v-for="m in members" :key="m.uid">{{ m.displayName }}</li>
-                    <li><b-button type="is-info" size="is-small" icon-left="user-plus" @click="invitePlayer">Invite Player</b-button></li>
+                    <li><b-button type="is-info" size="is-small" icon-left="user-plus" @click="showAddUser = true">Invite Player</b-button></li>
                   </ul>
+                  <b-modal
+                    v-model="showAddUser"
+                    has-modal-card
+                    trap-focus
+                    :destroy-on-hide="false"
+                    aria-role="dialog"
+                    aria-modal>
+                    <template #default="props">
+                      <UserAdd
+                        @close="props.close"
+                        @add="addUser"
+                      />
+                    </template>
+                  </b-modal>
                 </div>
               </div>
             </div>
@@ -211,18 +225,20 @@ import { mapGetters, mapActions } from 'vuex'
 import { db, firebase } from '@/firebase'
 import QuarryAdd from '@/components/quarry/add'
 import LocationAdd from '@/components/location/add'
+import UserAdd from '@/components/campaign/invite'
 
 export default {
     name: 'Settlement',
     components: {
       QuarryAdd,
-      LocationAdd
+      LocationAdd,
+      UserAdd
     },
     data() {
       return {
         showAddQuarry: false,
         showAddLocation: false,
-        quarry: null,
+        showAddUser: false,
         showTitleEdit: false
       }
     },
@@ -326,16 +342,6 @@ export default {
         })
       },
       
-      selectPrinciple(principle, selection) {
-        let principleObj = this.campaign.principles[principle]
-        this.$buefy.dialog.confirm({
-          title: 'Select Principle',
-          message: `Confirm selecting <span class="has-text-weight-bold">${selection}</span> for the principle <span class="has-text-weight-bold">${principleObj.name}</span>?`,
-          type: 'is-info',
-          onConfirm: () => this.updateField(`principles.${principle}.selected`, selection)
-        })
-      },
-      
       addQuarry(quarryId) {
         if(!quarryId || quarryId.length === 0) return
         
@@ -360,8 +366,26 @@ export default {
         })
       },
       
-      invitePlayer() {
+      addUser(userId) {
+        if(!userId || userId.length === 0) return
+        
+        this.setLoading(true)
+        db.collection('campaigns').doc(this.campaign.id).update({
+            members: firebase.firestore.FieldValue.arrayUnion(userId)
+        }).then(() => {
+          this.setLoading(false)
+          this.showAddUser = false
+        })
+      },
       
+      selectPrinciple(principle, selection) {
+        let principleObj = this.campaign.principles[principle]
+        this.$buefy.dialog.confirm({
+          title: 'Select Principle',
+          message: `Confirm selecting <span class="has-text-weight-bold">${selection}</span> for the principle <span class="has-text-weight-bold">${principleObj.name}</span>?`,
+          type: 'is-info',
+          onConfirm: () => this.updateField(`principles.${principle}.selected`, selection)
+        })
       }
     }
 }
