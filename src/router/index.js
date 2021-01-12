@@ -88,6 +88,14 @@ const routes = [
       name: 'Hunt Setup',
       path: 'setup',
       component: () => import(/* webpackChunkName: "hunt" */ '../components/hunt/setup.vue')
+    },{
+      name: 'GearUp Survivor',
+      path: 'survivor',
+      component: () => import(/* webpackChunkName: "hunt" */ '../components/hunt/survivor.vue')
+    },{
+      name: 'Control Survivor',
+      path: 'control/survivor/:survivorId/grid/:gridId',
+      component: () => import(/* webpackChunkName: "hunt" */ '../components/hunt/control.vue')
     }]
   }
 ]

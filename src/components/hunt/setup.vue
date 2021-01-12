@@ -21,7 +21,7 @@
               <b-tab-item>
                 <template #header>
                   Add Party Member <span class="ml-3 tag" :class="{ 'is-danger': activeHunt.members.length < 4, 'is-success': activeHunt.members.length > 3 }">{{ activeHunt.members.length }} / 6</span>
-                </templatE>
+                </template>
                 <div class="columns is-multiline add-member">
                   <div class="column is-2">
                     <b-menu>

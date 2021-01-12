@@ -248,33 +248,39 @@ const survivor = {
   defenses: {
     arms: {
       value: 0,
+      max: 0,
       light: false,
       heavy: false,
       severe: []
     },
     body: {
       value: 0,
+      max: 0,
       light: false,
       heavy: false,
       severe: []
     },
     brain: {
       value: 0,
+      max: 0,
       light: false
     },
     head: {
       value: 0,
+      max: 0,
       heavy: false,
       severe: []
     },
     legs: {
       value: 0,
+      max: 0,
       light: false,
       heavy: false,
       severe: []
     },
     waist: {
       value: 0,
+      max: 0,
       light: false,
       heavy: false,
       severe: []
