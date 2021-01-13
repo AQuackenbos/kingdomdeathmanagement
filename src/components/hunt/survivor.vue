@@ -3,7 +3,6 @@
       <div class="columns is-multiline">
         <div class="column is-12">
           <h1 class="title">Gear Up Survivor</h1>
-          <p class="is-size-6">Test</p>
           <hr />
           <section class="section">
             <div class="columns is-multiline add-member">
@@ -308,7 +307,7 @@ export default {
     
     validSurvivors() {
       return this.survivors.filter(s => 
-        s.lifetime.died === null && 
+        (s.lifetime.died === null || s.lifetime.died === '') && 
         !s.lifetime.cannot.hunt && 
         s.survival.skipHunt !== this.campaign?.year
       )

@@ -123,12 +123,12 @@
             <div class="box empty-slot" v-if="gi && !gi.id" @click="pickGear(gidx)">
               <b-icon icon="plus-square" size="is-medium" style="color:#ccc" />
             </div>
-            <GearMini :item="gi" :campaign="campaign" :showRemove="true" @remove="removeItem(gidx)" v-else-if="showMinis" />
-            <GearCard :item="gi" :campaign="campaign" :showRemove="true" @remove="removeItem(gidx)" v-else />
+            <GearMini :item="gi" :showRemove="true" @remove="removeItem(gidx)" v-else-if="showMinis" />
+            <GearCard :item="gi" :showRemove="true" @remove="removeItem(gidx)" v-else />
           </div>
         </draggable>
         <div class="tile is-parent is-12">
-          <b-button type="is-success" @click.prevent="saveGrid" expanded v-if="requireSave">Save Grid</b-button>
+          <b-button type="is-success" @click.prevent="saveGridData" expanded v-if="requireSave">Save Grid</b-button>
         </div>
       </div>
     </section>
@@ -258,13 +258,8 @@ export default {
       })
     },
   
-    saveGrid() {
-      this.updatePreviews()
-      db.collection(`campaigns/${this.currentCampaignId}/grids`).doc(this.grid.id).update({
-        name: this.grid.name,
-        items: this.grid.items,
-        previews: this.grid.previews
-      }).then(() => {
+    saveGridData() {
+      this.saveGrid().then(() => {
         this.originalItems = this.grid.items
       })
     },
@@ -293,11 +288,6 @@ export default {
       return false // disable sort
     },
     
-    removeItem(idx) {
-      this.grid.items[idx] = {}
-      this.gridItems = this.grid.items
-    },
-    
     promptName() {
       this.$buefy.dialog.prompt({
         message: "Change Grid Name",
@@ -309,7 +299,7 @@ export default {
         trapFocus: true,
         onConfirm: (val) => {
           this.grid.name = val
-          this.saveGrid()
+          this.saveGridData()
         }
       })
     },

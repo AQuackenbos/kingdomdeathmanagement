@@ -327,7 +327,7 @@ export default {
     nameInUse() {
       if(!this.item.name || this.item.name === '') return true
       
-      return this.gear.map(g => this.normalize(g.name).includes(this.normalize(this.item.name)))
+      return this.gear.map(g => this.normalize(g.name)).includes(this.normalize(this.item.name))
     },
     
     valid() {

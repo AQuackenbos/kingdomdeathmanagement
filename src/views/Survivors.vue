@@ -13,7 +13,7 @@
         <b-menu>
           <b-menu-list label="Survivors">
             <b-menu-item 
-              :class="{ 'is-primary': s.lifetime.died === null, 'is-danger': s.lifetime.died !== null }" 
+              :class="{ 'is-primary': !dead(s), 'is-danger': dead(s), 'is-warning': s.lifetime.retired !== false}" 
               v-for="s in shownSurvivors" 
               :key="s.id" 
               @click.prevent="gotoSurvivor(s.id)" 
@@ -43,12 +43,30 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .survivor-list {
   text-align: left;
 }
 .menu-list a.is-active {
   /** background-color: #; **/
+}
+
+.menu-list {
+  li {
+    &.is-primary {
+      background-color: #ebf7eb;
+    }
+    
+    &.is-danger {
+      background-color: #ffd5d5;
+    }
+    
+    &::v-deep {
+      a.is-active {
+        background-color: #6c96d6;
+      }
+    }
+  }
 }
 </style>
 
@@ -105,6 +123,13 @@ export default {
       survivorRef.set(emptySurvivor).then(() => this.$router.push(`/survivors/${survivorRef.id}`))
       this.setLoading(false)
     },
+    
+    dead(survivor) {
+      return (
+        survivor.lifetime.died !== null &&
+        survivor.lifetime.died !== ''
+      )
+    }
   }
 }
 </script>

@@ -40,6 +40,10 @@ export default Vue.mixin({
           let am = parseInt(m.replaceAll('{','').replaceAll('}',''))
           return `<span class="armor-block"><span class="bl-armor"></span><span class="amount">${am}</span></span>`
         })
+    },
+    
+    createRange(size) {
+      return [...Array(size).keys()]
     }
   },
   created() {

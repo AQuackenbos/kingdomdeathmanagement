@@ -284,7 +284,7 @@
 import Navigation from '@/components/navigation.vue'
 
 export default {
-  data: () => ({ todos: ['Finish Survivor Severe Injury area', 'Hunt Thinger','Create User Approval Method'] }),
+  data: () => ({ todos: ['Finish Survivor Severe Injury area', 'Hunt Thinger','Create User Approval Method', 'Make Categories for Gear/Resources autofills'] }),
   computed: {
     routeId() {
       return this.$route?.name?.split(' ')[0]

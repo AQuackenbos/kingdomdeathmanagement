@@ -72,8 +72,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'clearUser',
-      'setPubUser'
+      'clearUser'
     ]),
     
     logout() {
@@ -100,9 +99,6 @@ export default {
       this.pubUser.displayName = name
       db.collection('users').doc(this.user.uid).update({
         displayName: name
-      }).then(d => {
-        console.log(d)
-        this.setPubUser(this.pubUser)
       })
     }
   }

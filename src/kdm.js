@@ -234,6 +234,7 @@ const survivor = {
     mother: null,
     died: null,
     cause: null,
+    retired: false,
     cannot: {
       fightingArts: false,
       survival: false,

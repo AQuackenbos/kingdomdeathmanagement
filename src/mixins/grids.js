@@ -1,4 +1,5 @@
 import { mapGetters } from 'vuex'
+import { db } from '@/firebase'
 
 export default {
   data() {
@@ -111,6 +112,36 @@ export default {
       }
       
       return item
+    },
+    
+    saveGrid() {
+      console.log('saving grid')
+      this.updatePreviews()
+      return db.collection(`campaigns/${this.currentCampaignId}/grids`).doc(this.grid.id).update({
+        name: this.grid.name,
+        items: this.grid.items,
+        previews: this.grid.previews
+      })
+    },
+    
+    removeItem(idx, warn = false, autosave = false) {
+      if(warn) {
+        this.$buefy.dialog.confirm({
+          message: 'Archive this piece of gear?',
+          trapFocus: true,
+          onConfirm: () => this._remove(idx, autosave)
+        })
+      } else {
+        this._remove(idx, autosave)
+      }
+    },
+    
+    _remove(idx, autosave) {
+      this.grid.items[idx] = {}
+      this.gridItems = this.grid.items
+      if(autosave) {
+        this.saveGrid()
+      }
     },
     
     // ---------------------------
