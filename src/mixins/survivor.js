@@ -8,6 +8,21 @@ export default {
     }
   },
   computed: {
+    statKeys() {
+      return [
+        'movement',
+        'accuracy',
+        'strength',
+        'evasion',
+        'luck',
+        'speed'
+      ]
+    },
+    
+    survivalAbilities() {
+      return Object.keys(this.survivor.survival.abilities)  
+    },
+    
     tooltips() {
       return {
         xp: {
@@ -33,6 +48,13 @@ export default {
           8: '<span class="bl-story-event mr-1"></span><span class="has-text-weight-bold">White Secret</span>'
         }
       }
+    },
+    
+    genderIcon() {
+      if(this.survivor.lifetime.gender === 'M') return 'mars'
+      if(this.survivor.lifetime.gender === 'F') return 'venus'
+      
+      return 'transgender'
     },
     
     injuries() {

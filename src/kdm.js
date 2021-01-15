@@ -179,39 +179,45 @@ const survivor = {
   stats: {
     movement: {
       base: 5,
-      items: 0,
-      other: 0,
-      tokens: 0
+      other: 0
     },
     accuracy: {
       base: 0,
-      items: 0,
-      other: 0,
-      tokens: 0
+      other: 0
     },
     strength: {
       base: 0,
-      items: 0,
-      other: 0,
-      tokens: 0
+      other: 0
     },
     evasion: {
       base: 0,
-      items: 0,
-      other: 0,
-      tokens: 0
+      other: 0
     },
     luck: {
       base: 0,
-      items: 0,
-      other: 0,
-      tokens: 0
+      other: 0
     },
     speed: {
       base: 0,
-      items: 0,
-      other: 0,
-      tokens: 0
+      other: 0
+    }
+  },
+  hunt: {
+    tokens: {
+      bleed: 0,
+      movement: { plus: 0, minus: 0 },
+      accuracy: { plus: 0, minus: 0 },
+      strength: { plus: 0, minus: 0 },
+      evasion: { plus: 0, minus: 0 },
+      luck: { plus: 0, minus: 0 },
+      speed: { plus: 0, minus: 0 }
+    },
+    abilities: {
+      dodge: false,
+      encourage: false,
+      surge: false,
+      dash: false,
+      endure: false
     }
   },
   survival: {
