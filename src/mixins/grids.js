@@ -6,6 +6,24 @@ export default {
     return {
       grid: {
         items: []
+      },
+      translate: {
+        'weapon': 'nemesis-event',
+        'shield': 'armor',
+        'body': 'body',
+        'waist': 'waist',
+        'head': 'head',
+        'arms': 'arms',
+        'legs': 'legs',
+        'item': 'lantern'
+      },
+      shortname: {
+        'movement': 'MOV',
+        'accuracy': 'ACC',
+        'strength': 'STR',
+        'evasion': 'EVA',
+        'luck': 'LCK',
+        'speed': 'SPE'
       }
     }
   },
@@ -40,30 +58,6 @@ export default {
         this.updatePreviews()
       }
     },
-    
-    shortname() {
-      return {
-        'movement': 'MOV',
-        'accuracy': 'ACC',
-        'strength': 'STR',
-        'evasion': 'EVA',
-        'luck': 'LCK',
-        'speed': 'SPE'
-      }
-    },
-    
-    translate() {
-      return {
-        'weapon': 'nemesis-event',
-        'shield': 'armor',
-        'body': 'body',
-        'waist': 'waist',
-        'head': 'head',
-        'arms': 'arms',
-        'legs': 'legs',
-        'item': 'lantern'
-      }
-    }
   },
   methods: {
     extendedGridItems() {

@@ -225,7 +225,13 @@
               <b-checkbox type="is-danger" v-model="survivor.lifetime.cannot.fightingArts" @change.native="saveField('lifetime.cannot.fightingArts','fa')">Cannot Use Fighting Arts</b-checkbox>
             </b-field>
           </template>
-          <b-taginput v-model="survivor.abilities.fightingArts" placeholder="Add Fighting Art" maxtags="3" type="is-info" @input="saveField('abilities.fightingArts','fa')"/>
+          <b-taginput 
+            v-model="survivor.abilities.fightingArts" 
+            placeholder="Add Fighting Art" 
+            maxtags="3" 
+            type="is-info" 
+            @input="saveField('abilities.fightingArts','fa')"
+          />
         </b-field>
       </div>
       <div class="column is-3">
@@ -233,7 +239,13 @@
           <template #message>
             <span>Maximum of 3</span>
           </template>
-          <b-taginput v-model="survivor.abilities.disorders" placeholder="Add Disorder" maxtags="3" type="is-info" @input="saveField('abilities.disorders','do')"/>
+          <b-taginput 
+            v-model="survivor.abilities.disorders" 
+            placeholder="Add Disorder" 
+            maxtags="3" 
+            type="is-info" 
+            @input="saveField('abilities.disorders','do')"
+          />
         </b-field>
       </div>
       <div class="column is-3">
@@ -244,7 +256,12 @@
               <b-checkbox type="is-danger" v-model="survivor.lifetime.reroll.used" @change.native="saveField('lifetime.reroll.used', 'ab')">Used</b-checkbox>
             </b-field>
           </template>
-          <b-taginput v-model="survivor.abilities.abilities" placeholder="Add Ability" type="is-info" @input="saveField('abilities.abilities','ab')"/>
+          <b-taginput 
+            v-model="survivor.abilities.abilities" 
+            placeholder="Add Ability" 
+            type="is-info" 
+            @input="saveField('abilities.abilities','ab')"
+          />
         </b-field>
       </div>
       <div class="column is-3">
@@ -257,7 +274,12 @@
               <b-input v-model="survivor.survival.skipHunt" placeholder="-" class="year-input" @change.native="saveField('survival.skipHunt', 'im')" expanded />
             </b-field>
           </template>
-          <b-taginput v-model="survivor.abilities.impairments" placeholder="Add Impairment" type="is-info" @input="saveField('abilities.impairments','im')"/>
+          <b-taginput 
+            v-model="survivor.abilities.impairments" 
+            placeholder="Add Impairment" 
+            type="is-info" 
+            @input="saveField('abilities.impairments','im')"
+          />
         </b-field>
       </div>
       <div class="column is-12">

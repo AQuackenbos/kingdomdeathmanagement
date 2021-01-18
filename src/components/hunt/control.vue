@@ -81,38 +81,133 @@
             </b-message>
           </b-field>
         </div>
-      <div class="column is-12 stats" ref="stats">
-        <div class="columns">
-          <div class="column is-2" v-for="s in statKeys" :key="s">
-            <b-field :label="shortname[s]" label-position="on-border">
-              <b-tooltip type="is-dark" position="is-top">
-                <b-input size="is-large" style="width:5em" class="year-input" expanded disabled :value="totalStats[s]"/>
-                <template #content>
-                  <span v-html="statBreakdown(s)" />
-                </template>
-              </b-tooltip>
-            </b-field>
-            <b-field grouped class="stat-addon">
-              <b-field label="Perm." label-position="inside">
-                <b-input 
-                  size="is-small" 
-                  class="year-input" 
-                  v-model="survivor.stats[s].base" 
-                  @change.native="saveField(`stats.${s}.base`, 'stats')" 
-                />
+        <div class="column is-12 stats" ref="stats">
+          <div class="columns">
+            <div class="column is-2" v-for="s in statKeys" :key="s">
+              <b-field :label="shortname[s]" label-position="on-border">
+                <b-tooltip type="is-dark" position="is-top">
+                  <b-input size="is-large" style="width:5em" class="year-input" expanded disabled :value="totalStats[s]"/>
+                  <template #content>
+                    <span v-html="statBreakdown(s)" />
+                  </template>
+                </b-tooltip>
               </b-field>
-              <b-field label="Misc." label-position="inside">
-                <b-input 
-                  size="is-small" 
-                  class="year-input" 
-                  v-model="survivor.stats[s].other" 
-                  @change.native="saveField(`stats.${s}.other`, 'stats')" 
-                />
+              <b-field grouped class="stat-addon">
+                <b-field label="Perm." label-position="inside">
+                  <b-input 
+                    size="is-small" 
+                    class="year-input" 
+                    v-model="survivor.stats[s].base" 
+                    @change.native="saveField(`stats.${s}.base`, 'stats')" 
+                  />
+                </b-field>
+                <b-field label="Misc." label-position="inside">
+                  <b-input 
+                    size="is-small" 
+                    class="year-input" 
+                    v-model="survivor.stats[s].other" 
+                    @change.native="saveField(`stats.${s}.other`, 'stats')" 
+                  />
+                </b-field>
               </b-field>
-            </b-field>
+            </div>
           </div>
         </div>
-      </div>
+        <div class="column is-12 armor" ref="armor">
+          <div class="columns">
+            <div class="column is-2" v-for="l in ['brain'].concat(hitLocations)" :class="l" :key="l">
+              <p class="control">
+                <span :class="'bl-' + translate[l]" v-if="l !== 'brain'"></span>
+                {{ capitalize(l) }}
+              </p>
+              <div class="large-armor-block">
+                <span class="bl-armor"></span>
+                <b-input 
+                  v-model="survivor.defenses[l].value"
+                  class="amount" 
+                  size="is-large" 
+                  @change.native="saveField(`defenses.${l}.value`, 'armor')"
+                />
+              </div>
+              <p class="control">
+                <button
+                  v-if="l !== 'head'"
+                  class="button is-small kdm-box mr-2 mt-1"
+                  :class="{ 'is-dark': survivor.defenses[l].light }"
+                  @click.prevent="survivor.defenses[l].light = !survivor.defenses[l].light , saveField(`defenses.${l}.light`, 'armor')"
+                />
+                <button
+                  v-if="l !== 'brain'"
+                  class="button is-small kdm-box thick-border mt-1"
+                  :class="{ 'is-dark': survivor.defenses[l].heavy }"
+                  @click.prevent="survivor.defenses[l].heavy = !survivor.defenses[l].heavy , saveField(`defenses.${l}.heavy`, 'armor')"
+                />
+                <span class="tag is-warning mt-2" v-if="l === 'brain' && survivor.defenses[l].value > 2">Insane</span>
+                <span class="tag is-danger mt-2 is-clickable" v-if="l !== 'brain'">Add Injury</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="column is-6 cu courage" ref="courage">
+          <b-field grouped label="Courage" label-position="" class="ml-3">
+            <p class="control mr-1" v-for="n in createRange(9)" :key="n">
+              <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small">
+                <button class="button is-small kdm-box thick-border"
+                  :class="{
+                    'is-dark': survivor.mentality.courage.level > n
+                  }"
+                  @click.prevent="setCourageLevel(n+1)"></button>
+                <template #content>
+                  <span v-html="tooltips.courage[n]" />
+                </template>
+              </b-tooltip>
+              <button class="button is-small kdm-box"
+                :class="{
+                  'is-dark': survivor.mentality.courage.level > n
+                }"
+                @click.prevent="setCourageLevel(n+1)"
+                v-else></button>
+            </p>
+          </b-field>
+          <div class="buttons is-centered">
+            <div>
+              <b-tooltip position="is-bottom" style="width:100%" type="is-info" :label="survivor.mentality.courage.abilities[a].description" v-for="a in ['stalwart','prepared','matchmaker']" :key="a">
+                <b-button size="is-large" style="width:100%" :style="{ color: survivor.mentality.courage.abilities[a].granted ? '' : '#ddd' }" rounded :class="{ 'is-dark': survivor.mentality.courage.abilities[a].granted }" @click.prevent="toggleAbility('courage',a)">
+                  {{ survivor.mentality.courage.abilities[a].name }}
+                </b-button>
+              </b-tooltip>
+            </div>
+          </div>
+        </div>
+        <div class="column is-6 cu understanding" ref="understanding">
+          <b-field grouped label="Understanding" label-position="" class="ml-3">
+            <p class="control mr-1" v-for="n in createRange(9)" :key="n">
+              <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 8" size="is-small">
+                <button class="button is-small kdm-box thick-border"
+                  :class="{
+                    'is-dark': survivor.mentality.understanding.level > n
+                  }"
+                  @click.prevent="setUnderstandingLevel(n+1)"></button>
+                <template #content>
+                  <span v-html="tooltips.understanding[n]" />
+                </template>
+              </b-tooltip>
+              <button class="button is-small kdm-box"
+                :class="{
+                  'is-dark': survivor.mentality.understanding.level > n
+                }"
+                @click.prevent="setUnderstandingLevel(n+1)"
+                v-else></button>
+            </p>
+          </b-field>
+          <div class="buttons is-centered">
+            <b-tooltip position="is-bottom" style="width:100%" type="is-info" :label="survivor.mentality.understanding.abilities[a].description" v-for="a in ['analyze','explore','tinker']" :key="a">
+              <b-button size="is-large" style="width:100%" :style="{ color: survivor.mentality.understanding.abilities[a].granted ? '' : '#ddd' }" rounded :class="{ 'is-dark': survivor.mentality.understanding.abilities[a].granted }" @click.prevent="toggleAbility('understanding',a)">
+                {{ survivor.mentality.understanding.abilities[a].name }}
+              </b-button>
+            </b-tooltip>
+          </div>
+        </div>
       </div>
     </div>
     <div class="column is-7 p-0">
@@ -125,12 +220,138 @@
         </div>
       </div>
     </div>
+    <div class="column is-3" v-for="t in tagLists" :key="t.id" :ref="t.ref" :class="t.id">
+      <h2 class="subtitle">{{ t.label }}</h2>
+      <b-taginput
+        v-model="survivor.abilities[t.id]"
+        :placeholder="'Add ' + t.label"
+        :maxtags="t.max"
+        :type="t.type"
+        @input="saveField(`abilities.${t.id}`,t.ref)"
+      />
+      <p class="control mt-1 is-size-7" v-if="t.id === 'fightingArts'">
+        <b-checkbox 
+          type="is-danger" 
+          v-model="survivor.lifetime.cannot.fightingArts" 
+          @change.native="saveField('lifetime.cannot.fightingArts','fa')"
+        >
+          Cannot Use Fighting Arts
+        </b-checkbox>
+      </p>
+      <p class="control mt-1 is-size-7" v-if="t.id === 'abilities'">
+        <b-checkbox 
+          type="is-success" 
+          v-model="survivor.lifetime.reroll.available" 
+          @change.native="saveField('lifetime.reroll.available', 'ab')"
+        >
+          Lifetime Reroll Available
+        </b-checkbox>
+      </p>
+    </div>
+    <div class="column is-12 divider">
+    
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.large-armor-block {
+  position: relative;
+  
+  .bl-armor {
+    vertical-align: bottom;
+    color: white;
+    font-size: 3em;
+    
+    &::before {
+      color: white;
+      -webkit-text-stroke: 4px black;
+    }
+  }
+  
+  .amount {
+    position: absolute;
+    top: -.2em;
+    left: .4em;
+    font-size: 2em;
+    color: black;
+    z-index: 5;
+    
+    &::v-deep {
+      .input {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+  }
+}
+
+::v-deep {  
+  .kdm-box {
+    height: 2em;
+    width: 2em;
+    padding: 0;
+    
+    &.thick-border {
+      border: .4em solid black;
+      &.is-dark {
+      border: .3em solid #aaa;
+      }
+    }
+    
+    &.extra-thick {
+      border: .75em solid black;
+    }
+  }
+  
+  .taginput-container {
+    .tag {
+      width: 100%;
+    }
+  }
+}
+
+.courage {
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 5%;
+    right: -2%;
+    height: 90%;
+    border-right: 1px solid black;
+  }
+}
+
 .column {
   position: relative;
+  
+  &.brain {
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 10%;
+      right: 0;
+      height: 80%;
+      padding-left: 1em;
+      border-right: 1px solid black;
+    }
+  }
+  
+  .columns {
+    .armor:before {
+      content: "";
+      position: absolute;
+      height: 97%;
+      width: 96.5%;
+      background-color: #eee;
+      opacity: 0.15;
+      left: 2.5%;
+      top: 4.5%;
+    }
+  }
 }
 
 .tile {
@@ -185,23 +406,6 @@
     .year-input > input {
       text-align: center;
     }
-    
-    .kdm-box {
-      height: 2em;
-      width: 2em;
-      padding: 0;
-      
-      &.thick-border {
-        border: .4em solid black;
-        &.is-dark {
-        border: .3em solid #aaa;
-        }
-      }
-      
-      &.extra-thick {
-        border: .75em solid black;
-      }
-    }
 
     .special-icon {
       display: inline-block;
@@ -228,6 +432,36 @@ export default {
   components: {
     GearCard
   },
+  data: () => ({
+    tagLists: [
+      {
+        label: 'Fighting Arts',
+        id: 'fightingArts',
+        ref: 'fa',
+        type: 'is-info',
+        max: 3
+      },
+      {
+        label: 'Disorders',
+        id: 'disorders',
+        ref: 'do',
+        type: 'is-dark',
+        max: 3
+      },
+      {
+        label: 'Abilities',
+        id: 'abilities',
+        ref: 'ab',
+        type: 'is-success'
+      },
+      {
+        label: 'Impairments',
+        id: 'impairments',
+        ref: 'im',
+        type: 'is-warning'
+      }
+    ]
+  }),
   computed: {
     ...mapGetters([
       'grids',
@@ -263,6 +497,7 @@ export default {
     loadIds() {
       this.survivor = this.survivors.find(s => s.id === this.$route.params.survivorId)
       this.grid = this.grids.find(g => g.id === this.$route.params.gridId)
+      //TODO Set armor and stat vals
     },
     
     statBreakdown(key) {

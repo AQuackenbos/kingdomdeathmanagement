@@ -4,21 +4,25 @@ import { survivor as emptySurvivor } from '@/kdm'
 export default {
   data() {
     return {
-      survivor: emptySurvivor
-    }
-  },
-  computed: {
-    statKeys() {
-      return [
+      survivor: emptySurvivor,
+      statKeys: [
         'movement',
         'accuracy',
         'strength',
         'evasion',
         'luck',
         'speed'
+      ],
+      hitLocations: [
+        'head',
+        'arms',
+        'body',
+        'waist',
+        'legs'
       ]
-    },
-    
+    }
+  },
+  computed: {
     survivalAbilities() {
       return Object.keys(this.survivor.survival.abilities)  
     },
