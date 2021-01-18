@@ -230,7 +230,8 @@
             placeholder="Add Fighting Art" 
             maxtags="3" 
             type="is-info" 
-            @input="saveField('abilities.fightingArts','fa')"
+            :remove-on-keys="[]"
+            @input="saveListField('abilities.fightingArts','fa')"
           />
         </b-field>
       </div>
@@ -243,8 +244,9 @@
             v-model="survivor.abilities.disorders" 
             placeholder="Add Disorder" 
             maxtags="3" 
-            type="is-info" 
-            @input="saveField('abilities.disorders','do')"
+            type="is-dark" 
+            :remove-on-keys="[]"
+            @input="saveListField('abilities.disorders','do')"
           />
         </b-field>
       </div>
@@ -259,8 +261,9 @@
           <b-taginput 
             v-model="survivor.abilities.abilities" 
             placeholder="Add Ability" 
-            type="is-info" 
-            @input="saveField('abilities.abilities','ab')"
+            type="is-success" 
+            :remove-on-keys="[]"
+            @input="saveListField('abilities.abilities','ab')"
           />
         </b-field>
       </div>
@@ -277,8 +280,9 @@
           <b-taginput 
             v-model="survivor.abilities.impairments" 
             placeholder="Add Impairment" 
-            type="is-info" 
-            @input="saveField('abilities.impairments','im')"
+            type="is-warning" 
+            :remove-on-keys="[]"
+            @input="saveListField('abilities.impairments','im')"
           />
         </b-field>
       </div>
@@ -315,6 +319,12 @@
       text-align: center;
     }
 
+    .taginput-container {
+      .tag {
+        width: 100%;
+      }
+    }
+  
     .stats .input.is-large {
       font-size: 4rem;
       padding-left: calc(0.5em - 1px);

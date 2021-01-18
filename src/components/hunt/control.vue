@@ -132,18 +132,32 @@
               <p class="control">
                 <button
                   v-if="l !== 'head'"
-                  class="button is-small kdm-box mr-2 mt-1"
-                  :class="{ 'is-dark': survivor.defenses[l].light }"
+                  class="button is-small kdm-box mt-1"
+                  :class="{ 'is-warning': survivor.defenses[l].light, 'mr-2': l !== 'brain' }"
                   @click.prevent="survivor.defenses[l].light = !survivor.defenses[l].light , saveField(`defenses.${l}.light`, 'armor')"
                 />
                 <button
                   v-if="l !== 'brain'"
                   class="button is-small kdm-box thick-border mt-1"
-                  :class="{ 'is-dark': survivor.defenses[l].heavy }"
+                  :class="{ 'is-danger': survivor.defenses[l].heavy }"
                   @click.prevent="survivor.defenses[l].heavy = !survivor.defenses[l].heavy , saveField(`defenses.${l}.heavy`, 'armor')"
                 />
                 <span class="tag is-warning mt-2" v-if="l === 'brain' && survivor.defenses[l].value > 2">Insane</span>
-                <span class="tag is-danger mt-2 is-clickable" v-if="l !== 'brain'">Add Injury</span>
+                <b-tooltip
+                  type="is-light"
+                  position="is-bottom"
+                >
+                  <span class="tag is-danger mt-2 is-clickable" v-if="l !== 'brain'">Add Injury</span>
+                  <template #content>
+                    Add a Severe Injury to this Hit Location
+                  </template>
+                </b-tooltip>
+                <span v-if="l !== 'brain'">
+                  <span v-for="(si,siidx) in survivor.defenses[l].severe" :key="siidx">
+                    {{ si }}
+                  </span>
+                  <br />
+                </span>
               </p>
             </div>
           </div>
@@ -170,13 +184,27 @@
             </p>
           </b-field>
           <div class="buttons is-centered">
-            <div>
-              <b-tooltip position="is-bottom" style="width:100%" type="is-info" :label="survivor.mentality.courage.abilities[a].description" v-for="a in ['stalwart','prepared','matchmaker']" :key="a">
-                <b-button size="is-large" style="width:100%" :style="{ color: survivor.mentality.courage.abilities[a].granted ? '' : '#ddd' }" rounded :class="{ 'is-dark': survivor.mentality.courage.abilities[a].granted }" @click.prevent="toggleAbility('courage',a)">
-                  {{ survivor.mentality.courage.abilities[a].name }}
-                </b-button>
-              </b-tooltip>
-            </div>
+            <b-tooltip 
+              position="is-right" 
+              style="width:100%" 
+              type="is-dark"
+              multilined
+              :active="survivor.mentality.courage.abilities[a].granted" 
+              :label="survivor.mentality.courage.abilities[a].description" 
+              v-for="a in ['stalwart','prepared','matchmaker']" 
+              :key="a"
+            >
+              <b-button 
+                size="is-small" 
+                style="width:100%" 
+                rounded 
+                :style="{ color: survivor.mentality.courage.abilities[a].granted ? '' : '#ddd' }" 
+                :class="{ 'is-info': survivor.mentality.courage.abilities[a].granted }" 
+                @click.prevent="toggleAbility('courage',a)"
+              >
+                {{ survivor.mentality.courage.abilities[a].name }}
+              </b-button>
+            </b-tooltip>
           </div>
         </div>
         <div class="column is-6 cu understanding" ref="understanding">
@@ -201,12 +229,56 @@
             </p>
           </b-field>
           <div class="buttons is-centered">
-            <b-tooltip position="is-bottom" style="width:100%" type="is-info" :label="survivor.mentality.understanding.abilities[a].description" v-for="a in ['analyze','explore','tinker']" :key="a">
-              <b-button size="is-large" style="width:100%" :style="{ color: survivor.mentality.understanding.abilities[a].granted ? '' : '#ddd' }" rounded :class="{ 'is-dark': survivor.mentality.understanding.abilities[a].granted }" @click.prevent="toggleAbility('understanding',a)">
+            <b-tooltip 
+              position="is-left" 
+              style="width:100%" 
+              type="is-dark" 
+              multilined
+              :active="survivor.mentality.understanding.abilities[a].granted" 
+              :label="survivor.mentality.understanding.abilities[a].description" 
+              v-for="a in ['analyze','explore','tinker']" 
+              :key="a"
+            >
+              <b-button 
+                size="is-small" 
+                style="width:100%" 
+                rounded 
+                :style="{ color: survivor.mentality.understanding.abilities[a].granted ? '' : '#ddd' }" 
+                :class="{ 'is-info': survivor.mentality.understanding.abilities[a].granted }" 
+                @click.prevent="toggleAbility('understanding',a)"
+              >
                 {{ survivor.mentality.understanding.abilities[a].name }}
               </b-button>
             </b-tooltip>
           </div>
+        </div>
+        <div class="column is-12">
+          <b-field grouped label="Weapon Expertise" ref="wp" class="wp">
+            <b-input 
+              v-model="survivor.weapon.selected" 
+              placeholder="Weapon Type" 
+              icon="shield-alt" @change.native="saveField('weapon.selected', 'wp')" 
+              expanded 
+            />
+            <p class="control" v-for="n in createRange(8)" :key="n">
+              <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 7" >
+                <button class="button is-small kdm-box thick-border"
+                  :class="{
+                    'is-dark': survivor.weapon.proficiency > n
+                  }"
+                  @click.prevent="setWeaponProficiency(n+1)"></button>
+                <template #content>
+                  <span v-html="tooltips.wp[n]" />
+                </template>
+              </b-tooltip>
+              <button class="button is-small kdm-box"
+                :class="{
+                  'is-dark': survivor.weapon.proficiency > n
+                }"
+                @click.prevent="setWeaponProficiency(n+1)"
+                v-else></button>
+            </p>
+          </b-field>
         </div>
       </div>
     </div>
@@ -227,7 +299,8 @@
         :placeholder="'Add ' + t.label"
         :maxtags="t.max"
         :type="t.type"
-        @input="saveField(`abilities.${t.id}`,t.ref)"
+        :remove-on-keys="[]"
+        @input="saveListField(`abilities.${t.id}`,t.ref)"
       />
       <p class="control mt-1 is-size-7" v-if="t.id === 'fightingArts'">
         <b-checkbox 
@@ -288,6 +361,10 @@
 }
 
 ::v-deep {  
+  .wp p.control {
+    margin-top: 0.5em;
+  }
+  
   .kdm-box {
     height: 2em;
     width: 2em;
@@ -497,7 +574,16 @@ export default {
     loadIds() {
       this.survivor = this.survivors.find(s => s.id === this.$route.params.survivorId)
       this.grid = this.grids.find(g => g.id === this.$route.params.gridId)
-      //TODO Set armor and stat vals
+      
+      this.setArmorMaxValues()
+    },
+    
+    setArmorMaxValues() {
+      if(!this.grid || !this.survivor) return
+      
+      this.hitLocations.forEach(hl => {
+        this.survivor.defenses[hl].max = this.armors()[hl]
+      })
     },
     
     statBreakdown(key) {

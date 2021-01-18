@@ -118,6 +118,13 @@ export default {
       let loading = this.$buefy.loading.open({ container: this.$refs[refName].$el })
       db.collection(`campaigns/${this.campaign.id}/survivors`).doc(this.survivor.id).update(updateObj)
         .then(() => loading.close())
+    },
+    
+    saveListField(field, refName) {
+      let val = this.deepFind(this.survivor, field)
+      console.log(field, val)
+      val.forEach(console.log)
+      this.saveField(field, refName)
     }
   }
 }

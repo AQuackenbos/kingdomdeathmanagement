@@ -30,7 +30,7 @@
           <b-menu-list label="">
             <b-menu-item>
               <template #label>
-                <b-button type="is-success is-light" icon-left="user-plus" @click.prevent="addSurvivor" expanded>New Survivor</b-button>
+                <b-button type="is-info is-light" icon-left="user-plus" @click.prevent="addSurvivor" expanded>New Survivor</b-button>
               </template>
             </b-menu-item>
           </b-menu-list>
