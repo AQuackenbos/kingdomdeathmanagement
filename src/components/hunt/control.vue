@@ -1,14 +1,64 @@
 <template>
   <div class="columns is-multiline" v-if="!showLoading && survivor && grid">
-    <div class="column is-12">
+    <div class="column is-12" ref="actions">
       <b-message type="is-info">
-        <b-button class="mx-2" type="is-success" icon-left="plus-square">Full Heal Survivor</b-button>
-        <b-button class="mx-2" type="is-info" icon-left="recycle">Reset Round</b-button>
-        <b-button class="mx-2" type="is-info" icon-left="question-circle">Manage Tokens</b-button>
-        <b-button class="mx-2" type="is-danger" icon-left="tint">Bleed Tokens</b-button>
-        <b-button class="mx-2" type="is-danger" icon-left="certificate">Take Damage</b-button>
-        <b-button class="mx-2" type="is-warning" icon-left="dice-d20">Use Lifetime Reroll</b-button>
-        <b-button class="mx-2" type="is-black" icon-left="skull">Kill Survivor</b-button>
+        <b-button 
+          class="mx-2" 
+          type="is-success" 
+          icon-left="plus-square" 
+          @click="actionFullHeal"
+        >
+          Full Heal Survivor
+        </b-button>
+        <b-button 
+          class="mx-2" 
+          type="is-info" 
+          icon-left="recycle" 
+          @click="actionResetRound"
+        >
+          Reset Round
+        </b-button>
+        <b-button 
+          class="mx-2" 
+          type="is-info" 
+          icon-left="question-circle" 
+          @click="actionManageTokens"
+        >
+          Manage Tokens
+        </b-button>
+        <b-button 
+          class="mx-2" 
+          type="is-danger" 
+          icon-left="tint" 
+          @click="actionBleedTokens"
+        >
+          Bleed Tokens
+        </b-button>
+        <b-button 
+          class="mx-2" 
+          type="is-danger" 
+          icon-left="certificate" 
+          @click="actionTakeDamage"
+        >
+          Take Damage
+        </b-button>
+        <b-button 
+          class="mx-2" 
+          type="is-warning" 
+          icon-left="dice-d20" 
+          @click="actionUseReroll" 
+          v-if="survivor.lifetime.reroll.available && !survivor.lifetime.reroll.used"
+        >
+          Use Lifetime Reroll
+        </b-button>
+        <b-button 
+          class="mx-2" 
+          type="is-black" 
+          icon-left="skull" 
+          @click="actionKillSurvivor"
+        >
+          Kill Survivor
+        </b-button>
       </b-message>
     </div>
     <div class="column is-12">
@@ -66,7 +116,7 @@
                 </b-field>
               </p>
             </b-field>
-            <b-field v-if="!survivor.lifetime.cannot.survival">
+            <b-field v-if="!survivor.lifetime.cannot.survival" class="mt-2 is-flex is-justify-space-between" expanded>
               <div v-for="a in survivalAbilities" :key="a" class="mr-2">
                 <b-tooltip type="is-dark" position="is-top" size="is-small" :active="!survivor.hunt.abilities[a]">
                   <b-button v-if="survivor.survival.abilities[a]" size="is-small" type="is-info" :disabled="!survivor.hunt.abilities[a]">{{ capitalize(a) }}</b-button>
@@ -585,6 +635,89 @@ export default {
         this.survivor.defenses[hl].max = this.armors()[hl]
       })
     },
+    
+    // ---
+    
+    actionFullHeal() {
+      this.$buefy.dialog.confirm({
+        message: 'This will reset all armor values to the values your gear grid reaches.  It is most often used at the start of a hunt.  Use it now?',
+        onConfirm: () => this._fullHeal()
+      })
+    },
+    
+    _fullHeal() {
+      this.hitLocations.forEach(hl => {
+        this.survivor.defenses[hl].value = this.survivor.defenses[hl].max
+      })
+      
+      this.saveField('defenses', 'actions')
+    },
+    
+    actionResetRound() {
+      this.$buefy.dialog.confirm({
+        message: 'Reset to start of round?  This will reactivate all Survival abilities and reset your available Actions.',
+        onConfirm: () => this._resetRound()
+      })
+    },
+    
+    _resetRound() {
+      this.survivalAbilities.forEach(sa => {
+        this.survivor.hunt.abilities[sa] = this.survivor.survival.abilities[sa]
+      })
+      
+      this.hunt.actions.action = 1
+      this.hunt.actions.movement = 1
+      
+      this.saveField('hunt', 'actions')
+    },
+    
+    actionManageTokens() {
+      //TODO Make/Popup modal
+    },
+    
+    actionBleedTokens() {
+      //TODO Make/Popup modal
+    },
+    
+    actionTakeDamage() {
+      //TODO Make/Popup modal
+    },
+    
+    actionUseReroll() {
+      if(!this.survivor.lifetime.reroll.available || this.survivor.lifetime.reroll.used) {
+        this.$buefy.dialog.alert({
+          message: 'You do not have a reroll to use.'
+        })
+        return
+      }
+    
+      this.$buefy.dialog.confirm({
+        message: 'Confirm that you would like to use up your Survivor\'s lifetime reroll.',
+        onConfirm: () => {
+          this.survivor.lifetime.reroll.used = true
+          this.saveField('lifetime.reroll.used', 'actions')
+        }
+      })
+    },
+    
+    actionKillSurvivor() {
+      this.$buefy.dialog.confirm({
+        message: 'ARE YOU SURE?  This will KILL the Survivor.  You will be asked for a cause of death.',
+        onConfirm: () => {
+          this.$buefy.dialog.prompt({
+            message: 'Cause of Death?',
+            trapFocus: true,
+            onConfirm: (val) => {
+              this.survivor.lifetime.died = this.campaign.year
+              this.survivor.lifetime.case = val
+              this.saveField('lifetime', 'actions')
+            }
+          })
+        }
+      })
+    },
+    
+    // ---
     
     statBreakdown(key) {
       return `

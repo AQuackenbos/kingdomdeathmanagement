@@ -218,6 +218,10 @@ const survivor = {
       surge: false,
       dash: false,
       endure: false
+    },
+    actions: {
+      action: 0,
+      movement: 0
     }
   },
   survival: {

@@ -19,14 +19,17 @@ export default {
         'body',
         'waist',
         'legs'
+      ],
+      survivalAbilities: [
+        'dodge',
+        'encourage',
+        'surge',
+        'dash',
+        'endure'
       ]
     }
   },
-  computed: {
-    survivalAbilities() {
-      return Object.keys(this.survivor.survival.abilities)  
-    },
-    
+  computed: {    
     tooltips() {
       return {
         xp: {
