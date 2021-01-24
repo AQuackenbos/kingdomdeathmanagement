@@ -20,19 +20,11 @@
         </b-button>
         <b-button 
           class="mx-2" 
-          type="is-info" 
+          type="is-primary" 
           icon-left="question-circle" 
           @click="actionManageTokens"
         >
           Manage Tokens
-        </b-button>
-        <b-button 
-          class="mx-2" 
-          type="is-danger" 
-          icon-left="tint" 
-          @click="actionBleedTokens"
-        >
-          Bleed Tokens
         </b-button>
         <b-button 
           class="mx-2" 
@@ -60,9 +52,103 @@
           Kill Survivor
         </b-button>
       </b-message>
+      <b-modal
+        v-model="showManageTokens"
+        :destroy-on-hide="false"
+        aria-role="dialog"
+        aria-modal
+        trap-focus
+        has-modal-card
+      >
+        <template #default="props">
+          <ManageTokens
+            @close="props.close"
+            @done="saveTokens"
+          />
+        </template>
+      </b-modal>
+      <b-modal
+        v-model="showTakeDamage"
+        :destroy-on-hide="false"
+        aria-role="dialog"
+        aria-modal
+        trap-focus
+        has-modal-card
+      >
+        <template #default="props">
+          <TakeDamage
+            :hitLocations="hitLocations.concat(['brain'])"
+            @close="props.close"
+            @done="takeDamage"
+          />
+        </template>
+      </b-modal>
     </div>
     <div class="column is-12">
-      <p>[[Tokens]]</p>
+      <div class="is-flex is-justify-content-space-between mt-0">
+        <div class="action">
+          <div class="divider mt-0 mb-1">Action</div>
+          <span class="bl-action is-size-1 is-clickable" :class="survivor.hunt.actions.action ? '' : 'disabled'" @click="toggleHuntActions('action')"></span>
+        </div>
+        <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between mt-0">
+          <div class="other" v-if="hasOtherTokens">
+            <div class="divider mt-0 mb-1">Special Tokens</div>
+            <ul>
+              <li v-for="(t,tidx) in survivor.hunt.tokens.other" :key="tidx">
+                <span class="tags has-addons">
+                  <span class="tag is-primary">{{ t.amount }}x</span>
+                  <span class="tag is-dark">{{ t.name }}</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div v-if="hasOtherTokens" class="divider is-vertical"></div>
+          <div class="bleeding">
+            <div class="divider mt-0 mb-1">Bleed</div>
+            <b-icon 
+              v-for="n in 5"
+              :key="n"
+              icon="tint" 
+              size="is-large" 
+              :type="survivor.hunt.special.bleed >= n ? 'is-danger' : 'is-light'" 
+              class="mr-2 p-5 token is-clickable"
+              :class="{ 'disabled': survivor.hunt.special.bleed < n }"
+              @click.native="setBleedTokens(n)"
+            />
+          </div>
+          <div class="divider is-vertical" v-if="hasStatTokens"></div>
+          <div v-for="s in statKeys" :key="s" :class="s">
+            <div v-if="survivor.hunt.tokens[s].plus > 0 || survivor.hunt.tokens[s].minus > 0" class="stat-token mt-2 mr-1 p-1">
+              <div class="divider mt-0 mb-1">{{ capitalize(s) }}</div>
+              <div class="is-flex is-justify-content-center">
+                <span v-if="survivor.hunt.tokens[s].plus > 0">
+                  <b-icon
+                    icon="plus-circle"
+                    size="is-medium"
+                    type="is-success"
+                    v-for="n in survivor.hunt.tokens[s].plus"
+                    :key="n"
+                  />
+                </span>
+                <span v-if="survivor.hunt.tokens[s].minus > 0">
+                  <b-icon
+                    icon="minus-circle"
+                    size="is-medium"
+                    type="is-danger"
+                    v-for="n in survivor.hunt.tokens[s].minus"
+                    :key="n"
+                  />
+                </span>
+              </div>
+              <div class="divider is-vertical"></div>
+            </div>
+          </div>
+        </div>
+        <div class="movement">
+          <div class="divider mt-0 mb-1">Movement</div>
+          <span class="bl-movement is-size-1 is-clickable" :class="survivor.hunt.actions.movement ? '' : 'disabled'" @click="toggleHuntActions('movement')"></span>
+        </div>
+      </div>
     </div>
     <div class="column is-12 m-0 p-0">
       <hr class="m-1" />
@@ -116,7 +202,7 @@
                 </b-field>
               </p>
             </b-field>
-            <b-field v-if="!survivor.lifetime.cannot.survival" class="mt-2 is-flex is-justify-space-between" expanded>
+            <div v-if="!survivor.lifetime.cannot.survival" class="field mt-2 is-flex is-flex-wrap-wrap is-expanded is-justify-content-left">
               <div v-for="a in survivalAbilities" :key="a" class="mr-2">
                 <b-tooltip type="is-dark" position="is-top" size="is-small" :active="!survivor.hunt.abilities[a]">
                   <b-button v-if="survivor.survival.abilities[a]" size="is-small" type="is-info" :disabled="!survivor.hunt.abilities[a]">{{ capitalize(a) }}</b-button>
@@ -125,7 +211,7 @@
                   </template>
                 </b-tooltip>
               </div>
-            </b-field>
+            </div>
             <b-message size="is-small" type="is-danger" style="width:100%" class="cannot-use m-0 p-0" v-else>
               Cannot Use Survival Actions
             </b-message>
@@ -186,12 +272,17 @@
                   :class="{ 'is-warning': survivor.defenses[l].light, 'mr-2': l !== 'brain' }"
                   @click.prevent="survivor.defenses[l].light = !survivor.defenses[l].light , saveField(`defenses.${l}.light`, 'armor')"
                 />
-                <button
-                  v-if="l !== 'brain'"
-                  class="button is-small kdm-box thick-border mt-1"
-                  :class="{ 'is-danger': survivor.defenses[l].heavy }"
-                  @click.prevent="survivor.defenses[l].heavy = !survivor.defenses[l].heavy , saveField(`defenses.${l}.heavy`, 'armor')"
-                />
+                <b-tooltip type="is-dark" position="is-bottom">
+                  <button
+                    v-if="l !== 'brain'"
+                    class="button is-small kdm-box thick-border mt-1"
+                    :class="{ 'is-danger': survivor.defenses[l].heavy }"
+                    @click.prevent="survivor.defenses[l].heavy = !survivor.defenses[l].heavy , saveField(`defenses.${l}.heavy`, 'armor')"
+                  />
+                  <template #content>
+                    Taking a Heavy Injury knocks you down.
+                  </template>
+                </b-tooltip>
                 <span class="tag is-warning mt-2" v-if="l === 'brain' && survivor.defenses[l].value > 2">Insane</span>
                 <b-tooltip
                   type="is-light"
@@ -371,13 +462,30 @@
         </b-checkbox>
       </p>
     </div>
-    <div class="column is-12 divider">
-    
-    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+[class^="bl-"], [class*=" bl-"] {
+  &.disabled {
+    color: #ddd;
+  }
+}
+
+.stat-token {
+  border: 1px solid #ddd;
+  border-radius: 1em;
+}
+
+.token {
+  border-radius: 3em;
+  border: .3em solid black;
+  
+  &.disabled {
+    border: .3em dotted gray;
+  }
+}
+
 .large-armor-block {
   position: relative;
   
@@ -552,14 +660,20 @@ import { mapGetters } from 'vuex'
 import GridsMixin from '@/mixins/grids'
 import SurvivorMixin from '@/mixins/survivor'
 import GearCard from '@/components/storage/gear/card'
+import ManageTokens from '@/components/hunt/control/tokens'
+import TakeDamage from '@/components/hunt/control/damage'
 
 export default {
   name: 'ControlSurvivor',
   mixins: [GridsMixin, SurvivorMixin],
   components: {
-    GearCard
+    GearCard,
+    ManageTokens,
+    TakeDamage
   },
   data: () => ({
+    showManageTokens: false,
+    showTakeDamage: false,
     tagLists: [
       {
         label: 'Fighting Arts',
@@ -594,6 +708,17 @@ export default {
       'grids',
       'survivors'
     ]),
+    
+    hasStatTokens() {
+      return this.statKeys.some(s => {
+        return this.survivor?.hunt?.tokens?.[s].plus > 0
+          || this.survivor?.hunt?.tokens?.[s].minus > 0
+      })
+    },
+    
+    hasOtherTokens() {
+      return this.survivor?.hunt?.tokens?.other?.length > 0
+    },
     
     totalStats() {
       let out = {}
@@ -665,22 +790,26 @@ export default {
         this.survivor.hunt.abilities[sa] = this.survivor.survival.abilities[sa]
       })
       
-      this.hunt.actions.action = 1
-      this.hunt.actions.movement = 1
+      this.survivor.hunt.actions.action = 1
+      this.survivor.hunt.actions.movement = 1
       
       this.saveField('hunt', 'actions')
     },
     
     actionManageTokens() {
-      //TODO Make/Popup modal
+      this.showManageTokens = true
     },
     
-    actionBleedTokens() {
-      //TODO Make/Popup modal
+    saveTokens(tokens) {
+      console.log(tokens)
     },
     
     actionTakeDamage() {
-      //TODO Make/Popup modal
+      this.showTakeDamage = true
+    },
+    
+    takeDamage(hits) {
+      console.log(hits)
     },
     
     actionUseReroll() {
@@ -715,6 +844,21 @@ export default {
           })
         }
       })
+    },
+    
+    setBleedTokens(count) {
+      if(this.survivor.hunt.special.bleed === count)
+        count--
+        
+      this.survivor.hunt.special.bleed = count
+      this.saveField('hunt.special.bleed', 'actions')
+    },
+    
+    toggleHuntActions(type) {
+      if(this.survivor.hunt.actions[type] === undefined) return
+      
+      this.survivor.hunt.actions[type] = !this.survivor.hunt.actions[type]
+      this.saveField(`hunt.actions.${type}`, 'actions')
     },
     
     // ---

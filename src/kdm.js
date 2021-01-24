@@ -203,14 +203,17 @@ const survivor = {
     }
   },
   hunt: {
+    special: {
+      bleed: 0  
+    },
     tokens: {
-      bleed: 0,
       movement: { plus: 0, minus: 0 },
       accuracy: { plus: 0, minus: 0 },
       strength: { plus: 0, minus: 0 },
-      evasion: { plus: 0, minus: 0 },
-      luck: { plus: 0, minus: 0 },
-      speed: { plus: 0, minus: 0 }
+      evasion:  { plus: 0, minus: 0 },
+      luck:     { plus: 0, minus: 0 },
+      speed:    { plus: 0, minus: 0 },
+      other:    []
     },
     abilities: {
       dodge: false,
@@ -220,8 +223,8 @@ const survivor = {
       endure: false
     },
     actions: {
-      action: 0,
-      movement: 0
+      action: false,
+      movement: false
     }
   },
   survival: {

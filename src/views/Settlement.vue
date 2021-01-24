@@ -25,7 +25,8 @@
                     trap-focus
                     :destroy-on-hide="false"
                     aria-role="dialog"
-                    aria-modal>
+                    aria-modal
+                  >
                     <template #default="props">
                       <UserAdd
                         @close="props.close"
