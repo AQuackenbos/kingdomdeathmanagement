@@ -2,51 +2,51 @@
   <div class="columns is-multiline" v-if="!showLoading && survivor && grid">
     <div class="column is-12" ref="actions">
       <b-message type="is-info">
-        <b-button 
-          class="mx-2" 
-          type="is-success" 
-          icon-left="plus-square" 
+        <b-button
+          class="mx-2"
+          type="is-success"
+          icon-left="plus-square"
           @click="actionFullHeal"
         >
           Full Heal Survivor
         </b-button>
-        <b-button 
-          class="mx-2" 
-          type="is-info" 
-          icon-left="recycle" 
+        <b-button
+          class="mx-2"
+          type="is-info"
+          icon-left="recycle"
           @click="actionResetRound"
         >
           Reset Round
         </b-button>
-        <b-button 
-          class="mx-2" 
-          type="is-primary" 
-          icon-left="question-circle" 
+        <b-button
+          class="mx-2"
+          type="is-primary"
+          icon-left="question-circle"
           @click="actionManageTokens"
         >
           Manage Tokens
         </b-button>
-        <b-button 
-          class="mx-2" 
-          type="is-danger" 
-          icon-left="certificate" 
+        <b-button
+          class="mx-2"
+          type="is-danger"
+          icon-left="certificate"
           @click="actionTakeDamage"
         >
           Take Damage
         </b-button>
-        <b-button 
-          class="mx-2" 
-          type="is-warning" 
-          icon-left="dice-d20" 
-          @click="actionUseReroll" 
+        <b-button
+          class="mx-2"
+          type="is-warning"
+          icon-left="dice-d20"
+          @click="actionUseReroll"
           v-if="survivor.lifetime.reroll.available && !survivor.lifetime.reroll.used"
         >
           Use Lifetime Reroll
         </b-button>
-        <b-button 
-          class="mx-2" 
-          type="is-black" 
-          icon-left="skull" 
+        <b-button
+          class="mx-2"
+          type="is-black"
+          icon-left="skull"
           @click="actionKillSurvivor"
         >
           Kill Survivor
@@ -69,7 +69,7 @@
       </b-modal>
       <b-modal
         v-model="showTakeDamage"
-        :destroy-on-hide="false"
+        :destroy-on-hide="true"
         aria-role="dialog"
         aria-modal
         trap-focus
@@ -105,12 +105,12 @@
           <div v-if="hasOtherTokens" class="divider is-vertical"></div>
           <div class="bleeding">
             <div class="divider mt-0 mb-1">Bleed</div>
-            <b-icon 
+            <b-icon
               v-for="n in 5"
               :key="n"
-              icon="tint" 
-              size="is-large" 
-              :type="survivor.hunt.special.bleed >= n ? 'is-danger' : 'is-light'" 
+              icon="tint"
+              size="is-large"
+              :type="survivor.hunt.special.bleed >= n ? 'is-danger' : 'is-light'"
               class="mr-2 p-5 token is-clickable"
               :class="{ 'disabled': survivor.hunt.special.bleed < n }"
               @click.native="setBleedTokens(n)"
@@ -187,7 +187,7 @@
                   'is-dark': survivor.lifetime.experience > n
                 }"
                 @click.prevent="setExperience(n+1)"
-                v-else 
+                v-else
               />
             </p>
           </b-field>
@@ -230,19 +230,19 @@
               </b-field>
               <b-field grouped class="stat-addon">
                 <b-field label="Perm." label-position="inside">
-                  <b-input 
-                    size="is-small" 
-                    class="year-input" 
-                    v-model="survivor.stats[s].base" 
-                    @change.native="saveField(`stats.${s}.base`, 'stats')" 
+                  <b-input
+                    size="is-small"
+                    class="year-input"
+                    v-model="survivor.stats[s].base"
+                    @change.native="saveField(`stats.${s}.base`, 'stats')"
                   />
                 </b-field>
                 <b-field label="Misc." label-position="inside">
-                  <b-input 
-                    size="is-small" 
-                    class="year-input" 
-                    v-model="survivor.stats[s].other" 
-                    @change.native="saveField(`stats.${s}.other`, 'stats')" 
+                  <b-input
+                    size="is-small"
+                    class="year-input"
+                    v-model="survivor.stats[s].other"
+                    @change.native="saveField(`stats.${s}.other`, 'stats')"
                   />
                 </b-field>
               </b-field>
@@ -258,10 +258,10 @@
               </p>
               <div class="large-armor-block">
                 <span class="bl-armor"></span>
-                <b-input 
+                <b-input
                   v-model="survivor.defenses[l].value"
-                  class="amount" 
-                  size="is-large" 
+                  class="amount"
+                  size="is-large"
                   @change.native="saveField(`defenses.${l}.value`, 'armor')"
                 />
               </div>
@@ -325,22 +325,22 @@
             </p>
           </b-field>
           <div class="buttons is-centered">
-            <b-tooltip 
-              position="is-right" 
-              style="width:100%" 
+            <b-tooltip
+              position="is-right"
+              style="width:100%"
               type="is-dark"
               multilined
-              :active="survivor.mentality.courage.abilities[a].granted" 
-              :label="survivor.mentality.courage.abilities[a].description" 
-              v-for="a in ['stalwart','prepared','matchmaker']" 
+              :active="survivor.mentality.courage.abilities[a].granted"
+              :label="survivor.mentality.courage.abilities[a].description"
+              v-for="a in ['stalwart','prepared','matchmaker']"
               :key="a"
             >
-              <b-button 
-                size="is-small" 
-                style="width:100%" 
-                rounded 
-                :style="{ color: survivor.mentality.courage.abilities[a].granted ? '' : '#ddd' }" 
-                :class="{ 'is-info': survivor.mentality.courage.abilities[a].granted }" 
+              <b-button
+                size="is-small"
+                style="width:100%"
+                rounded
+                :style="{ color: survivor.mentality.courage.abilities[a].granted ? '' : '#ddd' }"
+                :class="{ 'is-info': survivor.mentality.courage.abilities[a].granted }"
                 @click.prevent="toggleAbility('courage',a)"
               >
                 {{ survivor.mentality.courage.abilities[a].name }}
@@ -370,22 +370,22 @@
             </p>
           </b-field>
           <div class="buttons is-centered">
-            <b-tooltip 
-              position="is-left" 
-              style="width:100%" 
-              type="is-dark" 
+            <b-tooltip
+              position="is-left"
+              style="width:100%"
+              type="is-dark"
               multilined
-              :active="survivor.mentality.understanding.abilities[a].granted" 
-              :label="survivor.mentality.understanding.abilities[a].description" 
-              v-for="a in ['analyze','explore','tinker']" 
+              :active="survivor.mentality.understanding.abilities[a].granted"
+              :label="survivor.mentality.understanding.abilities[a].description"
+              v-for="a in ['analyze','explore','tinker']"
               :key="a"
             >
-              <b-button 
-                size="is-small" 
-                style="width:100%" 
-                rounded 
-                :style="{ color: survivor.mentality.understanding.abilities[a].granted ? '' : '#ddd' }" 
-                :class="{ 'is-info': survivor.mentality.understanding.abilities[a].granted }" 
+              <b-button
+                size="is-small"
+                style="width:100%"
+                rounded
+                :style="{ color: survivor.mentality.understanding.abilities[a].granted ? '' : '#ddd' }"
+                :class="{ 'is-info': survivor.mentality.understanding.abilities[a].granted }"
                 @click.prevent="toggleAbility('understanding',a)"
               >
                 {{ survivor.mentality.understanding.abilities[a].name }}
@@ -395,11 +395,11 @@
         </div>
         <div class="column is-12">
           <b-field grouped label="Weapon Expertise" ref="wp" class="wp">
-            <b-input 
-              v-model="survivor.weapon.selected" 
-              placeholder="Weapon Type" 
-              icon="shield-alt" @change.native="saveField('weapon.selected', 'wp')" 
-              expanded 
+            <b-input
+              v-model="survivor.weapon.selected"
+              placeholder="Weapon Type"
+              icon="shield-alt" @change.native="saveField('weapon.selected', 'wp')"
+              expanded
             />
             <p class="control" v-for="n in createRange(8)" :key="n">
               <b-tooltip type="is-light" position="is-bottom" v-if="n === 2 || n === 7" >
@@ -444,18 +444,18 @@
         @input="saveListField(`abilities.${t.id}`,t.ref)"
       />
       <p class="control mt-1 is-size-7" v-if="t.id === 'fightingArts'">
-        <b-checkbox 
-          type="is-danger" 
-          v-model="survivor.lifetime.cannot.fightingArts" 
+        <b-checkbox
+          type="is-danger"
+          v-model="survivor.lifetime.cannot.fightingArts"
           @change.native="saveField('lifetime.cannot.fightingArts','fa')"
         >
           Cannot Use Fighting Arts
         </b-checkbox>
       </p>
       <p class="control mt-1 is-size-7" v-if="t.id === 'abilities'">
-        <b-checkbox 
-          type="is-success" 
-          v-model="survivor.lifetime.reroll.available" 
+        <b-checkbox
+          type="is-success"
+          v-model="survivor.lifetime.reroll.available"
           @change.native="saveField('lifetime.reroll.available', 'ab')"
         >
           Lifetime Reroll Available
@@ -518,7 +518,13 @@
   }
 }
 
-::v-deep {  
+::v-deep {
+  .modal.is-active {
+    .animation-content {
+      height: 100%;
+    }
+  }
+  
   .wp p.control {
     margin-top: 0.5em;
   }
@@ -809,7 +815,48 @@ export default {
     },
     
     takeDamage(hits) {
-      console.log(hits)
+      let messages = []
+      
+      
+      hits.forEach((h) => {
+        if(h.location === null || h.amount === 0 || h.amount === '') {
+          return
+        }
+        
+        let damageLeft = parseInt(h.amount)
+        let damageTaken = damageLeft - parseInt(this.survivor.defenses[h.location].value)
+        
+        damageLeft -= damageTaken
+        
+        if(h.location === 'brain') {
+          messages.push('Lost ' + damageTaken + ' insanity.')
+        } else {
+          messages.push('Took ' + damageTaken + ' damage to the <span class="bl-'+h.location+'">'+this.capitalize(h.location)+"</span>")
+        }
+        
+        if(damageLeft > 0 && this.survivor.defenses[h.location].light === false) {
+          this.survivor.defenses[h.location].light = true
+          damageLeft -= 1
+          
+          messages.push('Took a light injury to the ' + (h.location === 'brain' ? 'Brain' : `<span class="bl-${h.location}"></span> ${this.capitalize(h.location)}`))
+        }
+        
+        if(damageLeft > 0 && this.survivor.defenses[h.location].heavy === false) {
+          this.survivor.defenses[h.location].heavy = true
+          damageLeft -= 1
+          
+          messages.push('Took a heavy injury to the <span class="bl-'+h.location+'"></span> '+h.location+' <em>(and were likely knocked down)</em>')
+        }
+      })
+      
+      if(hits.length === 0 || messages.length === 0) {
+        messages.push('No damage taken.')
+      }
+      
+      this.$buefy.dialog.confirm({
+        message: hits.join('<br />'),
+        trapFocus: true
+      })
     },
     
     actionUseReroll() {
