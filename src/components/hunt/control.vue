@@ -24,7 +24,7 @@
           icon-left="question-circle"
           @click="actionManageTokens"
         >
-          Manage Tokens
+          Add/Remove Tokens
         </b-button>
         <b-button
           class="mx-2"
@@ -54,14 +54,18 @@
       </b-message>
       <b-modal
         v-model="showManageTokens"
-        :destroy-on-hide="false"
+        :destroy-on-hide="true"
         aria-role="dialog"
+        class="tokens"
         aria-modal
         trap-focus
         has-modal-card
       >
         <template #default="props">
           <ManageTokens
+            :tokenTypes="tokenTypes"
+            :huntTokens="survivor.hunt.tokens"
+            @remove="removeAllTokens"
             @close="props.close"
             @done="saveTokens"
           />
@@ -71,6 +75,7 @@
         v-model="showTakeDamage"
         :destroy-on-hide="true"
         aria-role="dialog"
+        class="damage"
         aria-modal
         trap-focus
         has-modal-card
@@ -111,7 +116,7 @@
               icon="tint"
               size="is-large"
               :type="survivor.hunt.special.bleed >= n ? 'is-danger' : 'is-light'"
-              class="mr-2 p-5 token is-clickable"
+              class="mr-2 token is-clickable bleed"
               :class="{ 'disabled': survivor.hunt.special.bleed < n }"
               @click.native="setBleedTokens(n)"
             />
@@ -205,7 +210,7 @@
             <div v-if="!survivor.lifetime.cannot.survival" class="field mt-2 is-flex is-flex-wrap-wrap is-expanded is-justify-content-left">
               <div v-for="a in survivalAbilities" :key="a" class="mr-2">
                 <b-tooltip type="is-dark" position="is-top" size="is-small" :active="!survivor.hunt.abilities[a]">
-                  <b-button v-if="survivor.survival.abilities[a]" size="is-small" type="is-info" :disabled="!survivor.hunt.abilities[a]">{{ capitalize(a) }}</b-button>
+                  <b-button v-if="survivor.survival.abilities[a]" size="is-small" type="is-info" :disabled="!survivor.hunt.abilities[a]" @click="useSurvivalAbility(a)">{{ capitalize(a) }}</b-button>
                   <template #content>
                     Each survival ability can be used once per round.
                   </template>
@@ -481,6 +486,10 @@
   border-radius: 3em;
   border: .3em solid black;
   
+  &.bleed {
+    padding: 0.4rem !important;
+  }
+  
   &.disabled {
     border: .3em dotted gray;
   }
@@ -522,6 +531,7 @@
   .modal.is-active {
     .animation-content {
       height: 100%;
+      margin-top: 20px;
     }
   }
   
@@ -771,6 +781,9 @@ export default {
     
     actionFullHeal() {
       this.$buefy.dialog.confirm({
+        title: 'Full Heal',
+        type: 'is-success',
+        hasIcon: true,
         message: 'This will reset all armor values to the values your gear grid reaches.  It is most often used at the start of a hunt.  Use it now?',
         onConfirm: () => this._fullHeal()
       })
@@ -779,14 +792,21 @@ export default {
     _fullHeal() {
       this.hitLocations.forEach(hl => {
         this.survivor.defenses[hl].value = this.survivor.defenses[hl].max
+        if(this.survivor.defenses[hl].light !== undefined) this.survivor.defenses[hl].light = false
+        if(this.survivor.defenses[hl].heavy !== undefined) this.survivor.defenses[hl].heavy = false
       })
+      
+      this.survivor.defenses.brain.light = false
       
       this.saveField('defenses', 'actions')
     },
     
     actionResetRound() {
       this.$buefy.dialog.confirm({
-        message: 'Reset to start of round?  This will reactivate all Survival abilities and reset your available Actions.',
+        title: 'Reset Round',
+        type: 'is-info',
+        hasIcon: true,
+        message: 'This will reactivate all Survival abilities and reset your available Actions.',
         onConfirm: () => this._resetRound()
       })
     },
@@ -806,8 +826,97 @@ export default {
       this.showManageTokens = true
     },
     
+    removeAllTokens() {
+      this.survivor.hunt.tokens = {
+        movement: { plus: 0, minus: 0 },
+        accuracy: { plus: 0, minus: 0 },
+        strength: { plus: 0, minus: 0 },
+        evasion:  { plus: 0, minus: 0 },
+        luck:     { plus: 0, minus: 0 },
+        speed:    { plus: 0, minus: 0 },
+        other:    []
+      }
+      
+      this.saveField('hunt.tokens', 'actions')
+    },
+    
     saveTokens(tokens) {
       console.log(tokens)
+      let messages = []
+      
+      tokens.forEach(t => {
+        if(t.type === 'other') {
+          let existing = this.survivor.hunt.tokens.other.find(o => o.name === t.custom)
+          let verb = ''
+          if(existing) {
+            let origTotal = existing.amount
+            if(t.change === 'add') {
+              verb = 'Added'
+              existing.amount += t.amount
+            } else {
+              verb = 'Removed'
+              existing.amount -= t.amount
+            }
+            
+            if(existing.amount < 0) existing.amount = 0
+            messages.push(verb + ' ' + t.amount + ' ' + existing.name + ' tokens (' + origTotal + ' &rarr; ' + existing.amount + ')')
+          } else {
+            if(t.change === 'add') {
+              //cannot remove a type that doesnt exist before now 
+              this.survivor.hunt.tokens.other.push({
+                name: t.custom,
+                amount: t.amount
+              })
+              
+              messages.push('Added ' + t.amount + ' ' + t.custom + ' tokens (New Type)')
+            }
+          }
+        } else {
+          let [tok, mod] = t.type.split('_')
+          let verb = ''
+          let origTotal = this.survivor.hunt.tokens[tok][mod]
+          
+          if(t.change === 'add') {
+            verb = 'Added'
+            this.survivor.hunt.tokens[tok][mod] += t.amount
+          } else {
+            verb = 'Removed'
+            this.survivor.hunt.tokens[tok][mod] -= t.amount
+          }
+          
+          if(this.survivor.hunt.tokens[tok][mod] < 0) this.survivor.hunt.tokens[tok][mod] = 0
+          
+          let label = this.tokenTypes().find(tt => tt.value === t.type).label
+          messages.push(verb + ' ' + t.amount + ' ' + label + ' tokens (' + origTotal + ' &rarr; ' + this.survivor.hunt.tokens[tok][mod] + ')')
+        }
+      })
+      
+      if(tokens.length === 0 || messages.length === 0) {
+        messages.push('No token changes.')
+      } else {
+        this.saveField('hunt.tokens', 'actions')
+      }
+      
+      this.$buefy.dialog.alert({
+        title: 'Token Changes',
+        hasIcon: true,
+        type: 'is-info',
+        message: messages.join("<br />"),
+        trapFocus: true
+      })
+    },
+    
+    tokenTypes() {
+      let ttypes = []
+      
+      this.statKeys.forEach(s => {
+        ttypes.push({ value: s + '_plus', label: this.capitalize(s) + ' (Plus)' })
+        ttypes.push({ value: s + '_minus', label: this.capitalize(s) + ' (Minus)' })
+      })
+      
+      ttypes.push({ value: 'other', label: 'Other Tokens' })
+      
+      return ttypes
     },
     
     actionTakeDamage() {
@@ -824,21 +933,31 @@ export default {
         }
         
         let damageLeft = parseInt(h.amount)
-        let damageTaken = damageLeft - parseInt(this.survivor.defenses[h.location].value)
+        let armor = parseInt(this.survivor.defenses[h.location].value)
+        
+        let damageTaken = 0
+        
+        if(armor >= damageLeft) {
+          damageTaken = damageLeft
+          this.survivor.defenses[h.location].value -= Math.abs(damageTaken)
+        } else {
+          this.survivor.defenses[h.location].value = 0
+          damageTaken = armor
+        }
         
         damageLeft -= damageTaken
         
         if(h.location === 'brain') {
           messages.push('Lost ' + damageTaken + ' insanity.')
         } else {
-          messages.push('Took ' + damageTaken + ' damage to the <span class="bl-'+h.location+'">'+this.capitalize(h.location)+"</span>")
+          messages.push('Took ' + damageTaken + ' damage to the <span class="bl-'+h.location+'"></span> '+this.capitalize(h.location))
         }
         
         if(damageLeft > 0 && this.survivor.defenses[h.location].light === false) {
           this.survivor.defenses[h.location].light = true
           damageLeft -= 1
           
-          messages.push('Took a light injury to the ' + (h.location === 'brain' ? 'Brain' : `<span class="bl-${h.location}"></span> ${this.capitalize(h.location)}`))
+          messages.push('Took a light injury to the ' + (h.location === 'brain' ? 'Brain' : '<span class="bl-' + h.location + '"></span> '+ this.capitalize(h.location)))
         }
         
         if(damageLeft > 0 && this.survivor.defenses[h.location].heavy === false) {
@@ -847,14 +966,23 @@ export default {
           
           messages.push('Took a heavy injury to the <span class="bl-'+h.location+'"></span> '+h.location+' <em>(and were likely knocked down)</em>')
         }
+        
+        if(damageLeft > 0) {
+          messages.push('Take a <strong>Severe Injury</strong> to the ' + h.location)
+        }
       })
       
       if(hits.length === 0 || messages.length === 0) {
         messages.push('No damage taken.')
+      } else {
+        this.saveField('defenses', 'actions')
       }
       
-      this.$buefy.dialog.confirm({
-        message: hits.join('<br />'),
+      this.$buefy.dialog.alert({
+        title: 'Damage Summary',
+        hasIcon: true,
+        type: 'is-danger',
+        message: messages.join("<br />"),
         trapFocus: true
       })
     },
@@ -868,7 +996,10 @@ export default {
       }
     
       this.$buefy.dialog.confirm({
-        message: 'Confirm that you would like to use up your Survivor\'s lifetime reroll.',
+        title: 'Use Lifetime Reroll',
+        type: 'is-warning',
+        hasIcon: true,
+        message: 'Confirm usage of reroll.',
         onConfirm: () => {
           this.survivor.lifetime.reroll.used = true
           this.saveField('lifetime.reroll.used', 'actions')
@@ -878,7 +1009,10 @@ export default {
     
     actionKillSurvivor() {
       this.$buefy.dialog.confirm({
-        message: 'ARE YOU SURE?  This will KILL the Survivor.  You will be asked for a cause of death.',
+        title: 'Kill This Survivor',
+        type: 'is-danger',
+        hasIcon: true,
+        message: '<strong>ARE YOU SURE?</strong>  This will KILL the Survivor.  You will be asked for a cause of death.',
         onConfirm: () => {
           this.$buefy.dialog.prompt({
             message: 'Cause of Death?',
@@ -908,6 +1042,12 @@ export default {
       this.saveField(`hunt.actions.${type}`, 'actions')
     },
     
+    useSurvivalAbility(action) {
+      if(this.survivor.hunt.abilities[action] && this.survivor.survival.abilities[action]) {
+        this.survivor.hunt.abilities[action] = false
+        this.saveField(`hunt.abilities.${action}`, 'actions')
+      }
+    },
     // ---
     
     statBreakdown(key) {

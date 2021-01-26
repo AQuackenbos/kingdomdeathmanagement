@@ -16,7 +16,7 @@
                   <template v-if="item.armor.locations.length > 0">
                     <div v-for="l in item.armor.locations" :key="l" style="margin-right:.5em">
                       <span :class="iconTranslation[l]" style="margin-right:.25em"></span>
-                      <span>{{ l.charAt(0).toUpperCase() + l.slice(1) }}</span>
+                      <span>{{ capitalize(l) }}</span>
                     </div>
                   </template>
                   <template v-else>
@@ -29,7 +29,7 @@
                       <span :class="iconTranslation[l]"></span>
                     </div>
                     <div class="media-content">
-                      {{ l.charAt(0).toUpperCase() + l.slice(1) }}
+                      {{ capitalize(l) }}
                     </div>
                   </div>
                 </b-dropdown-item>
@@ -78,7 +78,7 @@
                 <button class="button is-dark is-small" type="button" slot="trigger">
                   <template v-if="item.type">
                     <span :class="iconTranslation[item.type]" style="margin-right:.25em"></span>
-                    <span>{{ item.type.charAt(0).toUpperCase() + item.type.slice(1) }}</span>
+                    <span>{{ capitalize(item.type) }}</span>
                   </template>
                   <template v-else>
                     <span>Select a Type</span>
@@ -90,7 +90,7 @@
                       <span :class="iconTranslation[t]"></span>
                     </div>
                     <div class="media-content">
-                      {{ t.charAt(0).toUpperCase() + t.slice(1) }}
+                      {{ capitalize(t) }}
                     </div>
                   </div>
                 </b-dropdown-item>

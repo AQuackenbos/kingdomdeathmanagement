@@ -6,16 +6,13 @@
     <section class="modal-card-body">
       <div v-if="hits.length === 0" class="content">Add Hits Below</div>
       <b-field v-for="(h,hidx) in hits" :key="hidx" grouped>
-        <b-field>
-          <b-button icon-left="times" @click="remove(hidx)" size="is-small" type="is-danger" />
-        </b-field>
         <b-field expanded>
           <b-dropdown v-model="h.location" aria-role="list" position="is-bottom-right" size="is-small">
             <button class="button is-dark is-small" type="button" slot="trigger">
               <template v-if="h.location">
-                <div style="margin-right:.5em">
-                  <span :class="'bl-' + h.location" style="margin-right:.25em"></span>
-                  <span>{{ h.location.charAt(0).toUpperCase() + h.location.slice(1) }}</span>
+                <div class="mr-2">
+                  <span :class="'bl-' + h.location" class="mr-1"></span>
+                  <span>{{ capitalize(h.location) }}</span>
                 </div>
               </template>
               <template v-else>
@@ -28,14 +25,17 @@
                   <span :class="l === 'brain' ? '' : 'bl-' + l"></span>
                 </div>
                 <div class="media-content">
-                  {{ l.charAt(0).toUpperCase() + l.slice(1) }}
+                  {{ capitalize(l) }}
                 </div>
               </div>
             </b-dropdown-item>
           </b-dropdown>
         </b-field>
         <b-field label="Damage" label-position="on-border">
-          <b-numberinput controls-position="compact" v-model="h.amount" size="is-small" type="is-info" />
+          <b-numberinput :min="0" controls-position="compact" v-model="h.amount" size="is-small" type="is-info" />
+        </b-field>
+        <b-field>
+          <b-button icon-left="times" @click="remove(hidx)" size="is-small" type="is-danger" />
         </b-field>
       </b-field>
     </section>
@@ -52,6 +52,13 @@
 <style lang="scss" scoped>
 .modal-card {
   height: 100%;
+}
+
+.modal-card-foot {
+  .buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 </style>
 
