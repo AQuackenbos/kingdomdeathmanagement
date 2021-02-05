@@ -1,13 +1,24 @@
-# Kingdom Death Management
-Multi-user Campaign manager for Kingdom Death Monster.
+# kingdomdeathmanagement
 
-## Install
-Copy `config.php.sample` to `config.php` and configure necessary fields.
-````
-mysql -u username -p database_name < install.sql
-mysql -u username -p database_name < reference-data.sql
-composer install
+## Project setup
+```
 npm install
-webpack -p
-````
-Then run a server out of /public.
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
