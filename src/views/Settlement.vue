@@ -229,165 +229,168 @@ import LocationAdd from '@/components/location/add'
 import UserAdd from '@/components/campaign/invite'
 
 export default {
-    name: 'Settlement',
-    components: {
-      QuarryAdd,
-      LocationAdd,
-      UserAdd
-    },
-    data() {
-      return {
-        showAddQuarry: false,
-        showAddLocation: false,
-        showAddUser: false,
-        showTitleEdit: false
-      }
-    },
-    computed: {
-      ...mapGetters([
-        'user',
-        'innovations',
-        'innovated',
-        'users',
-        'quarries',
-        'locations'
-      ]),
-      
-      leftMilestones() {
-        return this.campaign.milestones.filter((k,i) => {
-          k;
-          return i%2
-        })
-      },
-      
-      rightMilestones() {
-        return this.campaign.milestones.filter((k,i) => {
-          k;
-          return !(i%2)
-        })
-      },
-      
-      campaignQuarries() {
-        return this.quarries.filter(q => this.campaign.quarries.includes(q.id))
-      },
-      
-      campaignLocations() {
-        return this.locations.filter(l => this.campaign.locations.includes(l.id))
-      },
-      
-      members() {
-        return this.users.filter(u => this.campaign.members.includes(u.id))
-      },
-      
-      maxSurvivalBonus() {
-        return this.researchedInnovations.filter(i => i.increaseLimit).length
-      },
-      
-      departingSurvival() {
-        return this.researchedInnovations.filter(i => i.departingSurvival).length
-      },
-      
-      researchedInnovations() {
-        return this.innovations.filter(i => this.innovated.find(inno => inno.id === i.id && inno.innovated))
-      }
-    },
-    methods: {
-      ...mapActions([
-        'setLoading',
-        'bindCampaign'
-      ]),
-    
-      updateField(f, v) {
-        let currVal = f.split('.').reduce((o,i) => o[i], this.campaign)
-        if(currVal === v) return
-        
-        this.setLoading(true)
-        
-        let updatePacket = {}
-        updatePacket[f] = v
-        
-        db.collection('campaigns').doc(this.campaign.id).update(updatePacket).then(() => this.setLoading(false))
-      },
-      
-      updateTitle() {
-        this.$buefy.dialog.prompt({
-          message: 'Change Settlement Name',
-          trapFocus: true,
-          inputAttrs: {
-            value: this.campaign.name
-          },
-          onConfirm: (val) => this.updateField('name', val)
-        })
-      },
-      
-      updateSurvival() {
-        this.$buefy.dialog.prompt({
-          message: `Update Max Survival`,
-          trapFocus: true,
-          inputAttrs: {
-            type: 'number',
-            value: this.campaign.survival.max
-          },
-          onConfirm: (val) => this.updateField('survival.max', parseInt(val))
-        })
-      },
-      
-      updateBonuses(type) {
-        this.$buefy.dialog.prompt({
-          message: `Update Bonuses (${type})`,
-          trapFocus: true,
-          inputAttrs: {
-            value: this.campaign.bonuses[type]
-          },
-          onConfirm: (val) => this.updateField(`bonuses.${type}`, val)
-        })
-      },
-      
-      addQuarry(quarryId) {
-        if(!quarryId || quarryId.length === 0) return
-        
-        this.setLoading(true)
-        db.collection('campaigns').doc(this.campaign.id).update({
-            quarries: firebase.firestore.FieldValue.arrayUnion(quarryId)
-        }).then(() => {
-          this.setLoading(false)
-          this.showAddQuarry = false
-        })
-      },
-      
-      addLocation(locationId) {
-        if(!locationId || locationId.length === 0) return
-        
-        this.setLoading(true)
-        db.collection('campaigns').doc(this.campaign.id).update({
-            locations: firebase.firestore.FieldValue.arrayUnion(locationId)
-        }).then(() => {
-          this.setLoading(false)
-          this.showAddLocation = false
-        })
-      },
-      
-      addUser(userId) {
-        if(!userId || userId.length === 0) return
-        
-        this.setLoading(true)
-        db.collection('campaigns').doc(this.campaign.id).update({
-            members: firebase.firestore.FieldValue.arrayUnion(userId)
-        }).then(() => {
-          this.setLoading(false)
-          this.showAddUser = false
-        })
-      },
-      
-      selectPrinciple(principle, selection) {
-        let principleObj = this.campaign.principles[principle]
-        this.$buefy.dialog.confirm({
-          title: 'Select Principle',
-          message: `Confirm selecting <span class="has-text-weight-bold">${selection}</span> for the principle <span class="has-text-weight-bold">${principleObj.name}</span>?`,
-          type: 'is-info',
-          onConfirm: () => this.updateField(`principles.${principle}.selected`, selection)
-        })
-      }
+  name: 'Settlement',
+  components: {
+    QuarryAdd,
+    LocationAdd,
+    UserAdd
+  },
+  data() {
+    return {
+      showAddQuarry: false,
+      showAddLocation: false,
+      showAddUser: false,
+      showTitleEdit: false
     }
+  },
+  created() {
+    document.title = 'KDM | Settlement'
+  },
+  computed: {
+    ...mapGetters([
+      'user',
+      'innovations',
+      'innovated',
+      'users',
+      'quarries',
+      'locations'
+    ]),
+    
+    leftMilestones() {
+      return this.campaign.milestones.filter((k,i) => {
+        k;
+        return i%2
+      })
+    },
+    
+    rightMilestones() {
+      return this.campaign.milestones.filter((k,i) => {
+        k;
+        return !(i%2)
+      })
+    },
+    
+    campaignQuarries() {
+      return this.quarries.filter(q => this.campaign.quarries.includes(q.id))
+    },
+    
+    campaignLocations() {
+      return this.locations.filter(l => this.campaign.locations.includes(l.id))
+    },
+    
+    members() {
+      return this.users.filter(u => this.campaign.members.includes(u.id))
+    },
+    
+    maxSurvivalBonus() {
+      return this.researchedInnovations.filter(i => i.increaseLimit).length
+    },
+    
+    departingSurvival() {
+      return this.researchedInnovations.filter(i => i.departingSurvival).length
+    },
+    
+    researchedInnovations() {
+      return this.innovations.filter(i => this.innovated.find(inno => inno.id === i.id && inno.innovated))
+    }
+  },
+  methods: {
+    ...mapActions([
+      'setLoading',
+      'bindCampaign'
+    ]),
+  
+    updateField(f, v) {
+      let currVal = f.split('.').reduce((o,i) => o[i], this.campaign)
+      if(currVal === v) return
+      
+      this.setLoading(true)
+      
+      let updatePacket = {}
+      updatePacket[f] = v
+      
+      db.collection('campaigns').doc(this.campaign.id).update(updatePacket).then(() => this.setLoading(false))
+    },
+    
+    updateTitle() {
+      this.$buefy.dialog.prompt({
+        message: 'Change Settlement Name',
+        trapFocus: true,
+        inputAttrs: {
+          value: this.campaign.name
+        },
+        onConfirm: (val) => this.updateField('name', val)
+      })
+    },
+    
+    updateSurvival() {
+      this.$buefy.dialog.prompt({
+        message: `Update Max Survival`,
+        trapFocus: true,
+        inputAttrs: {
+          type: 'number',
+          value: this.campaign.survival.max
+        },
+        onConfirm: (val) => this.updateField('survival.max', parseInt(val))
+      })
+    },
+    
+    updateBonuses(type) {
+      this.$buefy.dialog.prompt({
+        message: `Update Bonuses (${type})`,
+        trapFocus: true,
+        inputAttrs: {
+          value: this.campaign.bonuses[type]
+        },
+        onConfirm: (val) => this.updateField(`bonuses.${type}`, val)
+      })
+    },
+    
+    addQuarry(quarryId) {
+      if(!quarryId || quarryId.length === 0) return
+      
+      this.setLoading(true)
+      db.collection('campaigns').doc(this.campaign.id).update({
+          quarries: firebase.firestore.FieldValue.arrayUnion(quarryId)
+      }).then(() => {
+        this.setLoading(false)
+        this.showAddQuarry = false
+      })
+    },
+    
+    addLocation(locationId) {
+      if(!locationId || locationId.length === 0) return
+      
+      this.setLoading(true)
+      db.collection('campaigns').doc(this.campaign.id).update({
+          locations: firebase.firestore.FieldValue.arrayUnion(locationId)
+      }).then(() => {
+        this.setLoading(false)
+        this.showAddLocation = false
+      })
+    },
+    
+    addUser(userId) {
+      if(!userId || userId.length === 0) return
+      
+      this.setLoading(true)
+      db.collection('campaigns').doc(this.campaign.id).update({
+          members: firebase.firestore.FieldValue.arrayUnion(userId)
+      }).then(() => {
+        this.setLoading(false)
+        this.showAddUser = false
+      })
+    },
+    
+    selectPrinciple(principle, selection) {
+      let principleObj = this.campaign.principles[principle]
+      this.$buefy.dialog.confirm({
+        title: 'Select Principle',
+        message: `Confirm selecting <span class="has-text-weight-bold">${selection}</span> for the principle <span class="has-text-weight-bold">${principleObj.name}</span>?`,
+        type: 'is-info',
+        onConfirm: () => this.updateField(`principles.${principle}.selected`, selection)
+      })
+    }
+  }
 }
 </script>

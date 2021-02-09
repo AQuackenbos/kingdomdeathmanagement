@@ -52,6 +52,7 @@ export default {
     GearGrids
   },
   created() {
+    document.title = 'KDM | Storage'
     this.setRouterTab()
   },
   methods: {

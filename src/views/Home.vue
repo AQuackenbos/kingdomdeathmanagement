@@ -21,6 +21,9 @@ import CampaignList from '@/components/campaign/list'
 
 export default {
   name: 'Home',
+  created() {
+    document.title = 'Kingdom Death Management'
+  },
   components: {
     CampaignList
   },

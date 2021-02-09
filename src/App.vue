@@ -29,7 +29,7 @@
           </transition>
         </div>
       </div>
-      <b-message id="app-todos" type="is-danger" title="TODO LIST" size="is-small" v-if="todos.length > 0">
+      <b-message id="app-todos" type="is-danger" title="TODO LIST" size="is-small" v-if="todos.length > 0 && user && user.uid === '882ZbearvlPjzrPX5oPy3nF5uJ52'">
         {{ todos }}
       </b-message>
     </div>
@@ -310,7 +310,7 @@ import { firebase } from '@/firebase'
 import { mapActions } from 'vuex'
 
 export default {
-  data: () => ({ 
+  data: () => ({
     todos: [
       'Make better Survivor Severe Injury area', 
       'Add FA/DO/etc Description Adder'
@@ -323,6 +323,9 @@ export default {
   },
   components: {
     Navigation
+  },
+  created() {
+    document.title = 'Kingdom Death Management'
   },
   methods: {
     ...mapActions([

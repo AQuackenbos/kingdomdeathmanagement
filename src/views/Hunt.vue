@@ -10,6 +10,7 @@
 export default {
   name: 'Hunt',
   created: async function() {
+    document.title = "KDM | Hunt Helper"
     if(this.currentCampaignId && (this.$route.path === '/hunt' || this.$route.path === '/hunt/')) {
       this.$router.push('/hunt/survivor')
       /**

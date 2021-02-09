@@ -122,6 +122,9 @@ export default {
     InnovationAdd,
     InnovationDesc
   },
+  created() {
+    document.title = 'KDM | Innovations'
+  },
   computed: {
     ...mapGetters([
       'innovations',

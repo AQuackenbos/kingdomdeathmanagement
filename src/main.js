@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
+
 import router from '@/router'
 import { store } from '@/store'
 import { firestorePlugin } from 'vuefire'
 import { firebase } from '@/firebase'
+
 import '@/mixins/global'
 
 import Buefy from 'buefy'
@@ -161,9 +163,7 @@ Vue.use(Buefy, {
 })
 
 Vue.use(firestorePlugin)
-
 Vue.config.productionTip = false
-
 firebase.auth().onAuthStateChanged(user => {
   store.dispatch('setUser', user)
   store.dispatch('setLoading', false)

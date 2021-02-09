@@ -82,6 +82,9 @@ export default {
     hideDead: false,
     showBonuses: false
   }),
+  created() {
+    document.title = 'KDM | Survivors'
+  },
   computed: {
     ...mapGetters([
       'survivors'

@@ -226,6 +226,7 @@ export default {
     }
   },
   created() {
+    document.title = "KDM | Grid Editor"
     this.$bind('grid', db.collection(`campaigns/${this.currentCampaignId}/grids`).doc(this.$route.params.id)).then(g => {
       this.originalItems = g.items
     })

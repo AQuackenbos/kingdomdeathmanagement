@@ -140,6 +140,9 @@ export default {
       sQLevel: null
     }
   },
+  created() {
+    document.title = 'KDM | Timeline'
+  },
   computed: {
     ...mapGetters([
       'innovated',
