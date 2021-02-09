@@ -1,5 +1,1 @@
-module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/kingdomdeathmanagement/dist/'
-    : '/'
-}
+module.exports = {}
