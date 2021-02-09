@@ -35,7 +35,6 @@ export default {
       this.setLoading(true)
       firebase.auth().signInWithRedirect(provider).then((result) => {
         this.setUser(result.user)
-        this.setLoading(false)
       }).catch(err => console.log(err))
     }
   }

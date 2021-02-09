@@ -9,7 +9,9 @@ export default Vue.mixin({
       'campaign',
       'currentCampaignId',
       'isBinding',
-      'user'
+      'user',
+      'error',
+      'errorText'
     ])
   },
   methods: {
@@ -20,10 +22,12 @@ export default Vue.mixin({
     ]),
     
     capitalize(str) {
+      if(!str) return ''
       return str.charAt(0).toUpperCase() + str.slice(1)
     },
     
     normalize(str) {
+      if(!str) return ''
       return str.trim().toLowerCase()  
     },
     
@@ -63,7 +67,7 @@ export default Vue.mixin({
     }
   },
   created() {
-    if(this.$store && this.currentCampaignId && !this.campaign?.id) {
+    if(this.$store && this.user && this.currentCampaignId && !this.campaign?.id) {
       this.bindCampaign(this.currentCampaignId)
     }
   }

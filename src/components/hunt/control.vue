@@ -293,20 +293,20 @@
                   type="is-light"
                   position="is-bottom"
                 >
-                  <span class="tag is-danger mt-2 is-clickable" v-if="l !== 'brain'">Add Injury</span>
+                  <span class="tag is-danger mt-2 is-clickable" v-if="l !== 'brain'" @click="addInjury(l)">Add Injury</span>
                   <template #content>
                     Add a Severe Injury to this Hit Location
                   </template>
                 </b-tooltip>
-                <span v-if="l !== 'brain'">
-                  <span v-for="(si,siidx) in survivor.defenses[l].severe" :key="siidx">
-                    {{ si }}
-                  </span>
-                  <br />
-                </span>
               </p>
             </div>
           </div>
+        </div>
+        <div class="column is-12" ref="severe">
+          <h2 class="subtitle">Severe Injuries</h2>
+          <span v-for="(i,iidx) in injuries" :key="iidx" class="mr-2">
+            <span :class="'bl-' + i.type"></span> {{ i.description }}
+          </span>
         </div>
         <div class="column is-6 cu courage" ref="courage">
           <b-field grouped label="Courage" label-position="" class="ml-3">
@@ -1048,6 +1048,25 @@ export default {
         this.saveField(`hunt.abilities.${action}`, 'actions')
       }
     },
+    
+    addInjury(loc) {
+      this.$buefy.dialog.prompt({
+        message: "Add a Severe Injury",
+        type: 'is-danger',
+        hasIcon: true,
+        inputAttrs: {
+          placeholder: 'Severe Injury',
+          required: true,
+        },
+        required: true,
+        trapFocus: true,
+        onConfirm: (val) => {
+          this.survivor.defenses[loc].severe.push(val)
+          this.saveField(`defenses.${loc}.severe`, 'actions')
+        }
+      })
+    },
+    
     // ---
     
     statBreakdown(key) {

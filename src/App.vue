@@ -1,19 +1,37 @@
 <template>
   <main id="app" class="">
-    <b-message type="is-danger" title="TODO LIST" size="is-small" v-if="todos.length > 0">
-      {{ todos }}
-    </b-message>
-    <b-loading :is-full-page="true" :can-cancel="false" v-model="showLoading">
-      <div class="loading-icon" />
-      <p style="position:absolute;color:#999">{{ loadingText }}</p>
-    </b-loading>
-    <Navigation/>
-    <div class="container">
-      <div class="columns">
-        <transition appear name="fade" mode="out-in">
-          <router-view :key="routeId"></router-view>
-        </transition>
+    <div v-if="error">
+      <div class="container">
+        <div class="section">
+          <b-message title="Error" type="is-danger" :closable="false" has-icon style="text-align:left">
+            <p class="subtitle">It appears there was an error.</p>
+            <p class="content" v-if="errorText.includes('permission')">This is likely a permission error.  This site is configured for a whitelist of users.  Please contact the admin to add you to the allowed users list.</p>
+            <p class="content" v-else>The origin of this error is currently unclear.  You should probably contact the admin about it.</p>
+            
+            <b-button @click="logout">
+              <b-icon icon="sign-out-alt" size="is-small" class="mr-1"/>
+              Logout
+            </b-button>
+          </b-message>
+        </div>
       </div>
+    </div>
+    <div v-else>
+      <b-loading :is-full-page="true" :can-cancel="false" v-model="showLoading">
+        <div class="loading-icon" />
+        <p style="position:absolute;color:#999">{{ loadingText }}</p>
+      </b-loading>
+      <Navigation/>
+      <div class="container">
+        <div class="columns">
+          <transition appear name="fade" mode="out-in">
+            <router-view :key="routeId"></router-view>
+          </transition>
+        </div>
+      </div>
+      <b-message id="app-todos" type="is-danger" title="TODO LIST" size="is-small" v-if="todos.length > 0">
+        {{ todos }}
+      </b-message>
     </div>
   </main>
 </template>
@@ -21,6 +39,12 @@
 <style lang="scss">
 @import "~bulma/sass/utilities/_all";
 @import "~@creativebulma/bulma-divider";
+
+#app-todos {
+  position: fixed;
+  bottom: 1em;
+  left: 50%;
+}
 
 .divider {
   &.is-vertical {
@@ -282,9 +306,16 @@
 
 <script>
 import Navigation from '@/components/navigation.vue'
+import { firebase } from '@/firebase'
+import { mapActions } from 'vuex'
 
 export default {
-  data: () => ({ todos: ['Finish Survivor Severe Injury area', 'Add FA/DO/etc Description Adder', 'Create User Approval Method', 'Make Categories for Gear/Resources autofills'] }),
+  data: () => ({ 
+    todos: [
+      'Make better Survivor Severe Injury area', 
+      'Add FA/DO/etc Description Adder'
+    ]
+  }),
   computed: {
     routeId() {
       return this.$route?.name?.split(' ')[0]
@@ -292,6 +323,18 @@ export default {
   },
   components: {
     Navigation
+  },
+  methods: {
+    ...mapActions([
+      'clearUser'
+    ]),
+    
+    logout() {
+      firebase.auth().signOut().then(() => {
+        this.clearUser()
+        window.location.reload()
+      }).catch(err => console.log(err))
+    }
   }
 }
 </script>

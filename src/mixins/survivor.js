@@ -69,7 +69,18 @@ export default {
       
       let d = this.survivor.defenses
       
-      return [].concat(d.arms.severe, d.body.severe, d.head.severe, d.waist.severe, d.legs.severe)
+      let mappedSevere = []
+      
+      this.hitLocations.forEach(hl => {
+        d[hl].severe.forEach(s => {
+          mappedSevere.push({
+            type: hl,
+            description: s
+          })              
+        })
+      })
+      
+      return mappedSevere
     },
     
     dead() {
@@ -124,9 +135,6 @@ export default {
     },
     
     saveListField(field, refName) {
-      let val = this.deepFind(this.survivor, field)
-      console.log(field, val)
-      val.forEach(console.log)
       this.saveField(field, refName)
     }
   }

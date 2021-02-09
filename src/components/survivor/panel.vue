@@ -292,7 +292,9 @@
           None.
         </div>
         <div class="content" v-else>
-          LOTS LOL
+          <span v-for="(i,iidx) in injuries" :key="iidx" class="mr-2">
+            <span :class="'bl-' + i.type"></span> {{ i.description }}
+          </span>
         </div>
       </div>
     </div>

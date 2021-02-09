@@ -7,6 +7,8 @@ import { db } from '@/firebase'
 Vue.use(Vuex);
 
 let state = {
+  error: false,
+  errorText: '',
   isBinding: false,
   user: null,
   users: [],
@@ -30,6 +32,11 @@ let state = {
   hunts: []
 }
 
+const nonPersistedKeys = [
+  'error',
+  'errorText'
+]
+
 let getters = () => {
   let keys = Object.keys(state)
   let getters = {}
@@ -42,13 +49,19 @@ let getters = () => {
 export const store = new Vuex.Store({
   plugins: [
     createPersistedState({
-      storage: window.sessionStorage
+      storage: window.sessionStorage,
+      paths: Object.keys(state).filter(k => !nonPersistedKeys.includes(k))
     })
   ],
   state: state,
   getters: getters(),
   mutations: {
     ...vuexfireMutations,
+    
+    FLAG_ERROR(state, data) {
+      state.error = true
+      state.errorText = data.message
+    },
     
     CLEAR_BINDING(state) {
       state.isBinding = false
@@ -79,17 +92,28 @@ export const store = new Vuex.Store({
       commit("CLEAR_BINDING")  
     },
     
+    error({ commit }, text) {
+      commit("FLAG_ERROR", text)
+    },
+    
     setUser({ commit, dispatch }, user) {
       if(user) {
         commit("SET_USER", user)
-        dispatch('bindUsers')
-        dispatch('bindPubUser')
-        dispatch('bindKeywords')
-        dispatch('bindInnovations')
-        dispatch('bindQuarries')
-        dispatch('bindShowdowns')
-        dispatch('bindLocations')
-        dispatch('bindArmorSets')
+        dispatch('bindUsers').then(() => {
+          Promise.all([
+            dispatch('bindPubUser'),
+            dispatch('bindKeywords'),
+            dispatch('bindInnovations'),
+            dispatch('bindQuarries'),
+            dispatch('bindShowdowns'),
+            dispatch('bindLocations'),
+            dispatch('bindArmorSets')
+          ]).then(() => {
+            dispatch('setLoading', false)
+          })
+        }).catch(e => {
+          dispatch('error', e)
+        })
       }
     },
     
@@ -144,6 +168,8 @@ export const store = new Vuex.Store({
           state.loadingText = ''
           dispatch('setLoading', false)
         })
+      }).catch(e => {
+        dispatch('error', e)
       })
       return c
     }),

@@ -62,7 +62,20 @@
             <b-input v-model="item.name" size="is-small" placeholder="Item Name"/>
           </b-field>
           <b-field label="Category" label-position="on-border">
-            <b-input v-model="item.category" size="is-small" placeholder="Category i.e. Rare Gear, White Lion, Blacksmith, etc." />
+            <b-autocomplete
+              v-model="item.category"
+              size="is-small"
+              ref="category"
+              :data="filteredCategoryNames"
+              placeholder="Category i.e. Rare Gear, White Lion, Blacksmith, etc."
+              @select="o => selected = o"
+              type="text"
+              required
+            >
+              <template #header>
+                <span v-if="filteredCategoryNames.length === 0" @click="$refs.category.setSelected(item.category)"><span class="tag is-info">New</span> {{ item.category }}</span>
+              </template>
+            </b-autocomplete>
           </b-field>
           <b-select placeholder="Connection (Top)" v-model="item.connections.top" size="is-small">
             <option :value="null">None</option>
@@ -252,6 +265,12 @@
   padding-right: 0
 }
 
+::v-deep {
+  .dropdown-menu {
+    text-align: left;
+  }
+}
+
 .key {
   &::v-deep {
     .field.is-grouped {
@@ -350,6 +369,14 @@ export default {
         'legs': 'bl-legs',
         'waist': 'bl-waist'
       }
+    },
+    
+    categories() {
+      return this.gear.map(g => g.category).filter((v,i,s) => s.indexOf(v) === i && v !== null)
+    },
+    
+    filteredCategoryNames() {
+      return this.categories.filter((option) => this.normalize(option).includes(this.normalize(this.item.category)))
     }
   },
   methods: {

@@ -9,11 +9,13 @@
       v-model="showAddResource"
       has-modal-card
       trap-focus
-      :destroy-on-hide="false"
+      :destroy-on-hide="true"
       aria-role="dialog"
       aria-modal>
       <template #default="props">
         <ResourceAdd
+          :categories="categoryNames"
+          :names="existingNames"
           @close="props.close"
           @add="addResource"
         />
