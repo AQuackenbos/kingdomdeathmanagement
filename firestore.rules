@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	function basicAuth() {
+    	return request.auth != null
+      		&& exists(/databases/$(database)/documents/settings/users/authorized/$(request.auth.uid))
+    }
+  
+    match /campaigns/{campaignId} {
+      allow read, write: if basicAuth() && request.auth.uid in resource.data.members
+      
+      
+      match /gear/{id} {
+      	allow read, write: if basicAuth()
+      }
+      match /grids/{id} {
+      	allow read, write: if basicAuth()
+      }
+      match /hunts/{id} {
+      	allow read, write: if basicAuth()
+      }
+      match /innovations/{id} {
+      	allow read, write: if basicAuth()
+      }
+      match /resources/{id} {
+      	allow read, write: if basicAuth()
+      }
+      match /survivors/{id} {
+      	allow read, write: if basicAuth()
+      }
+      match /timeline/{id} {
+      	allow read, write: if basicAuth()
+      }
+    }
+    
+    match /armor_sets/{document=**} {
+      allow read, write: if basicAuth();
+    }
+    
+    match /expansions/{document=**} {
+      allow read, write: if basicAuth()
+    }
+    
+    match /innovations/{document=**} {
+      allow read, write: if basicAuth()
+    }
+    
+    match /keywords/{document=**} {
+      allow read, write: if basicAuth()
+    }
+    
+    match /locations/{document=**} {
+      allow read, write: if basicAuth()
+    }
+    
+    match /quarries/{document=**} {
+      allow read, write: if basicAuth()
+    }
+    
+    match /showdowns/{document=**} {
+      allow read, write: if basicAuth()
+    }
+    
+    match /users/{document=**} {
+      allow read, write: if basicAuth()
+    }
+    
+  	match /settings/{document=**} {
+    	allow read: if true;
+      allow write: if false;
+    }
+  }
+}
