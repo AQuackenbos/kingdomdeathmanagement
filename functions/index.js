@@ -13,16 +13,15 @@ const db = admin.firestore();
 // });
 
 module.exports = {
-	authOnCreate: functions.auth.user().onCreate((user, ctx) => {
-		const { email, uid, displayName } = user;
-		
-		return db
-			.collection('users')
-			.doc(uid)
-			.set({
-				email: email,
-				displayName: displayName
-			})
-			.catch(console.error);
-	})
+  authOnCreate: functions.auth.user().onCreate((user, ctx) => {
+    const { email, uid, displayName } = user;
+    
+    return db
+      .collection('users')
+      .doc(uid)
+      .set({
+        email: email,
+        displayName: displayName
+      })
+  })
 }

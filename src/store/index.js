@@ -134,6 +134,7 @@ export const store = new Vuex.Store({
     
     clearUser: firestoreAction(({ unbindFirestoreRef, commit }) => {
       commit("SET_USER", null)
+      commit("SET_CAMPAIGN_ID", null)
       window.sessionStorage.clear()
       unbindFirestoreRef('pubUser')
       // TODO add unbind refs here
