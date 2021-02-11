@@ -16,7 +16,7 @@
     </div>
     <div class="columns timeline-row" 
       :class="{ current: ly.year === campaign.year }" 
-      v-for="ly in timeline" 
+      v-for="ly in sortedYears" 
       :key="ly.id" 
       style="position:relative"
       @mouseover="activeRow = ly.id"
@@ -150,6 +150,17 @@ export default {
       'timeline',
       'innovations'
     ]),
+    
+    sortedYears() {
+      return this.timeline.map(t => t).sort((a,b) => {
+        let y1 = parseInt(a.year)
+        let y2 = parseInt(b.year)
+        
+        if(y1 > y2) return 1
+        
+        return -1
+      })
+    },
     
     campaignQuarries() {
       return this.quarries.filter(q => {

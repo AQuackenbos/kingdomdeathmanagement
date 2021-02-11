@@ -78,7 +78,7 @@ export default {
           let newGrid = merge(emptyGearGrid, { name: val })
           db.collection(`campaigns/${this.campaign.id}/grids`).add(newGrid)
             .then(g => {
-              this.$router.push({ path: '/grids/edit' + g.id })
+              this.$router.push({ path: '/grids/edit/' + g.id })
             })
         }
       })

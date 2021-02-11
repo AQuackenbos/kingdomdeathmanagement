@@ -313,7 +313,8 @@ export default {
   data: () => ({
     todos: [
       'Make better Survivor Severe Injury area', 
-      'Add FA/DO/etc Description Adder'
+      'Add FA/DO/etc Description Adder',
+      'Calculate Shield HL bonus'
     ]
   }),
   computed: {
