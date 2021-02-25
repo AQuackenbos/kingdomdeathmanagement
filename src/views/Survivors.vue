@@ -47,9 +47,6 @@
 .survivor-list {
   text-align: left;
 }
-.menu-list a.is-active {
-  /** background-color: #; **/
-}
 
 .menu-list {
   li {
