@@ -314,7 +314,11 @@ export default {
     todos: [
       'Make better Survivor Severe Injury area', 
       'Add FA/DO/etc Description Adder',
-      'Calculate Shield HL bonus'
+      'Calculate Shield HL bonus',
+      'Change item Category => "Category/Location"',
+      'Automate graves/etc additions?',
+      'Add AI/HL deck icons to parser',
+      'Improve gear picker for grid'
     ]
   }),
   computed: {
