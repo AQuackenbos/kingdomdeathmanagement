@@ -400,21 +400,23 @@ export default {
   computed: {
     ...mapGetters([
       'survivors'
-    ]),
+    ])
   },
   created() {
     this.loadCurrentSurvivor()
   },
   watch: {
-    '$route': 'loadCurrentSurvivor'
+    '$route.params.id': {
+      immediate: true,
+      handler(id) {
+        if(id) {
+          this.$bind('survivor', db.collection(`campaigns/${this.currentCampaignId}/survivors`).doc(id))
+          history.pushState({}, null, '/survivors/'+id)
+        }
+      }
+    }
   },
-  methods: {
-    loadCurrentSurvivor() {
-      let id = this.$route.params?.id
-      if(!id) return
-      return this.setSurvivor(id)
-    },
-    
+  methods: {    
     deleteSurvivor() {
       this.$buefy.dialog.confirm({
         message: 'Are you sure you want to delete this survivor?',
@@ -427,13 +429,6 @@ export default {
         }
       })
     },
-    
-    setSurvivor(id) {
-      if(this.survivor?.id === id) return
-      
-      this.survivor = this.survivors.find(s => s?.id === id)
-      history.pushState({}, null, '/survivors/'+id)
-    }
   }
 }
 </script>
